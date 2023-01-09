@@ -370,6 +370,9 @@ export default {
     flex: 0 0 auto;
     width: 33.333333%;
   }
+  .table-section {
+    height: 340px;
+  }
 }
 
 /*****tables******/

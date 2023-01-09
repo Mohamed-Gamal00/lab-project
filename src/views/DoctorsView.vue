@@ -1,5 +1,6 @@
 <template>
-  <div class="home">
+  <div class="doctors">
+    <NavbarCom />
     <SidebarCom />
     <DoctorsCom />
   </div>
@@ -7,10 +8,11 @@
 
 <script>
 import SidebarCom from "@/components/nav/SidebarCom.vue";
+import NavbarCom from "@/components/nav/NavbarCom.vue";
 import DoctorsCom from "@/components/doctors/DoctorsCom.vue";
 // import NavbarCom from "@/components/nav/NavbarCom.vue";
 export default {
   name: "DoctorsView",
-  components: { SidebarCom, DoctorsCom },
+  components: { SidebarCom, DoctorsCom, NavbarCom },
 };
 </script>

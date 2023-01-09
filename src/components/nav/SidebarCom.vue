@@ -106,7 +106,7 @@
               class="btn mb-2 btn-transparent font-weight-bold btn-lg btn-block"
             >
               <i
-                class="fe font-weight-bold text-danger fe-log-out fe-12 mr-2"
+                class="fe font-weight-bold text-danger fe-log-out fe-18 mr-2"
               ></i
               ><span class="text-danger">تسجيل الخروج</span>
             </a>
