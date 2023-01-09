@@ -1,0 +1,14 @@
+body {
+  background-color: #f5f6fa;
+}
+@import url("https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cairo:wght@200;300;400;500;600;700;800&family=Readex+Pro:wght@200;300;400;500&display=swap");
+* {
+  font-family: "Almarai", sans-serif;
+}
+.font {
+    color: #322a7d;
+    font-weight: 700;
+  }
+a {
+  text-decoration: none;
+}

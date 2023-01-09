@@ -1,20 +1,18 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  <!-- <nav>
+    <router-link :to="{ name: 'login' }">login</router-link> |
+    <router-link :to="{ name: 'home' }">الرئيسية</router-link> |
+    <router-link :to="{ name: 'doctors' }">الاطباء</router-link> |
+    <router-link :to="{ name: 'members' }">الاعضاء</router-link> |
+    <router-link :to="{ name: 'orders' }">الطلبات</router-link> |
+    <router-link :to="{ name: 'providers' }">التجار</router-link> |
+    <router-link :to="{ name: 'purchases' }">المشتريات</router-link> |
+    <router-link :to="{ name: 'reports' }">التقارير</router-link> |
+  </nav> -->
   <router-view />
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
 nav {
   padding: 30px;
 
