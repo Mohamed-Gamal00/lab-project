@@ -47,15 +47,15 @@
                           <div class="text-end">
                             <img
                               :src="doctor.image"
-                              width="71"
-                              height="71"
+                              width="60"
+                              height="60"
                               class="rounded-circle"
                             />
                           </div>
                         </td>
                         <!-- name & name_address -->
                         <td style="" class="name_address">
-                          <div class="mt-2">
+                          <div class="mt-2 font">
                             <span class="mb-0 text-black fw-bold">
                               <strong>د/ {{ doctor.name }}</strong>
                             </span>
@@ -69,27 +69,27 @@
                         <td>
                           <button
                             type="button"
-                            class="btn fw-bold p-1 button_number"
+                            class="btn fw-bold font-lg p-1 button_number"
                             style="background-color: #84e0be"
                           >
                             <span class="bi-ICON-NAME">
                               <span
                                 ><FontAwesome
-                                  class="btn p-1 FontAwesome"
+                                  class="btn font p-1 FontAwesome"
                                   icon="phone" /></span></span
                             >&nbsp;{{ doctor.number }}
                           </button>
                         </td>
                         <!-- date & edit -->
                         <td>
-                          <div class="float-start">
+                          <div class="float-start font-lg">
                             <span class="fw-bold">
                               {{ moment(doctor.created_at).format("L") }}</span
                             >
                             <span class="d-block">
                               <div class="dropdown">
                                 <button
-                                  class="btn mt-2 btn-secondary dropdown-toggle"
+                                  class="btn mt-2 font text-white dropdown-toggle"
                                   type="button"
                                   id="dropdownMenuButton1"
                                   data-bs-toggle="dropdown"
@@ -134,7 +134,7 @@
                         </td>
                         <td>
                           <div
-                            class="text-center"
+                            class="text-center font"
                             style="border-right: 1px solid #6c757d"
                           >
                             <span> عدد الطلبات </span>
@@ -253,7 +253,7 @@
                             </div>
                           </teleport>
                         </div>
-                        <!-- modal popup add doctor -->
+                        <!-- modal popup edit doctor -->
                         <div class="root">
                           <teleport to="body">
                             <div class="modalpopup" v-if="editDoctorOpen">
