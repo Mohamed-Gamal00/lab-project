@@ -69,27 +69,27 @@
                         <td>
                           <button
                             type="button"
-                            class="btn fw-bold font-lg p-1 button_number"
+                            class="btn fw-bold font p-1 button_number"
                             style="background-color: #84e0be"
                           >
                             <span class="bi-ICON-NAME">
                               <span
                                 ><FontAwesome
-                                  class="btn font p-1 FontAwesome"
+                                  class="btn p-1 FontAwesome"
                                   icon="phone" /></span></span
                             >&nbsp;{{ doctor.number }}
                           </button>
                         </td>
                         <!-- date & edit -->
                         <td>
-                          <div class="float-start font-lg">
+                          <div class="float-start font">
                             <span class="fw-bold">
                               {{ moment(doctor.created_at).format("L") }}</span
                             >
                             <span class="d-block">
                               <div class="dropdown">
                                 <button
-                                  class="btn mt-2 font text-white dropdown-toggle"
+                                  class="btn mt-2 text-white dropdown-toggle"
                                   type="button"
                                   id="dropdownMenuButton1"
                                   data-bs-toggle="dropdown"
@@ -546,6 +546,9 @@ export default {
   }
   .name_address span {
     font-size: 10px;
+  }
+  .font {
+    width: 164px;
   }
 }
 /* Large devices (laptops/desktops, 992px and up) */

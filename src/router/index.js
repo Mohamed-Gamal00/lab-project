@@ -7,6 +7,7 @@ import OrdersView from "../views/OrdersView.vue";
 import ProvidersView from "../views/ProvidersView.vue";
 import PurchasesView from "../views/PurchasesView.vue";
 import ReportsView from "../views/ReportsView.vue";
+import SettingView from "@/views/SettingView.vue";
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: "/reports",
     name: "reports",
     component: ReportsView,
+  },
+  {
+    path: "/setting",
+    name: "setting",
+    component: SettingView,
   },
 ];
 

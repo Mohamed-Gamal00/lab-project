@@ -13,7 +13,7 @@
               class="navbar-brand mx-auto mt-2 flex-fill text-center"
               href="./index.html"
             >
-              <img src="" alt="img" />
+              <img src="@/assets/logo.jpg" width="100" height="50" alt="img" />
             </a>
           </div>
           <!-- الرئيسية -->
@@ -32,8 +32,8 @@
           <p class="text-muted nav-heading mt-4 mb-1">
             <span>الاقسام</span>
           </p>
-          <!-- الطلبات -->
           <ul class="navbar-nav flex-fill w-100 mb-2">
+            <!-- الطلبات -->
             <li class="nav-item">
               <a href="" class="nav-link">
                 <span class="item-text">
@@ -92,7 +92,7 @@
             <li class="nav-item">
               <a href="" class="nav-link">
                 <span class="item-text">
-                  <router-link :to="{ name: 'home' }">
+                  <router-link :to="{ name: 'setting' }">
                     <i class="fe fe-settings mr-3 fe-16"></i>
                     الاعدادات
                   </router-link>

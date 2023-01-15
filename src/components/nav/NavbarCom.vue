@@ -108,7 +108,7 @@
           <li class="nav-item">
             <a href="" class="nav-link">
               <span class="item-text">
-                <router-link :to="{ name: 'home' }">
+                <router-link :to="{ name: 'setting' }">
                   <i class="fe fe-settings mr-3 fe-16"></i>
                   الاعدادات
                 </router-link>

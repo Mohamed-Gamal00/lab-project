@@ -7,232 +7,242 @@
             <div class="row justify-content-center">
               <div class="col-12">
                 <div class="row align-items-center mb-2">
-                  <div class="col-lg-8">
-                    <h2 class="h5 page-title">orders!</h2>
-                    <!-- info small box -->
-                    <div class="row">
-                      <!-- اضافة طلب -->
-                      <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="card shadow" style="border-radius: 20px">
-                          <button class="text-white buttons">
-                            <div class="card-body">
-                              <div class="row align-items-center">
-                                <!-- content -->
-                                <div class="col">
-                                  <p class="text-end mb-0 fw-bold">اضافة طلب</p>
-                                  <p class="text-end mb-0 fontsize">
-                                    اضافة طلب جديد للمعالجة
-                                  </p>
-                                </div>
-                                <!-- section -->
-                                <div
-                                  class="col-auto ms-lg-3"
-                                  style="
-                                    padding: 10px;
-                                    background-color: orange;
-                                    border-radius: 10px;
-                                  "
-                                >
-                                  <span
-                                    class="fe fe-32 fe-git-pull-request text-muted mb-0"
-                                  ></span>
-                                </div>
-                              </div>
-                            </div>
-                          </button>
-                        </div>
-                      </div>
-                      <!-- اضافة طبيب -->
-                      <div class="col-lg-4 col-md-6 col-sm-12 mb-4 text-white">
-                        <div class="card shadow" style="border-radius: 20px">
-                          <button class="text-white buttons">
-                            <div class="card-body">
-                              <div class="row align-items-center">
-                                <!-- content -->
-                                <div class="col">
-                                  <p class="text-end mb-0 fw-bold">
-                                    اضافة طبيب
-                                  </p>
-                                  <p class="text-end mb-0 fontsize">
-                                    اضافة طبيب جدبد الي قائمة الاطباء
-                                  </p>
-                                </div>
-                                <!-- section -->
-                                <div
-                                  class="col-auto ms-lg-3"
-                                  style="
-                                    padding: 10px;
-                                    background-color: orange;
-                                    border-radius: 10px;
-                                  "
-                                >
-                                  <span
-                                    class="fe fe-32 fe-user text-muted mb-0"
-                                  ></span>
-                                </div>
-                              </div>
-                            </div>
-                          </button>
-                        </div>
-                      </div>
-                      <!-- اضافة مشتريات -->
-                      <div class="col-lg-4 col-md-6 col-sm-12 mb-4 text-white">
-                        <div class="card shadow" style="border-radius: 20px">
-                          <button class="text-white buttons">
-                            <div class="card-body">
-                              <div class="row align-items-center">
-                                <!-- content -->
-                                <div class="col">
-                                  <p class="text-end mb-0 fw-bold">المشتريات</p>
-                                  <p class="text-end mb-0 fontsize">
-                                    اضافة مشتريات جديدة الي قائمة المشتريات
-                                  </p>
-                                </div>
-                                <!-- section -->
-                                <div
-                                  class="col-auto ms-lg-3"
-                                  style="
-                                    padding: 10px;
-                                    background-color: orange;
-                                    border-radius: 10px;
-                                  "
-                                >
-                                  <span
-                                    class="fe fe-32 fe-layers text-muted mb-0"
-                                  ></span>
-                                </div>
-                              </div>
-                            </div>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                  <!-- header -->
+                  <div class="fw-bold fs-4 mt-lg-4 mb-3">
+                    <span style="color: #322a7d"
+                      ><span><FontAwesome icon="cart-plus" />الطلبات</span>
+                    </span>
+                    <span class="float-start">
+                      <button
+                        @click="AddUserOpen = true"
+                        type="button"
+                        class="btn btn-primary text-white"
+                        style="background-color: #322a7d; border: none"
+                      >
+                        اضافة طلب
+                        <span
+                          ><FontAwesome style="color: orange" icon="cart-plus"
+                        /></span>
+                      </button>
+                    </span>
                   </div>
-                  <div class="col-lg-4">
-                    <div
-                      class="container mt-4"
-                      style="
-                        background-color: #ffffff;
-                        padding-top: 10px;
-                        border: 1px solid transparent;
-                        border-radius: 20px;
-                      "
-                    >
-                      <!-- Search form -->
-                      <div class="row">
-                        <div class="col-10">
-                          <div class="input-group ps-5">
-                            <form class="d-flex" role="search">
-                              <button class="btn" type="submit">
-                                <FontAwesome
-                                  class="searchicon"
-                                  icon="magnifying-glass"
-                                />
-                              </button>
-                              <input
-                                class="form-control me-2"
-                                style="
-                                  border: 1px solid transparent;
-                                  border-radius: 15px;
-                                "
-                                type="search"
-                                placeholder="ابحث..."
-                                aria-label="Search"
-                              />
-                            </form>
-                          </div>
-                        </div>
-                        <div class="col-2"></div>
-                      </div>
-                      <!-- wellcom message -->
-                      <div class="row d-flex justify-content-around mt-4">
-                        <div class="col-8">
-                          <div>
-                            <h5 class="mb-0">مرحبا</h5>
-                            <h2 class="mb-0">دياب</h2>
-                            <p>
-                              Lorem ipsum dolor sit amet consectetur
-                              adipisicing.
-                            </p>
-                          </div>
-                        </div>
-                        <div class="col-4 mt-2">
-                          <div class="text-center">
-                            <img
-                              src="https://st2.depositphotos.com/1007566/11541/v/950/depositphotos_115416492-stock-illustration-avatar-business-man-vector-graphic.jpg"
-                              width="70"
-                              class="rounded-circle"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <!-- ملخص لاحصائيات -->
-                      <div class="row d-flex justify-content-around mt-4">
-                        <h5>ملخص الاحصائيات</h5>
-                        <div
-                          class="col-5 col5box text-light d-flex justify-content-center"
-                        >
-                          <div class="box1 text-center">
-                            <p class="mb-0">الطلبات الجديدة</p>
-                            <p class="mb-0">
-                              <span class="fs-2 fw-bold mt-0"
-                                >46%<img
-                                  class="m-1"
-                                  src="@/assets/HOME/decrease.svg"
-                                  alt=""
-                              /></span>
-                            </p>
-                          </div>
-                        </div>
-                        <div
-                          class="col-5 col5box text-light d-flex justify-content-center"
-                        >
-                          <div class="box1 text-center">
-                            <p class="mb-0">الاطباء الجدد</p>
-                            <p class="mb-0">
-                              <span class="fs-2 fw-bold mt-0"
-                                >89%<img
-                                  class="m-1"
-                                  src="@/assets/HOME/increase.svg"
-                                  alt=""
-                              /></span>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- All doctors -->
-                      <div class="mt-4">
-                        <span class="fw-bold text-black">الاطباء</span>
-                        <span class="float-start showall"
-                          ><strong
-                            ><a href="" class="fw-bold">عرض الكل</a></strong
+                  <!-- table -->
+                  <!-- doctor details -->
+                  <div class="" v-for="order in orders" :key="order.id">
+                    <!-- 1 -->
+                    <div class="p-1">
+                      <div
+                        class="row p-2"
+                        style="
+                          border: 1px solid transparent;
+                          border-radius: 20px;
+                          background-color: white;
+                        "
+                      >
+                        <!-- tables -->
+                        <div class="">
+                          <table
+                            class="table table-striped table-hover font-lg"
                           >
-                        </span>
-                      </div>
-                      <!-- doctors section -->
-                      <div class="mt-4">
-                        <div
-                          class="row d-flex justify-content-around"
-                          v-for="doctor in doctors.slice(0, 5)"
-                          :key="doctor"
-                        >
-                          <div class="col-4 p-0">
-                            <div class="text-center">
-                              <img
-                                src="https://st2.depositphotos.com/1007566/11541/v/950/depositphotos_115416492-stock-illustration-avatar-business-man-vector-graphic.jpg"
-                                width="50"
-                                class="roundedd"
-                              />
+                            <!--table Head -->
+                            <thead>
+                              <tr>
+                                <th scope="col" class="text-secondary">
+                                  رقم الطلب
+                                </th>
+                                <th scope="col" class="text-secondary">
+                                  الدكتور
+                                </th>
+                                <th
+                                  style="width=30%"
+                                  scope="col"
+                                  class="text-secondary"
+                                >
+                                  اسم الحالة
+                                </th>
+                                <th scope="col" class="text-secondary">
+                                  تاريخ الاضافة
+                                </th>
+                                <th scope="col" class="text-secondary">
+                                  لون الضرس
+                                </th>
+                                <th scope="col" class="text-secondary">
+                                  السعر
+                                </th>
+                                <th scope="col" class="text-secondary">
+                                  التفاصيل
+                                </th>
+                              </tr>
+                            </thead>
+                            <!--table body get data-->
+                            <tbody>
+                              <tr>
+                                <!-- رقم الطلب -->
+                                <th scope="row">
+                                  <div class="th_width">
+                                    {{ order.patient_no }}
+                                  </div>
+                                </th>
+                                <!-- اسم الدكتور -->
+                                <td style="width: 20%">
+                                  <div class="text-end th_width">
+                                    <span>
+                                      <img
+                                        :src="order.image"
+                                        width="30"
+                                        class="rounded-circle"
+                                      />
+                                    </span>
+                                    <span class="d-inline">{{
+                                      order.doctor
+                                    }}</span>
+                                  </div>
+                                </td>
+                                <!-- اسم المريض -->
+                                <td style="width: 20%">
+                                  <div class="th_width">
+                                    {{ order.patient_name }}
+                                  </div>
+                                </td>
+                                <!-- تاريخ الاضافة -->
+                                <td>
+                                  <div class="th_width">
+                                    {{ order.created_at }}
+                                  </div>
+                                </td>
+                                <!-- لون الضرس -->
+                                <td>
+                                  <div
+                                    style="
+                                      width: 30px;
+                                      height: 30px;
+                                      background-color: #fff;
+                                      margin-right: 20px;
+                                    "
+                                  ></div>
+                                </td>
+                                <!-- السعر -->
+                                <td>
+                                  <div class="th_width">
+                                    {{ order.price }}
+                                  </div>
+                                </td>
+                                <!-- التفاصيل -->
+                                <td>
+                                  <div class="th_width">
+                                    <button
+                                      class="btn bg-transparent p-lg-0"
+                                      @click="order.open = !order.open"
+                                      style="background-color: #322a7d"
+                                    >
+                                      التفاصيل
+                                      <span
+                                        ><FontAwesome
+                                          style="color: #322a7d"
+                                          icon="circle-chevron-down"
+                                      /></span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div class="row font" v-show="order.open">
+                            <!-- اسم الدكتور والعنوان تاريخ ا لاضافة العديل والحذف  -->
+                            <div class="col-lg-3 col-md-3 col-sm-12 mb-3">
+                              <div class="d-flex position-relative">
+                                <span>
+                                  <img
+                                    :src="order.image"
+                                    width="50"
+                                    class="rounded-circle"
+                                  />
+                                </span>
+                                <div class="me-lg-2">
+                                  <p class="mt-0 font-lg mb-0">
+                                    <strong>د/ {{ order.doctor }}</strong>
+                                  </p>
+                                  <p>
+                                    <span
+                                      ><FontAwesome icon="location-dot"
+                                    /></span>
+                                    {{ order.address }}
+                                  </p>
+                                  <p class="m-0 p-0">تاريخ الاضافة</p>
+                                  <p class="fw-bold text-black">
+                                    {{ order.created_at }}
+                                  </p>
+                                </div>
+                              </div>
+                              <!-- التعديل و الحذف-->
+                              <div class="mt-5">
+                                <span class="m-1 p-0"
+                                  ><button
+                                    type="button"
+                                    class="btn btn-outline-success"
+                                  >
+                                    تعديل الطلب
+                                  </button>
+                                </span>
+                                <span class="m-1 p-0"
+                                  ><button
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                  >
+                                    حذف الطلب
+                                  </button>
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-8 p-0">
-                            <div>
-                              <h6 class="mb-0 text-black fw-bold">
-                                د/ معتز العسقلاني
-                              </h6>
-                              <p class="text-secondary address">
-                                شارع الجيش-مصر للطيران
-                              </p>
+                            <!-- اسم الحالة و ميعاد الطلب -->
+                            <div class="col-lg-2 col-md-2 col-sm-12">
+                              <div class="">
+                                <ul class="p-0">
+                                  <!-- اسم الحالة -->
+                                  <li class="text-secondary fw-bold">
+                                    <p class="m-0 p-0">اسم الحالة</p>
+                                    <p class="fw-bold text-black">
+                                      {{ order.patient_name }}
+                                    </p>
+                                  </li>
+                                  <!-- ميعاد الطلب -->
+                                  <li class="text-secondary fw-bold">
+                                    <p class="m-0 p-0">ميعاد الطلب</p>
+                                    <p class="fw-bold text-black">
+                                      {{ order.required_date }}
+                                    </p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                            <!-- الضرس -->
+                            <div class="col-lg-2 col-md-2 col-sm-12">
+                              <div>
+                                <ul class="p-0 text-end fw-bold">
+                                  <li class="text-secondary fw-bold">الضرس</li>
+                                  <li>{{ order.type }}</li>
+                                </ul>
+                              </div>
+                            </div>
+                            <!-- السعر -->
+                            <div class="col-lg-2 col-md-2 col-sm-12">
+                              <div class="">
+                                <ul class="p-0 text-end">
+                                  <li class="text-secondary fw-bold">السعر</li>
+                                  <li class="mt-3">{{ order.price }}</li>
+                                </ul>
+                              </div>
+                            </div>
+                            <!-- شكل الاسنان -->
+                            <div class="col-3 col-md-3 col-sm-12">
+                              <div class="text-center">
+                                <img
+                                  src=""
+                                  alt="img"
+                                  width="180"
+                                  class="rounded"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -241,11 +251,8 @@
                   </div>
                 </div>
               </div>
-              <!-- .col-12 -->
             </div>
-            <!-- .row -->
           </div>
-          <!-- .container-fluid -->
         </main>
       </div>
     </div>
@@ -257,66 +264,60 @@ export default {
   name: "OrdersCom",
   data() {
     return {
-      doctors: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
+      open: false,
+      orders: [
+        {
+          id: 1,
+          patient_no: "INV-87239",
+          order: 1,
+          patient_name: "علي محمد علي",
+          created_at: "19/22/2023",
+          price: "350",
+          image:
+            "https://st2.depositphotos.com/1007566/11541/v/950/depositphotos_115416492-stock-illustration-avatar-business-man-vector-graphic.jpg",
+          doctor: "mohamed gamal",
+          required_date: "13/11/2003",
+          address: "جديلة",
+          type: 1,
+        },
+      ],
     };
   },
 };
 </script>
 
 <style scoped>
-.card {
-  overflow: hidden;
-  border: none;
+ul li {
+  list-style: none;
 }
-.buttons {
-  height: 120px;
-  background-color: #322a7d;
-  border: none;
-  border-radius: 20px;
+table tbody tr td {
+  color: #322a7d !important;
 }
-@media (min-width: 992px) {
-  .col-lg-4 {
-    flex: 0 0 auto;
-    width: 49.333333%;
+.font-lg {
+  color: #322a7d;
+  font-weight: 700;
+  font-size: 13px !important;
+}
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  table tr td {
+    width: 120px;
+    font-size: 10px;
+  }
+  table thead tr th {
+    font-size: 10px;
+  }
+  table tbody tr .th_width {
+    width: 130px;
   }
 }
-@media (min-width: 1224px) {
-  .col-lg-4 {
-    flex: 0 0 auto;
-    width: 33.333333%;
+/* Extra larg devices (labtops, 600px and up) */
+@media only screen and (min-width: 600px) {
+  table thead tr th {
+    width: 135px;
   }
-}
-
-/********search******/
-/**********box الاحصائيات************/
-.col5box {
-  height: 120px;
-  background-color: #322a7d;
-  border: 1px solid transparent;
-  border-radius: 20px;
-}
-.box1 {
-  height: 120px;
-  border: 1px solid transparent;
-  border-radius: 20px;
-  position: relative;
-  top: 20%;
-}
-/********All doctors*********/
-.showall::after {
-  content: "\00BB";
-  margin: 2px;
-  color: orange;
-  text-decoration: none;
-}
-.showall a {
-  text-decoration: none;
-  color: orange;
-}
-.roundedd {
-  border-radius: 15px;
-}
-.address {
-  font-size: 13px;
+  .table-striped > tbody > tr:nth-of-type(odd) > * {
+    padding: 10px 10px;
+  }
 }
 </style>

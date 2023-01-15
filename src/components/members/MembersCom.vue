@@ -583,11 +583,8 @@ export default {
   .button_number .FontAwesome {
     font-size: 10px;
   }
-  * {
-    font-size: 10px;
-  }
   .font {
-    width: 133px;
+    width: 164px;
   }
 }
 </style>
