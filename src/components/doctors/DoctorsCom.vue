@@ -17,9 +17,7 @@
                         @click="AddDoctorOpen = true"
                         type="button"
                         class="btn btn-primary"
-                        data-bs-toggle="modal"
                         style="background-color: #322a7d; border: none"
-                        data-bs-target="#exampleModal"
                       >
                         اضافة طبيب
                         <span
@@ -147,111 +145,103 @@
                         </td>
                         <!-- modal popup add doctor -->
                         <div class="root">
-                          <teleport to="body">
-                            <div class="modalpopup" v-if="AddDoctorOpen">
-                              <div class="text-center">
-                                <!-- header -->
-                                <div class="modal-header d-inline">
-                                  <h5
-                                    class="modal-title fw-bold text-center"
-                                    style="color: #322a7d"
-                                    id="exampleModalLabel"
-                                  >
-                                    اضافة دكتور
-                                  </h5>
-                                  <p class="text-center">
-                                    اضف طبيب جديد الي قائمة الاطباء
-                                  </p>
-                                </div>
-                                <!-- body -->
-                                <div class="modal-body">
-                                  <form>
-                                    <!-- <h1> اسم لطبيب </h1> -->
-                                    <div class="row g-3 align-items-center">
-                                      <div class="col-auto d-block mx-auto m-3">
-                                        <input
-                                          style="width: 231px"
-                                          type="file"
-                                          id="example-email"
-                                          name="example-email"
-                                          class="form-control"
-                                          ref="myFile"
-                                          @change="selectFile"
-                                        />
-                                      </div>
-                                    </div>
-                                    <!-- <h1> اسم لطبيب </h1> -->
-                                    <div class="row g-3 align-items-center">
-                                      <div class="col-auto d-block mx-auto m-3">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          placeholder="اسم لطبيب"
-                                          v-model="name"
-                                        />
-                                        <span
-                                          class="erroe-feedbak"
-                                          v-if="v$.name.$error"
-                                          >{{
-                                            v$.name.$errors[0].$message
-                                          }}</span
-                                        >
-                                      </div>
-                                    </div>
-                                    <!-- رقم الهاتف -->
-                                    <div class="row g-3 align-items-center">
-                                      <div class="col-auto d-block mx-auto m-3">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          placeholder="رقم الهاتف"
-                                          v-model="number"
-                                        />
-                                        <span
-                                          class="erroe-feedbak"
-                                          v-if="v$.number.$error"
-                                          >{{
-                                            v$.number.$errors[0].$message
-                                          }}</span
-                                        >
-                                      </div>
-                                    </div>
-                                    <!-- <h1> عنوان لطبيب </h1> -->
-                                    <div class="row g-3 align-items-center">
-                                      <div class="col-auto d-block mx-auto m-3">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          placeholder="عنوان لطبيب"
-                                          v-model="address"
-                                        />
-                                        <span
-                                          class="erroe-feedbak"
-                                          v-if="v$.address.$error"
-                                          >{{
-                                            v$.address.$errors[0].$message
-                                          }}</span
-                                        >
-                                      </div>
-                                    </div>
-                                    <br />
-                                  </form>
-                                </div>
-                                <!-- footer -->
-                                <button class="btn" @click="AddDoctor()">
-                                  اضف الان
-                                </button>
-                                <button
-                                  class="btn"
-                                  @click="
-                                    (AddDoctorOpen = false), ResetDoctors()
-                                  "
+                          <div class="modalpopup" v-if="AddDoctorOpen">
+                            <div class="text-center">
+                              <!-- header -->
+                              <div class="d-inline">
+                                <h5
+                                  class="fw-bold text-center"
+                                  style="color: #322a7d"
                                 >
-                                  اغلاق
-                                </button>
+                                  اضافة دكتور
+                                </h5>
+                                <p class="text-center">
+                                  اضف طبيب جديد الي قائمة الاطباء
+                                </p>
                               </div>
+                              <!-- body -->
+                              <div class="">
+                                <form @submit.prevent="AddDoctor()">
+                                  <!-- صورة الدكتور -->
+                                  <div class="row g-3 align-items-center">
+                                    <div class="col-auto d-block mx-auto m-3">
+                                      <input
+                                        type="file"
+                                        ref="file"
+                                        @change="selectFile()"
+                                      />
+                                    </div>
+                                  </div>
+                                  <!-- <h1> اسم لطبيب </h1> -->
+                                  <div class="row g-3 align-items-center">
+                                    <div class="col-auto d-block mx-auto m-3">
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="اسم لطبيب"
+                                        v-model="name"
+                                      />
+                                      <span
+                                        class="erroe-feedbak"
+                                        v-if="v$.name.$error"
+                                        >{{ v$.name.$errors[0].$message }}</span
+                                      >
+                                    </div>
+                                  </div>
+                                  <!-- رقم الهاتف -->
+                                  <div class="row g-3 align-items-center">
+                                    <div class="col-auto d-block mx-auto m-3">
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="رقم الهاتف"
+                                        v-model="number"
+                                      />
+                                      <span
+                                        class="erroe-feedbak"
+                                        v-if="v$.number.$error"
+                                        >{{
+                                          v$.number.$errors[0].$message
+                                        }}</span
+                                      >
+                                    </div>
+                                  </div>
+                                  <!-- <h1> عنوان لطبيب </h1> -->
+                                  <div class="row g-3 align-items-center">
+                                    <div class="col-auto d-block mx-auto m-3">
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="عنوان لطبيب"
+                                        v-model="address"
+                                      />
+                                      <span
+                                        class="erroe-feedbak"
+                                        v-if="v$.address.$error"
+                                        >{{
+                                          v$.address.$errors[0].$message
+                                        }}</span
+                                      >
+                                    </div>
+                                  </div>
+                                  <button class="btn" type="submit">
+                                    اضف الان
+                                  </button>
+                                  <button
+                                    class="btn"
+                                    type="button"
+                                    @click="
+                                      (AddDoctorOpen = false), ResetDoctors()
+                                    "
+                                  >
+                                    اغلاق
+                                  </button>
+                                  <br />
+                                </form>
+                              </div>
+                              <!-- footer -->
                             </div>
-                          </teleport>
+                          </div>
                         </div>
                         <!-- modal popup edit doctor -->
                         <div class="root">
@@ -347,6 +337,61 @@
                       </tr>
                     </tbody>
                   </table>
+                  <!-- <form @submit.prevent="AddDoctor()">
+                    <div class="row g-3 align-items-center">
+                      <div class="col-auto d-block mx-auto m-3">
+                        <input type="file" ref="file" @change="selectFile()" />
+                      </div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                      <div class="col-auto d-block mx-auto m-3">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="اسم لطبيب"
+                          v-model="name"
+                        />
+                        <span class="erroe-feedbak" v-if="v$.name.$error">{{
+                          v$.name.$errors[0].$message
+                        }}</span>
+                      </div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                      <div class="col-auto d-block mx-auto m-3">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="رقم الهاتف"
+                          v-model="number"
+                        />
+                        <span class="erroe-feedbak" v-if="v$.number.$error">{{
+                          v$.number.$errors[0].$message
+                        }}</span>
+                      </div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                      <div class="col-auto d-block mx-auto m-3">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="عنوان لطبيب"
+                          v-model="address"
+                        />
+                        <span class="erroe-feedbak" v-if="v$.address.$error">{{
+                          v$.address.$errors[0].$message
+                        }}</span>
+                      </div>
+                    </div>
+                    <button class="btn" type="submit">اضف الان</button>
+                    <button
+                      class="btn"
+                      type="button"
+                      @click="(AddDoctorOpen = false), ResetDoctors()"
+                    >
+                      اغلاق
+                    </button>
+                    <br />
+                  </form> -->
                 </div>
               </div>
             </div>
@@ -376,12 +421,12 @@ export default {
       name: "",
       number: "",
       address: "",
-      doctor: {
-        id: "",
-        name: "",
-        number: "",
-        address: "",
-      },
+      // doctor: {
+      //   id: "",
+      //   name: "",
+      //   number: "",
+      //   address: "",
+      // },
       user_id: "",
     };
   },
@@ -401,7 +446,7 @@ export default {
   },
   methods: {
     selectFile() {
-      this.image = this.$target.files[0];
+      this.image = this.$refs.file.files[0];
     },
     async loaddoctors() {
       let result = await axios.get(`https://lab.almona.host/api/doctors`);
@@ -434,6 +479,7 @@ export default {
           this.name = "";
           this.number = "";
           this.address = "";
+          this.image = "";
           this.v$.number.$errors[0].$message = "";
           this.v$.name.$errors[0].$message = "";
           this.v$.address.$errors[0].$message = "";
@@ -451,12 +497,10 @@ export default {
       }
     },
     ResetDoctors() {
-      this.user_id = "";
       this.name = "";
       this.number = "";
-      this.provider.id = "";
-      this.provider.name = "";
-      this.provider.number = "";
+      this.address = "";
+      this.image = "";
     },
     async DeleteDoctor(id) {
       console.log("delete doctor");

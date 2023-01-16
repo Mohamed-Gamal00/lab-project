@@ -46,7 +46,7 @@
                   </div>
                 </div>
                 <!-- اضافة الالوان -->
-                <div class="col-7">
+                <div class="col-md-7 col-sm-12">
                   <div class="row">
                     <div class="mt-4 mb-5">
                       <span
@@ -65,7 +65,7 @@
                           اضف+
                         </button>
                       </span>
-                      <div class="d-flex flex-wrap mt-2 bg-white p-3 rounded-2">
+                      <div class="mt-2 bg-white p-3 rounded-2">
                         <span
                           v-for="color in colors"
                           :key="color.id"

@@ -13,17 +13,20 @@
                       ><span><FontAwesome icon="cart-plus" />الطلبات</span>
                     </span>
                     <span class="float-start">
-                      <button
-                        @click="AddUserOpen = true"
-                        type="button"
-                        class="btn btn-primary text-white"
-                        style="background-color: #322a7d; border: none"
-                      >
-                        اضافة طلب
-                        <span
-                          ><FontAwesome style="color: orange" icon="cart-plus"
-                        /></span>
-                      </button>
+                      <router-link :to="{ name: 'addorder' }">
+                        <button
+                          type="button"
+                          class="btn btn-primary text-white"
+                          style="background-color: #322a7d; border: none"
+                        >
+                          اضافة طلب
+                          <span
+                            ><FontAwesome
+                              style="color: orange"
+                              icon="cart-plus"
+                          /></span>
+                        </button>
+                      </router-link>
                     </span>
                   </div>
                   <!-- table -->
@@ -89,11 +92,12 @@
                                     <span>
                                       <img
                                         :src="order.image"
-                                        width="30"
+                                        width="40"
+                                        height="40"
                                         class="rounded-circle"
                                       />
                                     </span>
-                                    <span class="d-inline">{{
+                                    <span class="d-inline m-1">{{
                                       order.doctor
                                     }}</span>
                                   </div>
@@ -116,9 +120,9 @@
                                     style="
                                       width: 30px;
                                       height: 30px;
-                                      background-color: #fff;
                                       margin-right: 20px;
                                     "
+                                    :style="order.hex"
                                   ></div>
                                 </td>
                                 <!-- السعر -->
@@ -151,13 +155,16 @@
                             <!-- اسم الدكتور والعنوان تاريخ ا لاضافة العديل والحذف  -->
                             <div class="col-lg-3 col-md-3 col-sm-12 mb-3">
                               <div class="d-flex position-relative">
+                                <!-- img -->
                                 <span>
                                   <img
                                     :src="order.image"
-                                    width="50"
+                                    width="60"
+                                    height="60"
                                     class="rounded-circle"
                                   />
                                 </span>
+                                <!-- doctor name & address -->
                                 <div class="me-lg-2">
                                   <p class="mt-0 font-lg mb-0">
                                     <strong>د/ {{ order.doctor }}</strong>
@@ -260,6 +267,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "OrdersCom",
   data() {
@@ -267,21 +275,25 @@ export default {
       open: false,
       orders: [
         {
-          id: 1,
-          patient_no: "INV-87239",
-          order: 1,
-          patient_name: "علي محمد علي",
-          created_at: "19/22/2023",
-          price: "350",
-          image:
-            "https://st2.depositphotos.com/1007566/11541/v/950/depositphotos_115416492-stock-illustration-avatar-business-man-vector-graphic.jpg",
-          doctor: "mohamed gamal",
-          required_date: "13/11/2003",
-          address: "جديلة",
-          type: 1,
+          // id: 1,
+          // patient_no: "INV-87239",
+          // order: 1,
+          // patient_name: "علي محمد علي",
+          // created_at: "19/22/2023",
+          // price: "350",
+          // image:
+          //   "https://st2.depositphotos.com/1007566/11541/v/950/depositphotos_115416492-stock-illustration-avatar-business-man-vector-graphic.jpg",
+          // doctor: "mohamed gamal",
+          // required_date: "13/11/2003",
+          // address: "جديلة",
+          // type: 1,
         },
       ],
     };
+  },
+  async mounted() {
+    let result = await axios.get(`https://lab.almona.host/api/orders`);
+    this.orders = result.data.orders;
   },
 };
 </script>
