@@ -14,7 +14,7 @@
                     </span>
                     <span class="float-start">
                       <button
-                        @click="AddDoctorOpen = true"
+                        @click="openModal()"
                         type="button"
                         class="btn btn-primary"
                         style="background-color: #322a7d; border: none"
@@ -107,12 +107,9 @@
                                     <!-- Modal of edit button -->
                                     <button
                                       @click="
-                                        (editDoctorOpen = true),
-                                          EditDoctor(doctor)
+                                        openeditModal(), EditDoctor(doctor)
                                       "
                                       class="dropdown-item"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#edit"
                                     >
                                       تعديل
                                     </button>
@@ -130,6 +127,7 @@
                             </span>
                           </div>
                         </td>
+                        <!-- عدد الطلبات -->
                         <td>
                           <div
                             class="text-center font"
@@ -143,10 +141,36 @@
                             >
                           </div>
                         </td>
-                        <!-- modal popup add doctor -->
-                        <div class="root">
-                          <div class="modalpopup" v-if="AddDoctorOpen">
-                            <div class="text-center">
+                      </tr>
+                    </tbody>
+                  </table>
+                  <!-- modal popup add doctor -->
+                  <transition name="fade">
+                    <div class="modall" v-if="show">
+                      <!-- <div class="modal__backdrop" @click="closeModal()"> -->
+                      <div class="modal__backdrop">
+                        <div class="modal__dialog">
+                          <div class="modal__body">
+                            <slot name="body" />
+                            <!-- <div class="modal__header">
+                              <slot name="header" />
+                              <button
+                                type="button"
+                                class="modal__close"
+                                @click="closeModal()"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 352 512"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                  ></path>
+                                </svg>
+                              </button>
+                            </div> -->
+                            <div class="">
                               <!-- header -->
                               <div class="d-inline">
                                 <h5
@@ -224,174 +248,232 @@
                                       >
                                     </div>
                                   </div>
-                                  <button class="btn" type="submit">
-                                    اضف الان
+                                  <!-- footer -->
+                                  <div class="modal__footer">
+                                    <button class="btn" type="submit">
+                                      اضف الان
+                                    </button>
+                                    <button
+                                      class="btn"
+                                      type="button"
+                                      @click="closeModal(), ResetDoctors()"
+                                    >
+                                      اغلاق
+                                    </button>
+                                    <br />
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </transition>
+                  <!-- modal popup edit doctor -->
+                  <transition name="fade">
+                    <div class="modall" v-if="edit">
+                      <!-- <div class="modal__backdrop" @click="closeModal()"> -->
+                      <div class="modal__backdrop">
+                        <div class="modal__dialog">
+                          <div class="modal__body">
+                            <slot name="body" />
+                            <!-- <div class="modal__header">
+                              <slot name="header" />
+                              <button
+                                type="button"
+                                class="modal__close"
+                                @click="closeModal()"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 352 512"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                  ></path>
+                                </svg>
+                              </button>
+                            </div> -->
+                            <div class="">
+                              <!-- header -->
+                              <div class="modal-header d-inline">
+                                <h5
+                                  class="modal-title fw-bold text-center"
+                                  style="color: #322a7d"
+                                  id="exampleModalLabel"
+                                >
+                                  تعديل
+                                </h5>
+                              </div>
+                              <!-- body -->
+                              <div class="">
+                                <form>
+                                  <!-- صورة الدكتور -->
+                                  <!-- <div class="row g-3 align-items-center">
+                                    <div class="col-auto d-block mx-auto m-3">
+                                      <input
+                                        type="file"
+                                        ref="file"
+                                        @change="selectFile()"
+                                      />
+                                    </div>
+                                  </div> -->
+                                  <!-- <h1> اسم لطبيب </h1> -->
+                                  <div class="row g-3 align-items-center">
+                                    <div class="col-auto d-block mx-auto m-3">
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="اسم لطبيب"
+                                        v-model="name"
+                                      />
+                                      <span
+                                        class="erroe-feedbak"
+                                        v-if="v$.name.$error"
+                                        >{{ v$.name.$errors[0].$message }}</span
+                                      >
+                                    </div>
+                                  </div>
+                                  <!-- رقم الهاتف -->
+                                  <div class="row g-3 align-items-center">
+                                    <div class="col-auto d-block mx-auto m-3">
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="رقم الهاتف"
+                                        v-model="number"
+                                      />
+                                      <span
+                                        class="erroe-feedbak"
+                                        v-if="v$.number.$error"
+                                        >{{
+                                          v$.number.$errors[0].$message
+                                        }}</span
+                                      >
+                                    </div>
+                                  </div>
+                                  <!-- <h1> عنوان لطبيب </h1> -->
+                                  <div class="row g-3 align-items-center">
+                                    <div class="col-auto d-block mx-auto m-3">
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="عنوان لطبيب"
+                                        v-model="address"
+                                      />
+                                      <span
+                                        class="erroe-feedbak"
+                                        v-if="v$.address.$error"
+                                        >{{
+                                          v$.address.$errors[0].$message
+                                        }}</span
+                                      >
+                                    </div>
+                                  </div>
+                                  <br />
+                                  <!-- footer -->
+                                  <button
+                                    class="btn"
+                                    type="button"
+                                    @click="UpdateDoctor()"
+                                  >
+                                    تعديل
                                   </button>
                                   <button
                                     class="btn"
                                     type="button"
-                                    @click="
-                                      (AddDoctorOpen = false), ResetDoctors()
-                                    "
+                                    @click="closeEditModal(), ResetDoctors()"
                                   >
                                     اغلاق
                                   </button>
-                                  <br />
                                 </form>
                               </div>
-                              <!-- footer -->
                             </div>
                           </div>
                         </div>
-                        <!-- modal popup edit doctor -->
-                        <div class="root">
-                          <teleport to="body">
-                            <div class="modalpopup" v-if="editDoctorOpen">
-                              <div class="text-center">
-                                <!-- header -->
-                                <div class="modal-header d-inline">
-                                  <h5
-                                    class="modal-title fw-bold text-center"
-                                    style="color: #322a7d"
-                                    id="exampleModalLabel"
+                      </div>
+                    </div>
+                  </transition>
+
+                  <!-- modal popup edit doctor -->
+                  <!-- <div class="root">
+                    <teleport to="body">
+                      <div class="modalpopup" v-if="edit">
+                        <div class="text-center">
+                          <div class="modal-header d-inline">
+                            <h5
+                              class="modal-title fw-bold text-center"
+                              style="color: #322a7d"
+                              id="exampleModalLabel"
+                            >
+                              تعديل
+                            </h5>
+                          </div>
+                          <div class="modal-body">
+                            <form>
+                              <div class="row g-3 align-items-center">
+                                <div class="col-auto d-block mx-auto m-3">
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="اسم لطبيب"
+                                    v-model="name"
+                                  />
+                                  <span
+                                    class="erroe-feedbak"
+                                    v-if="v$.name.$error"
+                                    >{{ v$.name.$errors[0].$message }}</span
                                   >
-                                    تعديل
-                                  </h5>
                                 </div>
-                                <!-- body -->
-                                <div class="modal-body">
-                                  <form>
-                                    <!-- <h1> اسم لطبيب </h1> -->
-                                    <div class="row g-3 align-items-center">
-                                      <div class="col-auto d-block mx-auto m-3">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          placeholder="اسم لطبيب"
-                                          v-model="name"
-                                        />
-                                        <span
-                                          class="erroe-feedbak"
-                                          v-if="v$.name.$error"
-                                          >{{
-                                            v$.name.$errors[0].$message
-                                          }}</span
-                                        >
-                                      </div>
-                                    </div>
-                                    <!-- رقم الهاتف -->
-                                    <div class="row g-3 align-items-center">
-                                      <div class="col-auto d-block mx-auto m-3">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          placeholder="رقم الهاتف"
-                                          v-model="number"
-                                        />
-                                        <span
-                                          class="erroe-feedbak"
-                                          v-if="v$.number.$error"
-                                          >{{
-                                            v$.number.$errors[0].$message
-                                          }}</span
-                                        >
-                                      </div>
-                                    </div>
-                                    <!-- <h1> عنوان لطبيب </h1> -->
-                                    <div class="row g-3 align-items-center">
-                                      <div class="col-auto d-block mx-auto m-3">
-                                        <input
-                                          type="text"
-                                          class="form-control"
-                                          placeholder="عنوان لطبيب"
-                                          v-model="address"
-                                        />
-                                        <span
-                                          class="erroe-feedbak"
-                                          v-if="v$.address.$error"
-                                          >{{
-                                            v$.address.$errors[0].$message
-                                          }}</span
-                                        >
-                                      </div>
-                                    </div>
-                                    <br />
-                                  </form>
-                                </div>
-                                <!-- footer -->
-                                <button class="btn" @click="UpdateDoctor()">
-                                  تعديل
-                                </button>
-                                <button
-                                  class="btn"
-                                  @click="
-                                    (editDoctorOpen = false), ResetDoctors()
-                                  "
-                                >
-                                  اغلاق
-                                </button>
                               </div>
-                            </div>
-                          </teleport>
+                              <div class="row g-3 align-items-center">
+                                <div class="col-auto d-block mx-auto m-3">
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="رقم الهاتف"
+                                    v-model="number"
+                                  />
+                                  <span
+                                    class="erroe-feedbak"
+                                    v-if="v$.number.$error"
+                                    >{{ v$.number.$errors[0].$message }}</span
+                                  >
+                                </div>
+                              </div>
+                              <div class="row g-3 align-items-center">
+                                <div class="col-auto d-block mx-auto m-3">
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="عنوان لطبيب"
+                                    v-model="address"
+                                  />
+                                  <span
+                                    class="erroe-feedbak"
+                                    v-if="v$.address.$error"
+                                    >{{ v$.address.$errors[0].$message }}</span
+                                  >
+                                </div>
+                              </div>
+                              <br />
+                            </form>
+                          </div>
+                          <button class="btn" @click="UpdateDoctor()">
+                            تعديل
+                          </button>
+                          <button
+                            class="btn"
+                            @click="(editDoctorOpen = false), ResetDoctors()"
+                          >
+                            اغلاق
+                          </button>
                         </div>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <!-- <form @submit.prevent="AddDoctor()">
-                    <div class="row g-3 align-items-center">
-                      <div class="col-auto d-block mx-auto m-3">
-                        <input type="file" ref="file" @change="selectFile()" />
                       </div>
-                    </div>
-                    <div class="row g-3 align-items-center">
-                      <div class="col-auto d-block mx-auto m-3">
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="اسم لطبيب"
-                          v-model="name"
-                        />
-                        <span class="erroe-feedbak" v-if="v$.name.$error">{{
-                          v$.name.$errors[0].$message
-                        }}</span>
-                      </div>
-                    </div>
-                    <div class="row g-3 align-items-center">
-                      <div class="col-auto d-block mx-auto m-3">
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="رقم الهاتف"
-                          v-model="number"
-                        />
-                        <span class="erroe-feedbak" v-if="v$.number.$error">{{
-                          v$.number.$errors[0].$message
-                        }}</span>
-                      </div>
-                    </div>
-                    <div class="row g-3 align-items-center">
-                      <div class="col-auto d-block mx-auto m-3">
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="عنوان لطبيب"
-                          v-model="address"
-                        />
-                        <span class="erroe-feedbak" v-if="v$.address.$error">{{
-                          v$.address.$errors[0].$message
-                        }}</span>
-                      </div>
-                    </div>
-                    <button class="btn" type="submit">اضف الان</button>
-                    <button
-                      class="btn"
-                      type="button"
-                      @click="(AddDoctorOpen = false), ResetDoctors()"
-                    >
-                      اغلاق
-                    </button>
-                    <br />
-                  </form> -->
+                    </teleport>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -412,7 +494,8 @@ export default {
   name: "DoctorsCom",
   data() {
     return {
-      AddDoctorOpen: false,
+      show: false,
+      edit: false,
       editDoctorOpen: false,
       moment: moment,
       doctors: [],
@@ -421,12 +504,6 @@ export default {
       name: "",
       number: "",
       address: "",
-      // doctor: {
-      //   id: "",
-      //   name: "",
-      //   number: "",
-      //   address: "",
-      // },
       user_id: "",
     };
   },
@@ -445,6 +522,22 @@ export default {
     }
   },
   methods: {
+    closeModal() {
+      this.show = false;
+      document.querySelector("body").classList.remove("overflow-hidden");
+    },
+    openModal() {
+      this.show = true;
+      document.querySelector("body").classList.add("overflow-hidden");
+    },
+    closeEditModal() {
+      this.edit = false;
+      document.querySelector("body").classList.remove("overflow-hidden");
+    },
+    openeditModal() {
+      this.edit = true;
+      document.querySelector("body").classList.add("overflow-hidden");
+    },
     selectFile() {
       this.image = this.$refs.file.files[0];
     },
@@ -487,7 +580,7 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           console.log("data true");
-          this.AddDoctorOpen = false;
+          this.closeModal();
           this.loaddoctors();
         } else {
           console.log("data false");
@@ -503,20 +596,29 @@ export default {
       this.image = "";
     },
     async DeleteDoctor(id) {
-      console.log("delete doctor");
-      let result = await axios.post(
-        `https://lab.almona.host/api/del_doctor/${id}`,
-        {}
-      );
-      if (result.data.success == true) {
-        console.log(" user deleted succesfuly");
-        this.loaddoctors();
-      } else {
-        console.log("faild to delete user");
-      }
+      this.$swal
+        .fire({
+          title: "هل انت متاكد من حذف هذا العنصر",
+          text: "لن تتمكن من الرجوع مجددا!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#322a7d",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "حذف",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            console.log("delete doctor");
+            axios.post(`https://lab.almona.host/api/del_doctor/${id}`);
+
+            this.$swal.fire("حذف!", "تم حذف العنصر بنجاح.", "success");
+            this.loaddoctors();
+          }
+        });
     },
     async EditDoctor(doctor) {
       this.user_id = doctor.id;
+      // this.image = doctor.image;
       this.name = doctor.name;
       this.number = doctor.number;
       this.address = doctor.address;
@@ -528,6 +630,7 @@ export default {
           `https://lab.almona.host/api/user/edit/${this.user_id}`,
           {
             name: this.name,
+            // image: this.image,
             number: this.number,
             address: this.address,
           }
@@ -545,6 +648,7 @@ export default {
         let result = await axios.post(
           `https://lab.almona.host/api/edit_doctor/${this.user_id}`,
           {
+            // image: this.image
             name: this.name,
             number: this.number,
             address: this.address,
@@ -561,7 +665,7 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           console.log("data updated succesfuly");
-          this.editDoctorOpen = false;
+          this.closeEditModal();
           this.loaddoctors();
         } else {
           console.log("data false");
@@ -575,6 +679,12 @@ export default {
 </script>
 
 <style scoped>
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (min-width: 600px) {
+  table tr td {
+    width: 200px;
+  }
+}
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .button_number {
