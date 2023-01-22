@@ -45,15 +45,17 @@
                               type="text"
                               class="form-control"
                               placeholder="اسم الحالة"
-                              v-model="name"
+                              v-model="patient_name"
                             />
-                            <span class="erroe-feedbak" v-if="v$.name.$error">{{
-                              v$.name.$errors[0].$message
-                            }}</span>
+                            <span
+                              class="erroe-feedbak"
+                              v-if="v$.patient_name.$error"
+                              >{{ v$.patient_name.$errors[0].$message }}</span
+                            >
                           </div>
                         </div>
                         <!-- رقم الحالة -->
-                        <div class="row g-3 align-items-center">
+                        <!-- <div class="row g-3 align-items-center">
                           <div class="col-auto d-block mx-auto m-3">
                             <input
                               type="text"
@@ -67,6 +69,22 @@
                               >{{ v$.number.$errors[0].$message }}</span
                             >
                           </div>
+                        </div> -->
+                        <!-- تاريخ الاضافة -->
+                        <div class="row g-3 align-items-center">
+                          <div class="col-auto d-block mx-auto m-3">
+                            <input
+                              type="date"
+                              class="form-control"
+                              placeholder="تاريخ الاضافة"
+                              v-model="required_date"
+                            />
+                            <span
+                              class="erroe-feedbak"
+                              v-if="v$.required_date.$error"
+                              >{{ v$.required_date.$errors[0].$message }}</span
+                            >
+                          </div>
                         </div>
                         <!-- ملاحظات -->
                         <div class="form-outline">
@@ -75,7 +93,7 @@
                             id="textAreaExample1"
                             placeholder="ملاحظات"
                             rows="4"
-                            v-model="messege"
+                            v-model="notes"
                           ></textarea>
                         </div>
                       </form>
@@ -84,7 +102,26 @@
                   <!-- col-6 -->
                   <div class="col-md-6">
                     <div>
-                      <!-- الوان الضروس -->
+                      <!-- اختيار الوان الضروس -->
+                      <div class="row g-3 align-items-center">
+                        <div class="col-auto d-block mx-auto m-3">
+                          <select class="form-select" v-model="color_id">
+                            <option disabled value="">اسم اللون</option>
+                            <option
+                              v-for="color in colors"
+                              :value="color.id"
+                              :key="color.id"
+                            >
+                              {{ color.name }}
+                            </option>
+                          </select>
+                          <!-- <span
+                            class="erroe-feedbak"
+                            v-if="v$.doctor_id.$error"
+                            >{{ v$.doctor_id.$errors[0].$message }}</span
+                          > -->
+                        </div>
+                      </div>
                       <div class="mt-2 bg-white color_section p-3 rounded-2">
                         <span
                           v-for="color in colors"
@@ -121,6 +158,29 @@
                       <!-- اضافة -->
                     </div>
                   </div>
+                  <!-- col-3 -->
+                  <div class="col-md-3">
+                    <!-- اختيار الوان الضروس -->
+                    <div class="row g-3 align-items-center">
+                      <div class="col-auto d-block mx-auto m-3">
+                        <select class="form-select" v-model="type_id">
+                          <option disabled value="">النوع</option>
+                          <option
+                            v-for="type in types"
+                            :key="type.id"
+                            :value="type.id"
+                          >
+                            {{ type.name }}
+                          </option>
+                        </select>
+                        <!-- <span
+                            class="erroe-feedbak"
+                            v-if="v$.doctor_id.$error"
+                            >{{ v$.doctor_id.$errors[0].$message }}</span
+                          > -->
+                      </div>
+                    </div>
+                  </div>
                   <button
                     type="button"
                     @click="Addorder()"
@@ -147,21 +207,24 @@ export default {
   data() {
     return {
       colors: [],
-      v$: useVuelidate(),
       doctors: [],
+      types: [],
+      v$: useVuelidate(),
       doctor_id: "",
-      color_id: "",
       type_id: "",
-      name: "",
-      number: "",
-      messege: "",
+      color_id: "",
+      patient_name: "",
+      notes: "",
+      required_date: "",
+      // number: "",
     };
   },
   validations() {
     return {
-      name: { required, minLength: maxLength(20) },
+      patient_name: { required, minLength: maxLength(20) },
       doctor_id: { required },
-      number: { required },
+      // number: { required },
+      required_date: { required },
     };
   },
   async mounted() {
@@ -177,6 +240,12 @@ export default {
       console.log(result.data);
       this.doctors = result.data.doctors;
     }
+    console.log("types");
+    let resulttypes = await axios.get(`https://lab.almona.host/api/types`);
+    if (resulttypes.data.success == true) {
+      console.log(resulttypes.data);
+      this.types = resulttypes.data.types;
+    }
   },
   methods: {
     async Addorder() {
@@ -187,33 +256,33 @@ export default {
         let result = await axios.post(
           `https://lab.almona.host/api/add_order`,
           {
-            name: this.name,
+            patient_name: this.patient_name,
             doctor_id: this.doctor_id,
             color_id: this.color_id,
             type_id: this.type_id,
-            number: this.number,
-            messege: this.messege,
+            notes: this.notes,
+            required_date: this.required_date,
           },
           {
             headers: {
               Authorization:
-                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiODdmZTEwNjQzZjFhY2Q0ODJjOTE3YzAxNzA2MWY2YjQwYzE5YTE3ZGMzZjRmYmIwODg4NDhkYzg4OGY0MWEyMzk1OWYyMzdjY2ViMmQ1MTQiLCJpYXQiOjE2NzM4Njc1MjguNjc5MzI5LCJuYmYiOjE2NzM4Njc1MjguNjc5MzM3LCJleHAiOjE3MDU0MDM1MjguNjU3NTk1LCJzdWIiOiIxNDAiLCJzY29wZXMiOltdfQ.AYdjBM8ERdV-rTzfVQiJcgA_R0wNqiFfz6osBAVA_6XDMNGplxpV_8le-4pKPCxIy4ugUOvxV8po7IUUqBSyJcABinfZEwBg1XXE65qSktbw-c7qXX7STtljeNIqcjgaoi-yU5AhUyKgP5vWRGbPs-fRJyhPaI3LLPFYrYirMY5xmljGdeJ0PW3pL_SfZ81yOHa4ygNfYtwh40DcuWhHHT02q4srS5U6WzOaLA9xZ9KhH5usUVgL7ao9IAahnhWJF1-vV1R5_5Bw8ypv0y5Rh7zNfVgraTvd9nnXHYJCLrxBH4aF0jMMCE1klHUzZLmi9vYxuKuUIuunIRtESw8g4jAjROjkMxJqvNzp3eQ8iSNZemByCo0-AdI1CBe3wBtsvjaRXn_xD1nq6t56PETGru4cJZZ65c3LZFm8T2mzhPhkmVijtinCB8mxCo54N6vTOwB4BoYcoVPkxC0nfvEdkGyAn0AU1sR-CidTtceCiwNhKIk35fSMo0JczJjyimaFW4Ve1sTxiNinyuYErhE-fAFm3ExYq6XhVs40xsJkPNdFx40hWQVkBza6ctg2ZkuREOUI0n5E-bUgG8EHyIIhLfilWBgr9qMOG8jrRXwEji3-aXmcjGgzgnFRna2YMvSXuEs2IiREBLoUDI1Q0NBTuAd_8wWlaMPCMM6DPBmjS3w",
+                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiNzRiYzI0OTY4MWQ0ZmFkZmY1NmJmNTA0NmZiMGY5N2E1OGU0OWE1ZTcyMmI3ZTA0YmYwNGQ2MzAxZmE2YTMxZjg0OTI3MmIxNzE0Y2MwMjkiLCJpYXQiOjE2NzQzNzY5NTEuMzk3OTUyLCJuYmYiOjE2NzQzNzY5NTEuMzk3OTU4LCJleHAiOjE3MDU5MTI5NTEuMzg4OTUyLCJzdWIiOiIxNDIiLCJzY29wZXMiOltdfQ.TGbFbhql1B7x0t7i4IMd5y9Dsm9HpsIX9HCc-u6ZRRsv-4KCuXR_HfmETSwY-mzaCsrfggaPio7nFD89f2MGVDMhpaXnh3X1GWFoxwRYSAmkU-QNy7zrJYNz4o1qlcFjpV0R4Bw8lmGXwX-9AqbXPuGEhItbXve3ZVfgQjcOAWLumVe6zvBw5aPz39PZ-7zTv1ZcwZz0jmjNdVaQCy-FT83RG4WRqmSJb-rGCtvpLh4eF3PuhCGCbMVClO7ucUIPA1z8DQmQ653UkW16RiBDVWUAi6c_ee8U9sHfBLRWAQQ10ugF7TyCnKI1YtxGsWjYFPCkHsQt1PqJNn1MkRIZSpxx-80HMvKSNvtfbSMwCcT5eXI9KL3RQJliUi1t0Wdg37AodPozLJeTC6Ux_2pbNMa4mqXclg6Jd0SUNBF2MMd7UqXguC3E_ClGFn99pgFV5kz3HC78_-7Vfy03N3a7wD5Vz2td_EHD59qImBzGg0WCrdzRw0xwEdMtBlwzN0vjogrutBTSWEP2QtGbsD-GKjHjB0Bk-ijX6vvO6qBQiBMUXLm0nLcywtlWrs8o_eyEGffr2ibPx3BTulS_QTmFu1TiEgYNV56UCfhDxXOBQZ3Q8NSR8P1ra0-jrvrzaeCjwjzSxK_A4zvj_kEuNu1AKfWG2StWcxtlBnyJ_PVLBGU",
             },
           }
         );
         console.log(result);
         if (result.data.success == true) {
           console.log("data true purchase added success");
-          this.loadpurchase();
           setTimeout(() => {
             this.doctor_id = "";
-            this.name = "";
-            this.number = "";
-            this.messege = "";
-            this.v$.name.$errors[0].$message = "";
+            this.patient_name = "";
+            // this.number = "";
+            this.notes = "";
+            this.required_date = "";
+            this.v$.patient_name.$errors[0].$message = "";
             this.v$.doctor_id.$errors[0].$message = "";
-            this.v$.number.$errors[0].$message = "";
-            this.v$.messege.$errors[0].$message = "";
+            this.v$.notes.$errors[0].$message = "";
+            this.v$.required_date.$errors[0].$message = "";
           });
         } else {
           console.log("data false");

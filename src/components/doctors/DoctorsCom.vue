@@ -611,7 +611,12 @@ export default {
             console.log("delete doctor");
             axios.post(`https://lab.almona.host/api/del_doctor/${id}`);
 
-            this.$swal.fire("حذف!", "تم حذف العنصر بنجاح.", "success");
+            this.$swal.fire(
+              "حذف!",
+              "تم حذف العنصر بنجاح.",
+              "success",
+              this.loaddoctors()
+            );
             this.loaddoctors();
           }
         });
