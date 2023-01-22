@@ -131,7 +131,7 @@
                             ></span
                           >
                         </div>
-                        <table class="table table-striped table-hover mt-5">
+                        <table class="table table-hover mt-5 font">
                           <thead>
                             <tr>
                               <th scope="col" class="text-secondary">
@@ -151,7 +151,7 @@
                           </thead>
                           <tbody>
                             <tr v-for="order in orders" :key="order.id">
-                              <th scope="row">{{ order.id }}</th>
+                              <th scope="row">{{ order.patient_no }}</th>
                               <td>{{ order.doctor }}</td>
                               <td>{{ order.patient_name }}</td>
                               <td>{{ order.required_date }}</td>
@@ -333,11 +333,11 @@ export default {
     };
   },
   async mounted() {
-    let result = await axios.get(`http://localhost:3000/orders`);
+    let result = await axios.get(`https://lab.almona.host/api/orders`);
     if (result.status == 200) {
       console.log(result.data);
       // this.orders = result.data.orders.slice(0, 5);
-      this.orders = result.data.slice(0, 4);
+      this.orders = result.data.orders;
     }
   },
 };
@@ -371,7 +371,7 @@ export default {
     width: 33.333333%;
   }
   .table-section {
-    height: 340px;
+    /* height: fit-content; */
   }
 }
 

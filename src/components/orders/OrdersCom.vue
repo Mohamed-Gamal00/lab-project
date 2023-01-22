@@ -188,15 +188,16 @@
                                     type="button"
                                     class="btn btn-outline-success"
                                   >
-                                    تعديل الطلب
+                                    تعديل
                                   </button>
                                 </span>
                                 <span class="m-1 p-0"
                                   ><button
                                     type="button"
+                                    @click="DeleteOrder(order.id)"
                                     class="btn btn-outline-danger"
                                   >
-                                    حذف الطلب
+                                    حذف
                                   </button>
                                 </span>
                               </div>
@@ -294,6 +295,25 @@ export default {
   async mounted() {
     let result = await axios.get(`https://lab.almona.host/api/orders`);
     this.orders = result.data.orders;
+  },
+  methods: {
+    async loadeorders() {
+      let result = await axios.get(`https://lab.almona.host/api/orders`);
+      if (result.data.success == true) {
+        this.orders = result.data.orders;
+      }
+    },
+    async DeleteOrder(id) {
+      let result = await axios.post(
+        `https://lab.almona.host/api/del_order/${id}`
+      );
+      if (result.data.success == true) {
+        console.log(" provider deleted succesfuly");
+        this.loadeorders();
+      } else {
+        console.log("faild to delete provider");
+      }
+    },
   },
 };
 </script>

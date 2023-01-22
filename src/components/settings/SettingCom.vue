@@ -13,9 +13,11 @@
               </div>
               <div class="row">
                 <!-- تغيير كلمة المرور -->
-                <div class="col-lg-4 col-md-4 col-sm-12 bg-white m-2 rounded-3">
+                <div
+                  class="col-lg-4 col-md-4 col-sm-12 bg-white m-2 rounded-3 changePassword"
+                >
                   <!-- wellcom message &&&&&&  تغيير كلمة المرور -->
-                  <div class="row d-flex justify-content-center mt-4 mb-5">
+                  <div class="row d-flex justify-content-center mt-4 mb-lg-1">
                     <div class="col-8">
                       <div>
                         <h5 class="mb-0">مرحبا</h5>
@@ -34,15 +36,13 @@
                         />
                       </div>
                     </div>
-                    <div class="text-center">
-                      <button
-                        type="button"
-                        style="background: #322a92; width: 300px"
-                        class="btn text-white fw-bold"
-                      >
-                        تغيير كلمة المرور
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      style="background: #322a92"
+                      class="btn text-white fw-bold"
+                    >
+                      تغيير كلمة المرور
+                    </button>
                   </div>
                 </div>
                 <!-- اضافة الالوان -->
@@ -69,7 +69,7 @@
                         <span
                           v-for="color in colors"
                           :key="color.id"
-                          :style="[color.hex, width, overflow]"
+                          :style="[color.hex]"
                           class="m-1 btn fw-bold p-1 text-center rounded-2"
                         >
                           <!-- <strong class="d-inline">{{ color.name }}</strong>
@@ -78,7 +78,7 @@
                           </button> -->
                           <div class="dropdown bg-transparent">
                             <a
-                              class="btn font dropdown-toggle"
+                              class="btn shadow font dropdown-toggle"
                               href="#"
                               role="button"
                               id="dropdownMenuLink"
@@ -93,18 +93,13 @@
                               aria-labelledby="dropdownMenuLink"
                             >
                               <li>
-                                <!-- <button
-                                  @click="
-                                    (editDoctorOpen = true),
-                                      EditProviders(provider)
-                                  "
+                                <button
+                                  @click="(isedit = true), Editcolor(color)"
                                   type="button"
                                   class="dropdown-item"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#exampleModal"
                                 >
                                   تعديل
-                                </button> -->
+                                </button>
                               </li>
                               <li>
                                 <a
@@ -154,10 +149,49 @@
                               </div>
                             </div>
                           </teleport>
+                          <!-- edit color popup -->
+                          <teleport to="body">
+                            <div class="modalpopup" v-if="isedit">
+                              <div class="text-center">
+                                <h2>اختار اللون الخاص بالضرس</h2>
+                                <div>
+                                  <br />
+                                  <input
+                                    type="color"
+                                    class=""
+                                    v-model="hex"
+                                  /><br />
+                                  {{ hex }}
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    v-model="name"
+                                  />
+                                </div>
+                                <div class="mt-lg-2">
+                                  <button
+                                    type="button"
+                                    class="btn shadow"
+                                    @click="(isedit = false), Updatecolor()"
+                                  >
+                                    تعديل
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn shadow"
+                                    @click="(isedit = false), reset()"
+                                  >
+                                    حذف
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </teleport>
                         </span>
                       </div>
                     </div>
                   </div>
+                  <TypesCom />
                 </div>
               </div>
             </div>
@@ -169,17 +203,21 @@
 </template>
 
 <script>
+import TypesCom from "@/components/types/TypesCom.vue";
 import axios from "axios";
 export default {
   name: "SettingCom",
+  components: { TypesCom },
   data() {
     return {
       isOpen: false,
+      isedit: false,
       // width: "width:10%",
       // overflow: "overflow:hidden",
       hex: "",
       name: "",
       colors: [],
+      color_id: "",
     };
   },
   async mounted() {
@@ -232,8 +270,48 @@ export default {
         console.log("faild to delete provider");
       }
     },
+    Editcolor(color) {
+      console.log("editcolor");
+      this.color_id = color.id;
+      this.name = color.name;
+      this.hex = color.number;
+      console.log("Editcolor call success");
+    },
+    async Updatecolor() {
+      let result = await axios.post(
+        `https://lab.almona.host/api/edit_color/${this.color_id}`,
+        {
+          // image: this.image
+          name: this.name,
+          hex: this.hex,
+        }
+      );
+      if (result.data.success == true) {
+        console.log("data updated succesfuly");
+        setTimeout(() => {
+          this.name = "";
+          this.hex = "";
+        }, 1000);
+        this.isedit = false;
+        this.loadecolor();
+      } else {
+        console.log("data false");
+      }
+      console.log(result);
+    },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .changePassword {
+    /* height: 212px; */
+    height: fit-content;
+  }
+  .changePassword button {
+    width: 70%;
+  }
+}
+</style>

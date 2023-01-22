@@ -54,29 +54,13 @@
                             >
                           </div>
                         </div>
-                        <!-- رقم الحالة -->
-                        <!-- <div class="row g-3 align-items-center">
-                          <div class="col-auto d-block mx-auto m-3">
-                            <input
-                              type="text"
-                              class="form-control"
-                              placeholder="رقم الهاتف"
-                              v-model="number"
-                            />
-                            <span
-                              class="erroe-feedbak"
-                              v-if="v$.number.$error"
-                              >{{ v$.number.$errors[0].$message }}</span
-                            >
-                          </div>
-                        </div> -->
                         <!-- تاريخ الاضافة -->
                         <div class="row g-3 align-items-center">
                           <div class="col-auto d-block mx-auto m-3">
                             <input
                               type="date"
                               class="form-control"
-                              placeholder="تاريخ الاضافة"
+                              placeholder="ميعاد الطلب"
                               v-model="required_date"
                             />
                             <span
@@ -87,14 +71,18 @@
                           </div>
                         </div>
                         <!-- ملاحظات -->
-                        <div class="form-outline">
-                          <textarea
-                            class="form-control"
-                            id="textAreaExample1"
-                            placeholder="ملاحظات"
-                            rows="4"
-                            v-model="notes"
-                          ></textarea>
+                        <div class="row g-3 align-items-center">
+                          <div class="col-auto d-block mx-auto m-3">
+                            <div class="form-outline">
+                              <textarea
+                                class="form-control"
+                                id="textAreaExample1"
+                                placeholder="ملاحظات"
+                                rows="4"
+                                v-model="notes"
+                              ></textarea>
+                            </div>
+                          </div>
                         </div>
                       </form>
                     </div>
@@ -106,7 +94,7 @@
                       <div class="row g-3 align-items-center">
                         <div class="col-auto d-block mx-auto m-3">
                           <select class="form-select" v-model="color_id">
-                            <option disabled value="">اسم اللون</option>
+                            <option disabled value="">اللون</option>
                             <option
                               v-for="color in colors"
                               :value="color.id"
@@ -181,13 +169,15 @@
                       </div>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    @click="Addorder()"
-                    class="btn mt-lg-2 btn-success"
-                  >
-                    add
-                  </button>
+                  <div>
+                    <button
+                      type="button"
+                      @click="Addorder()"
+                      class="btn mt-lg-2 btn-success"
+                    >
+                      add
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -223,8 +213,8 @@ export default {
     return {
       patient_name: { required, minLength: maxLength(20) },
       doctor_id: { required },
-      // number: { required },
       required_date: { required },
+      notes: { required },
     };
   },
   async mounted() {
@@ -276,7 +266,6 @@ export default {
           setTimeout(() => {
             this.doctor_id = "";
             this.patient_name = "";
-            // this.number = "";
             this.notes = "";
             this.required_date = "";
             this.v$.patient_name.$errors[0].$message = "";
@@ -284,6 +273,7 @@ export default {
             this.v$.notes.$errors[0].$message = "";
             this.v$.required_date.$errors[0].$message = "";
           });
+          this.$router.push({ name: "orders" });
         } else {
           console.log("data false");
         }
@@ -322,5 +312,20 @@ table td {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 600px) {
+  input,
+  textarea,
+  select {
+    width: 200px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  input,
+  textarea,
+  select {
+    width: 200px;
+  }
 }
 </style>
