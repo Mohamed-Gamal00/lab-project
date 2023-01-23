@@ -130,7 +130,7 @@
                         class="btn shadow"
                         @click="(isedit = false), reset()"
                       >
-                        حذف
+                        الغاء
                       </button>
                     </div>
                   </div>
@@ -198,15 +198,40 @@ export default {
       }
     },
     async deletetype(id) {
-      let result = await axios.post(
-        `https://lab.almona.host/api/del_type/${id}`
-      );
-      if (result.data.success == true) {
-        console.log(" provider deleted succesfuly");
-        this.loadetypes();
-      } else {
-        console.log("faild to delete type");
-      }
+      this.$swal
+        .fire({
+          title: "هل انت متاكد من حذف هذا العنصر",
+          text: "لن تتمكن من الرجوع مجددا!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#322a7d",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "حذف",
+          cancelButtonText: "الغاء",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            console.log("delete doctor");
+            axios.post(`https://lab.almona.host/api/del_type/${id}`);
+
+            this.$swal.fire(
+              "حذف!",
+              "تم حذف العنصر بنجاح.",
+              "success",
+              this.loadetypes()
+            );
+            this.loadetypes();
+          }
+        });
+      // let result = await axios.post(
+      //   `https://lab.almona.host/api/del_type/${id}`
+      // );
+      // if (result.data.success == true) {
+      //   console.log(" provider deleted succesfuly");
+      //   this.loadetypes();
+      // } else {
+      //   console.log("faild to delete type");
+      // }
     },
     Editype(type) {
       console.log("type");

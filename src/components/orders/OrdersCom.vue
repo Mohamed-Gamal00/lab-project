@@ -274,22 +274,7 @@ export default {
   data() {
     return {
       open: false,
-      orders: [
-        {
-          // id: 1,
-          // patient_no: "INV-87239",
-          // order: 1,
-          // patient_name: "علي محمد علي",
-          // created_at: "19/22/2023",
-          // price: "350",
-          // image:
-          //   "https://st2.depositphotos.com/1007566/11541/v/950/depositphotos_115416492-stock-illustration-avatar-business-man-vector-graphic.jpg",
-          // doctor: "mohamed gamal",
-          // required_date: "13/11/2003",
-          // address: "جديلة",
-          // type: 1,
-        },
-      ],
+      orders: [],
     };
   },
   async mounted() {
@@ -304,15 +289,40 @@ export default {
       }
     },
     async DeleteOrder(id) {
-      let result = await axios.post(
-        `https://lab.almona.host/api/del_order/${id}`
-      );
-      if (result.data.success == true) {
-        console.log(" provider deleted succesfuly");
-        this.loadeorders();
-      } else {
-        console.log("faild to delete provider");
-      }
+      this.$swal
+        .fire({
+          title: "هل انت متاكد من حذف هذا العنصر",
+          text: "لن تتمكن من الرجوع مجددا!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#322a7d",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "حذف",
+          cancelButtonText: "الغاء",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            console.log("delete doctor");
+            axios.post(`https://lab.almona.host/api/del_order/${id}`);
+
+            this.$swal.fire(
+              "حذف!",
+              "تم حذف العنصر بنجاح.",
+              "success",
+              this.loadeorders()
+            );
+            this.loadeorders();
+          }
+        });
+      // let result = await axios.post(
+      //   `https://lab.almona.host/api/del_order/${id}`
+      // );
+      // if (result.data.success == true) {
+      //   console.log(" provider deleted succesfuly");
+      //   this.loadeorders();
+      // } else {
+      //   console.log("faild to delete provider");
+      // }
     },
   },
 };

@@ -260,21 +260,37 @@ export default {
       }
     },
     async deletecolor(id) {
-      let result = await axios.post(
-        `https://lab.almona.host/api/del_color/${id}`
-      );
-      if (result.data.success == true) {
-        console.log(" provider deleted succesfuly");
-        this.loadecolor();
-      } else {
-        console.log("faild to delete provider");
-      }
+      this.$swal
+        .fire({
+          title: "هل انت متاكد من حذف هذا العنصر",
+          text: "لن تتمكن من الرجوع مجددا!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#322a7d",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "حذف",
+          cancelButtonText: "الغاء",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            console.log("delete doctor");
+            axios.post(`https://lab.almona.host/api/del_color/${id}`);
+
+            this.$swal.fire(
+              "حذف!",
+              "تم حذف العنصر بنجاح.",
+              "success",
+              this.loadecolor()
+            );
+            this.loadecolor();
+          }
+        });
     },
     Editcolor(color) {
       console.log("editcolor");
       this.color_id = color.id;
       this.name = color.name;
-      this.hex = color.number;
+      this.hex = color.hex;
       console.log("Editcolor call success");
     },
     async Updatecolor() {

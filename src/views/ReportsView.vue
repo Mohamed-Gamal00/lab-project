@@ -1,12 +1,18 @@
 <template>
-  <div class="home">
-    <h1>reports</h1>
+  <div class="doctors">
+    <NavbarCom />
+    <SidebarCom />
+    <ReportsCom />
   </div>
 </template>
 
 <script>
+import SidebarCom from "@/components/nav/SidebarCom.vue";
+import NavbarCom from "@/components/nav/NavbarCom.vue";
+import ReportsCom from "@/components/roports/ReportsCom.vue";
+// import NavbarCom from "@/components/nav/NavbarCom.vue";
 export default {
-  name: "ReportsView",
-  components: {},
+  name: "RepotsView",
+  components: { SidebarCom, NavbarCom, ReportsCom },
 };
 </script>

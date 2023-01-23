@@ -25,133 +25,140 @@
                       <!-- اضافة طلب -->
                       <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         <div class="card shadow" style="border-radius: 20px">
-                          <button class="text-white buttons">
-                            <div class="card-body">
-                              <div class="row align-items-center">
-                                <!-- content -->
-                                <div class="col">
-                                  <p class="text-end mb-0 fw-bold">اضافة طلب</p>
-                                  <p class="text-end mt-1 small mb-0">
-                                    اضافة طلب جديد للمعالجة
-                                  </p>
-                                </div>
-                                <!-- section -->
-                                <div
-                                  class="col-auto ms-lg-1"
-                                  style="
-                                    padding: 10px;
-                                    background-color: orange;
-                                    border-radius: 10px;
-                                  "
-                                >
-                                  <span
-                                    class="fe fe-32 fe-git-pull-request text-muted mb-0"
-                                  ></span>
+                          <router-link :to="{ name: 'addorder' }">
+                            <button class="text-white buttons">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <!-- content -->
+                                  <div class="col">
+                                    <p class="text-end mb-0 fw-bold">
+                                      اضافة طلب
+                                    </p>
+                                    <p class="text-end mt-1 small mb-0">
+                                      اضافة طلب جديد للمعالجة
+                                    </p>
+                                  </div>
+                                  <!-- section -->
+                                  <div
+                                    class="col-auto ms-lg-1"
+                                    style="
+                                      padding: 10px;
+                                      background-color: orange;
+                                      border-radius: 10px;
+                                    "
+                                  >
+                                    <span
+                                      class="fe fe-32 fe-git-pull-request text-muted mb-0"
+                                    ></span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </button>
+                            </button>
+                          </router-link>
                         </div>
                       </div>
                       <!-- اضافة طبيب -->
                       <div class="col-lg-4 col-md-6 col-sm-12 mb-4 text-white">
                         <div class="card shadow" style="border-radius: 20px">
-                          <button class="text-white buttons">
-                            <div class="card-body">
-                              <div class="row align-items-center">
-                                <!-- content -->
-                                <div class="col">
-                                  <p class="text-end mb-0 fw-bold">
-                                    اضافة طبيب
-                                  </p>
-                                  <p class="text-end mt-1 small mb-0">
-                                    اضافة طبيب جدبد الي قائمة الاطباء
-                                  </p>
-                                </div>
-                                <!-- section -->
-                                <div
-                                  class="col-auto ms-lg-1"
-                                  style="
-                                    padding: 10px;
-                                    background-color: orange;
-                                    border-radius: 10px;
-                                  "
-                                >
-                                  <span
-                                    class="fe fe-32 fe-user text-muted mb-0"
-                                  ></span>
+                          <router-link :to="{ name: 'doctors' }">
+                            <button class="text-white buttons">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <!-- content -->
+                                  <div class="col">
+                                    <p class="text-end mb-0 fw-bold">
+                                      اضافة طبيب
+                                    </p>
+                                    <p class="text-end mt-1 small mb-0">
+                                      اضافة طبيب جديد الي قائمة الاطباء
+                                    </p>
+                                  </div>
+                                  <!-- section -->
+                                  <div
+                                    class="col-auto ms-lg-1"
+                                    style="
+                                      padding: 10px;
+                                      background-color: orange;
+                                      border-radius: 10px;
+                                    "
+                                  >
+                                    <span
+                                      class="fe fe-32 fe-user text-muted mb-0"
+                                    ></span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </button>
+                            </button>
+                          </router-link>
                         </div>
                       </div>
                       <!-- اضافة مشتريات -->
                       <div class="col-lg-4 col-md-6 col-sm-12 mb-4 text-white">
                         <div class="card shadow" style="border-radius: 20px">
-                          <button class="text-white buttons">
-                            <div class="card-body">
-                              <div class="row align-items-center">
-                                <!-- content -->
-                                <div class="col">
-                                  <p class="text-end mb-0 fw-bold">المشتريات</p>
-                                  <p class="text-end mt-1 small mb-0">
-                                    اضافة مشتريات جديدة الي قائمة المشتريات
-                                  </p>
-                                </div>
-                                <!-- section -->
-                                <div
-                                  class="col-auto ms-lg-1"
-                                  style="
-                                    padding: 10px;
-                                    background-color: orange;
-                                    border-radius: 10px;
-                                  "
-                                >
-                                  <span
-                                    class="fe fe-32 fe-layers text-muted mb-0"
-                                  ></span>
+                          <router-link :to="{ name: 'purchases' }">
+                            <button class="text-white buttons">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <!-- content -->
+                                  <div class="col">
+                                    <p class="text-end mb-0 fw-bold">
+                                      المشتريات
+                                    </p>
+                                    <p class="text-end mt-1 small mb-0">
+                                      اضافة مشتريات جديدة الي قائمة المشتريات
+                                    </p>
+                                  </div>
+                                  <!-- section -->
+                                  <div
+                                    class="col-auto ms-lg-1"
+                                    style="
+                                      padding: 10px;
+                                      background-color: orange;
+                                      border-radius: 10px;
+                                    "
+                                  >
+                                    <span
+                                      class="fe fe-32 fe-layers text-muted mb-0"
+                                    ></span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </button>
+                            </button>
+                          </router-link>
                         </div>
                       </div>
                     </div>
                     <!-- tebles -->
-                    <div class="row ps-1">
+                    <div class="row ps-1 mt-lg-3">
                       <div class="table-section">
                         <div class="mt-2 p-3">
                           <span class="float-end fw-bold"
                             ><strong>أجدد الطلبات</strong></span
                           >
-                          <span class="float-start"
-                            ><a class="fw-bold" style="font-size: 12px" href="#"
-                              >عرض الكل</a
-                            ></span
-                          >
+                          <span class="float-start font">
+                            <router-link :to="{ name: 'orders' }">
+                              عرض الكل
+                            </router-link>
+                          </span>
                         </div>
                         <table class="table table-hover mt-5 font">
                           <thead>
                             <tr>
-                              <th scope="col" class="text-secondary">
-                                رقم الطلب
-                              </th>
-                              <th scope="col" class="text-secondary">
-                                الدكتور
-                              </th>
-                              <th scope="col" class="text-secondary">
-                                اسم الحالة
-                              </th>
-                              <th scope="col" class="text-secondary">
-                                تاريخ الاضافة
-                              </th>
-                              <th scope="col" class="text-secondary">السعر</th>
+                              <th class="text-secondary">رقم الطلب</th>
+                              <th class="text-secondary">الدكتور</th>
+                              <th class="text-secondary">اسم الحالة</th>
+                              <th class="text-secondary">تاريخ الاضافة</th>
+                              <th class="text-secondary">السعر</th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr v-for="order in orders" :key="order.id">
-                              <th scope="row">{{ order.patient_no }}</th>
+                            <tr
+                              v-for="order in orders.slice(0, 6)"
+                              :key="order.id"
+                            >
+                              <th style="width: 200px">
+                                {{ order.patient_no }}
+                              </th>
                               <td>{{ order.doctor }}</td>
                               <td>{{ order.patient_name }}</td>
                               <td>{{ order.required_date }}</td>
@@ -227,12 +234,12 @@
                     <div class="row d-flex justify-content-around mt-4">
                       <div class="mb-lg-3">
                         <span class="fw-bold text-black">ملخص الاحصائيات</span>
-                        <span class="float-start showall"
-                          ><strong
-                            ><a href="" class="fw-bold" style="font-size: 12px"
-                              >عرض التقارير</a
-                            ></strong
-                          >
+                        <span class="float-start font showall"
+                          ><strong>
+                            <router-link :to="{ name: 'reports' }"
+                              >عرض التقارير</router-link
+                            >
+                          </strong>
                         </span>
                       </div>
                       <div
@@ -270,11 +277,13 @@
                     <div class="mt-4">
                       <span class="fw-bold text-black">الاطباء</span>
                       <span class="float-start showall"
-                        ><strong
-                          ><a href="" class="fw-bold" style="font-size: 12px"
-                            >عرض الكل</a
-                          ></strong
-                        >
+                        ><strong>
+                          <router-link :to="{ name: 'doctors' }">
+                            <a href="" class="fw-bold" style="font-size: 12px"
+                              >عرض الكل</a
+                            >
+                          </router-link>
+                        </strong>
                       </span>
                     </div>
                     <!-- doctors section -->
@@ -287,19 +296,20 @@
                         <div class="col-4 p-0">
                           <div class="text-center">
                             <img
-                              src="https://st2.depositphotos.com/1007566/11541/v/950/depositphotos_115416492-stock-illustration-avatar-business-man-vector-graphic.jpg"
+                              :src="doctor.image"
                               width="50"
+                              height="50"
                               class="roundedd"
                             />
                           </div>
                         </div>
-                        <div class="col-8 p-0">
+                        <div class="col-8 p-0 font">
                           <div>
-                            <h6 class="mb-0 text-black fw-bold">
-                              د/ معتز العسقلاني
-                            </h6>
-                            <p class="text-secondary address">
-                              شارع الجيش-مصر للطيران
+                            <p class="mb-0 text-black fw-bold">
+                              د/ {{ doctor.name }}
+                            </p>
+                            <p class="text-secondary font">
+                              {{ doctor.address }}
                             </p>
                           </div>
                         </div>
@@ -328,8 +338,8 @@ export default {
       // userId: "",
       // successMessege: "",
       // errorMessege: "",
-      orders: [3],
-      doctors: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
+      orders: [],
+      doctors: [],
     };
   },
   async mounted() {
@@ -339,12 +349,25 @@ export default {
       // this.orders = result.data.orders.slice(0, 5);
       this.orders = result.data.orders;
     }
+    this.getdoctors();
+  },
+  methods: {
+    async getdoctors() {
+      let result = await axios.get(`https://lab.almona.host/api/doctors`);
+      if (result.status == 200) {
+        console.log(result.data);
+        this.doctors = result.data.doctors;
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
 /*******buttons*******/
+.fe {
+  color: white !important;
+}
 .card {
   overflow: hidden;
   border: none;
@@ -371,7 +394,7 @@ export default {
     width: 33.333333%;
   }
   .table-section {
-    /* height: fit-content; */
+    height: fit-content;
   }
 }
 
@@ -381,6 +404,7 @@ export default {
   border: 1px solid white;
   border-radius: 20px;
   padding: 10px;
+  height: 350px;
 }
 .table-section span a {
   color: orange;
@@ -425,8 +449,5 @@ export default {
 }
 .roundedd {
   border-radius: 15px;
-}
-.address {
-  font-size: 13px;
 }
 </style>

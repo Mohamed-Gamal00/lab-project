@@ -605,6 +605,7 @@ export default {
           confirmButtonColor: "#322a7d",
           cancelButtonColor: "#d33",
           confirmButtonText: "حذف",
+          cancelButtonText: "الغاء",
         })
         .then((result) => {
           if (result.isConfirmed) {
