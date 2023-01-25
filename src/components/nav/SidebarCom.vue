@@ -18,91 +18,102 @@
           </div>
           <!-- الرئيسية -->
           <ul class="navbar-nav flex-fill w-100 mb-2">
-            <li class="nav-item">
-              <a href="" class="nav-link">
-                <span class="item-text">
-                  <router-link :to="{ name: 'home' }">
+            <router-link :to="{ name: 'home' }">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span class="item-text">
                     <i class="fe fe-home mr-3 fe-16"></i>
                     الرئيسية
-                  </router-link>
-                </span>
-              </a>
-            </li>
+                  </span>
+                </a>
+              </li>
+            </router-link>
           </ul>
           <p class="text-muted nav-heading mt-4 mb-1">
             <span>الاقسام</span>
           </p>
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <!-- الطلبات -->
-            <li class="nav-item">
-              <a href="" class="nav-link">
-                <span class="item-text">
-                  <router-link :to="{ name: 'orders' }">
-                    <i class="fe fe-box mr-3 fe-16"></i>
-                    الطلبات
-                  </router-link>
-                </span>
-              </a>
-            </li>
+            <router-link :to="{ name: 'orders' }">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span class="item-text">
+                    <router-link :to="{ name: 'orders' }">
+                      <i class="fe fe-box mr-3 fe-16"></i>
+                      الطلبات
+                    </router-link>
+                  </span>
+                </a>
+              </li>
+            </router-link>
             <!-- المشتريات -->
-            <li class="nav-item">
-              <a href="" class="nav-link">
-                <span class="item-text">
-                  <router-link :to="{ name: 'purchases' }">
-                    <i class="fe fe-layers mr-3 fe-16"></i>
-                    المشتريات
-                  </router-link>
-                </span>
-              </a>
-            </li>
+            <router-link :to="{ name: 'purchases' }">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span class="item-text">
+                    <router-link :to="{ name: 'purchases' }">
+                      <i class="fe fe-layers mr-3 fe-16"></i>
+                      المشتريات
+                    </router-link>
+                  </span>
+                </a>
+              </li>
+            </router-link>
             <!-- الاطباء -->
-            <li class="nav-item">
-              <a href="" class="nav-link">
-                <span class="item-text">
-                  <router-link :to="{ name: 'doctors' }">
-                    <i class="fe fe-user mr-3 fe-16"></i>
-                    الاطباء
-                  </router-link>
-                </span>
-              </a>
-            </li>
+            <router-link :to="{ name: 'doctors' }">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span class="item-text">
+                    <router-link :to="{ name: 'doctors' }">
+                      <i class="fe fe-user mr-3 fe-16"></i>
+                      الاطباء
+                    </router-link>
+                  </span>
+                </a>
+              </li>
+            </router-link>
             <!-- الاعضاء -->
-            <li class="nav-item">
-              <a href="" class="nav-link">
-                <span class="item-text">
-                  <router-link :to="{ name: 'members' }">
-                    <i class="fe fe-grid mr-3 fe-16"></i>
-                    الاعضاء
-                  </router-link>
-                </span>
-              </a>
-            </li>
+            <router-link :to="{ name: 'members' }">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span class="item-text">
+                    <router-link :to="{ name: 'members' }">
+                      <i class="fe fe-grid mr-3 fe-16"></i>
+                      الاعضاء
+                    </router-link>
+                  </span>
+                </a>
+              </li>
+            </router-link>
             <!-- التجار -->
-            <li class="nav-item">
-              <a href="" class="nav-link">
-                <span class="item-text">
-                  <router-link :to="{ name: 'providers' }">
-                    <i class="fe fe-pie-chart mr-3 fe-16"></i>
-                    التجار
-                  </router-link>
-                </span>
-              </a>
-            </li>
+            <router-link :to="{ name: 'providers' }">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span class="item-text">
+                    <router-link :to="{ name: 'providers' }">
+                      <i class="fe fe-pie-chart mr-3 fe-16"></i>
+                      التجار
+                    </router-link>
+                  </span>
+                </a>
+              </li>
+            </router-link>
             <!-- الاعدادات -->
-            <li class="nav-item">
-              <a href="" class="nav-link">
-                <span class="item-text">
-                  <router-link :to="{ name: 'setting' }">
-                    <i class="fe fe-settings mr-3 fe-16"></i>
-                    الاعدادات
-                  </router-link>
-                </span>
-              </a>
-            </li>
+            <router-link :to="{ name: 'setting' }">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span class="item-text">
+                    <router-link :to="{ name: 'setting' }">
+                      <i class="fe fe-settings mr-3 fe-16"></i>
+                      الاعدادات
+                    </router-link>
+                  </span>
+                </a>
+              </li>
+            </router-link>
           </ul>
           <div class="btn-box w-100 mt-4 mb-1">
             <a
-              href=""
               class="btn mb-2 btn-transparent font-weight-bold btn-lg btn-block"
             >
               <i

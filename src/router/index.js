@@ -5,6 +5,7 @@ import DoctorsView from "../views/DoctorsView.vue";
 import MembersView from "../views/MembersView.vue";
 import OrdersView from "../views/OrdersView.vue";
 import AddorderView from "../views/AddorderView.vue";
+import EditorderView from "../views/EditorderView.vue";
 import ProvidersView from "../views/ProvidersView.vue";
 import PurchasesView from "../views/PurchasesView.vue";
 import ReportsView from "../views/ReportsView.vue";
@@ -40,6 +41,11 @@ const routes = [
     path: "/add_order",
     name: "addorder",
     component: AddorderView,
+  },
+  {
+    path: "/edit_order",
+    name: "editorder",
+    component: EditorderView,
   },
   {
     path: "/providers",

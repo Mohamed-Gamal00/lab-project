@@ -87,7 +87,7 @@
                       </form>
                     </div>
                   </div>
-                  <!-- col-6 اختيار الوان الضروس  -->
+                  <!-- col-6 -->
                   <div class="col-md-6">
                     <div>
                       <!-- اختيار الوان الضروس -->
@@ -148,7 +148,7 @@
                   </div>
                   <!-- col-3 -->
                   <div class="col-md-3">
-                    <!-- اختيار انواع الضروس -->
+                    <!-- اختيار الوان الضروس -->
                     <div class="row g-3 align-items-center">
                       <div class="col-auto d-block mx-auto m-3">
                         <select class="form-select" v-model="type_id">
