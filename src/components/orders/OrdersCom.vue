@@ -31,6 +31,10 @@
                   </div>
                   <!-- table -->
                   <!-- doctor details -->
+                  <div v-if="loading">
+                    <h1>loooding.....</h1>
+                    <PageLoader />
+                  </div>
                   <div class="" v-for="order in orders" :key="order.id">
                     <!-- 1 -->
                     <div class="p-1">
@@ -187,7 +191,7 @@
                                   <button
                                     type="button"
                                     @click="
-                                      Editorder(order), (edit_purchases = true)
+                                      Editorder(order), (edit_order = true)
                                     "
                                     class="btn btn-outline-success"
                                   >
@@ -248,7 +252,7 @@
                             <div class="col-3 col-md-3 col-sm-12">
                               <div class="text-center">
                                 <img
-                                  src=""
+                                  src="@/assets/lab_img/Teeth.png"
                                   alt="img"
                                   width="180"
                                   class="rounded"
@@ -261,7 +265,7 @@
                     </div>
                   </div>
                   <!-- <button
-                    @click="(edit_purchases = true), Editorder(order)"
+                    @click="(edit_order = true), Editorder(order)"
                     type="button "
                   >
                     edit
@@ -269,7 +273,7 @@
                   <!-- modal popup edit-->
                   <div class="root">
                     <teleport to="body">
-                      <div class="modalpopup" v-if="edit_purchases">
+                      <div class="modalpopup" v-if="edit_order">
                         <div class="text-center">
                           <div class="modal-header d-inline">
                             <h5
@@ -283,110 +287,123 @@
                           <div class="modal-body">
                             test
                             <form>
-                              <div class="row g-3 align-items-center">
-                                <div class="col-auto d-block mx-auto m-3">
-                                  <select
-                                    class="form-select"
-                                    v-model="doctor_id"
-                                  >
-                                    <option disabled value="">
-                                      اسم الدكتور
-                                    </option>
-                                    <option
-                                      :value="doctor.id"
-                                      v-for="doctor in doctors"
-                                      :key="doctor.id"
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <!-- اسم الدكتور -->
+                                  <div class="row g-3 align-items-center m-2">
+                                    <select
+                                      class="form-select"
+                                      v-model="doctor_id"
                                     >
-                                      {{ doctor.name }}
-                                    </option>
-                                  </select>
-                                  <span
-                                    class="erroe-feedbak"
-                                    v-if="v$.doctor_id.$error"
-                                    >{{
-                                      v$.doctor_id.$errors[0].$message
-                                    }}</span
-                                  >
+                                      <option disabled value="">
+                                        اسم الدكتور
+                                      </option>
+                                      <option
+                                        :value="doctor.id"
+                                        v-for="doctor in doctors"
+                                        :key="doctor.id"
+                                      >
+                                        {{ doctor.name }}
+                                      </option>
+                                    </select>
+                                    <span
+                                      class="erroe-feedbak"
+                                      v-if="v$.doctor_id.$error"
+                                      >{{
+                                        v$.doctor_id.$errors[0].$message
+                                      }}</span
+                                    >
+                                  </div>
                                 </div>
-                              </div>
-                              <div class="row g-3 align-items-center">
-                                <div class="col-auto d-block mx-auto m-3">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="اسم الحالة"
-                                    v-model="patient_name"
-                                  />
-                                  <span
-                                    class="erroe-feedbak"
-                                    v-if="v$.patient_name.$error"
-                                    >{{
-                                      v$.patient_name.$errors[0].$message
-                                    }}</span
-                                  >
-                                </div>
-                              </div>
-                              <div class="row g-3 align-items-center">
-                                <div class="col-auto d-block mx-auto m-3">
-                                  <input
-                                    type="date"
-                                    class="form-control"
-                                    placeholder="ميعاد الطلب"
-                                    v-model="required_date"
-                                  />
-                                  <span
-                                    class="erroe-feedbak"
-                                    v-if="v$.required_date.$error"
-                                    >{{
-                                      v$.required_date.$errors[0].$message
-                                    }}</span
-                                  >
-                                </div>
-                              </div>
-                              <div class="row g-3 align-items-center">
-                                <div class="col-auto d-block mx-auto m-3">
-                                  <div class="form-outline">
-                                    <textarea
+                                <div class="col-md-6">
+                                  <!-- اسم الحالة -->
+                                  <div class="row g-3 align-items-center m-2">
+                                    <input
+                                      type="text"
                                       class="form-control"
-                                      id="textAreaExample1"
-                                      placeholder="ملاحظات"
-                                      rows="4"
-                                      v-model="notes"
-                                    ></textarea>
+                                      placeholder="اسم الحالة"
+                                      v-model="patient_name"
+                                    />
+                                    <span
+                                      class="erroe-feedbak"
+                                      v-if="v$.patient_name.$error"
+                                      >{{
+                                        v$.patient_name.$errors[0].$message
+                                      }}</span
+                                    >
                                   </div>
                                 </div>
                               </div>
-                              <div class="row g-3 align-items-center">
-                                <div class="col-auto d-block mx-auto m-3">
-                                  <select
-                                    class="form-select"
-                                    v-model="color_id"
+                              <!-- ميعاد الطلب -->
+                              <div class="row g-3 align-items-center m-2">
+                                <input
+                                  type="date"
+                                  class="form-control"
+                                  placeholder="ميعاد الطلب"
+                                  v-model="required_date"
+                                />
+                                <span
+                                  class="erroe-feedbak"
+                                  v-if="v$.required_date.$error"
+                                  >{{
+                                    v$.required_date.$errors[0].$message
+                                  }}</span
+                                >
+                              </div>
+                              <!-- الملاحظات -->
+                              <div class="row g-3 align-items-center m-2">
+                                <div class="form-outline">
+                                  <textarea
+                                    class="form-control"
+                                    id="textAreaExample1"
+                                    placeholder="ملاحظات"
+                                    rows="4"
+                                    v-model="notes"
+                                  ></textarea>
+                                </div>
+                              </div>
+                              <!-- اللون -->
+                              <div class="row g-3 align-items-center m-2">
+                                <select class="form-select" v-model="color_id">
+                                  <option disabled value="">اللون</option>
+                                  <option
+                                    v-for="color in colors"
+                                    :value="color.id"
+                                    :key="color.id"
                                   >
-                                    <option disabled value="">اللون</option>
-                                    <option
-                                      v-for="color in colors"
-                                      :value="color.id"
-                                      :key="color.id"
-                                    >
-                                      {{ color.name }}
-                                    </option>
-                                  </select>
-                                </div>
+                                    {{ color.name }}
+                                  </option>
+                                </select>
                               </div>
-                              <div class="row g-3 align-items-center">
-                                <div class="col-auto d-block mx-auto m-3">
-                                  <select class="form-select" v-model="type_id">
-                                    <option disabled value="">النوع</option>
-                                    <option
-                                      v-for="type in types"
-                                      :key="type.id"
-                                      :value="type.id"
-                                    >
-                                      {{ type.name }}
-                                    </option>
-                                  </select>
-                                </div>
+                              <!-- النوع -->
+                              <div class="row g-3 align-items-center m-2">
+                                <select class="form-select" v-model="type_id">
+                                  <option disabled value="">النوع</option>
+                                  <option
+                                    v-for="type in types"
+                                    :key="type.id"
+                                    :value="type.id"
+                                  >
+                                    {{ type.name }}
+                                  </option>
+                                </select>
                               </div>
+                              <!-- تعديل الغاء -->
+                              <!-- edit -->
+                              <button
+                                type="button"
+                                class="btn"
+                                @click="Updateorder()"
+                              >
+                                تعديل</button
+                              >&nbsp;
+                              <button
+                                type="button"
+                                class="btn"
+                                @click="(edit_order = false), reset()"
+                              >
+                                الغاء
+                              </button>
                             </form>
                           </div>
                         </div>
@@ -404,14 +421,17 @@
 </template>
 
 <script>
+import PageLoader from "@/components/pageloader/PageLoader.vue";
 import axios from "axios";
 import useVuelidate from "@vuelidate/core";
 import { required, maxLength } from "@vuelidate/validators";
 export default {
   name: "OrdersCom",
+  components: { PageLoader },
   data() {
     return {
-      edit_purchases: false,
+      loading: false,
+      edit_order: false,
       open: false,
       orders: [],
       colors: [],
@@ -424,6 +444,7 @@ export default {
       patient_name: "",
       notes: "",
       required_date: "",
+      order_id: "",
     };
   },
   validations() {
@@ -435,6 +456,7 @@ export default {
     };
   },
   async mounted() {
+    this.loading = true;
     let result = await axios.get(`https://lab.almona.host/api/orders`);
     this.orders = result.data.orders;
     console.log("colors");
@@ -455,13 +477,16 @@ export default {
       console.log(resulttypes.data);
       this.types = resulttypes.data.types;
     }
+    this.loading = false;
   },
   methods: {
     async loadeorders() {
+      this.loading = true;
       let result = await axios.get(`https://lab.almona.host/api/orders`);
       if (result.data.success == true) {
         this.orders = result.data.orders;
       }
+      this.loading = false;
     },
     async DeleteOrder(id) {
       this.$swal
@@ -499,6 +524,14 @@ export default {
       //   console.log("faild to delete provider");
       // }
     },
+    reset() {
+      this.doctor_id = "";
+      this.type_id = "";
+      this.color_id = "";
+      this.patient_name = "";
+      this.notes = "";
+      this.required_date = "";
+    },
     async Editorder(order) {
       this.patient_name = order.patient_name;
       this.notes = order.notes;
@@ -506,8 +539,40 @@ export default {
       this.doctor_id = order.doctor_id;
       this.type_id = order.type_id;
       this.color_id = order.color_id;
+      this.order_id = order.id;
       console.log("done open editorder");
       // this.$router.push({ name: "editorder" });
+    },
+    async Updateorder() {
+      console.log("update purchase function");
+      this.v$.$validate();
+      if (!this.v$.$error) {
+        console.log("form validated successfuly");
+        let result = await axios.post(
+          `https://lab.almona.host/api/edit_order/${this.order_id}`,
+          {
+            doctor_id: this.doctor_id,
+            type_id: this.type_id,
+            color_id: this.color_id,
+            patient_name: this.patient_name,
+            notes: this.notes,
+            required_date: this.required_date,
+          },
+          {
+            headers: {
+              Authorization:
+                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiNzRiYzI0OTY4MWQ0ZmFkZmY1NmJmNTA0NmZiMGY5N2E1OGU0OWE1ZTcyMmI3ZTA0YmYwNGQ2MzAxZmE2YTMxZjg0OTI3MmIxNzE0Y2MwMjkiLCJpYXQiOjE2NzQzNzY5NTEuMzk3OTUyLCJuYmYiOjE2NzQzNzY5NTEuMzk3OTU4LCJleHAiOjE3MDU5MTI5NTEuMzg4OTUyLCJzdWIiOiIxNDIiLCJzY29wZXMiOltdfQ.TGbFbhql1B7x0t7i4IMd5y9Dsm9HpsIX9HCc-u6ZRRsv-4KCuXR_HfmETSwY-mzaCsrfggaPio7nFD89f2MGVDMhpaXnh3X1GWFoxwRYSAmkU-QNy7zrJYNz4o1qlcFjpV0R4Bw8lmGXwX-9AqbXPuGEhItbXve3ZVfgQjcOAWLumVe6zvBw5aPz39PZ-7zTv1ZcwZz0jmjNdVaQCy-FT83RG4WRqmSJb-rGCtvpLh4eF3PuhCGCbMVClO7ucUIPA1z8DQmQ653UkW16RiBDVWUAi6c_ee8U9sHfBLRWAQQ10ugF7TyCnKI1YtxGsWjYFPCkHsQt1PqJNn1MkRIZSpxx-80HMvKSNvtfbSMwCcT5eXI9KL3RQJliUi1t0Wdg37AodPozLJeTC6Ux_2pbNMa4mqXclg6Jd0SUNBF2MMd7UqXguC3E_ClGFn99pgFV5kz3HC78_-7Vfy03N3a7wD5Vz2td_EHD59qImBzGg0WCrdzRw0xwEdMtBlwzN0vjogrutBTSWEP2QtGbsD-GKjHjB0Bk-ijX6vvO6qBQiBMUXLm0nLcywtlWrs8o_eyEGffr2ibPx3BTulS_QTmFu1TiEgYNV56UCfhDxXOBQZ3Q8NSR8P1ra0-jrvrzaeCjwjzSxK_A4zvj_kEuNu1AKfWG2StWcxtlBnyJ_PVLBGU",
+            },
+          }
+        );
+        if (result.data.success == true) {
+          console.log("data updated succesfuly");
+          this.edit_order = false;
+          this.loadeorders();
+        } else {
+          console.log("data false");
+        }
+      }
     },
   },
 };

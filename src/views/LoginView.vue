@@ -1,14 +1,15 @@
 <template>
-  <div class="home">
-    <h1>Login</h1>
+  <div>
+    <LoginCom />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-
+import LoginCom from "@/components/auth/LoginCom.vue";
 export default {
   name: "LoginView",
-  components: {},
+  components: { LoginCom },
 };
 </script>
+
+<style lang="scss" scoped></style>

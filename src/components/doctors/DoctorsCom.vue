@@ -27,6 +27,10 @@
                     </span>
                   </div>
                   <!-- table -->
+                  <div v-if="loading">
+                    <h1>loooding.....</h1>
+                    <PageLoader />
+                  </div>
                   <table class="table mt-lg-3">
                     <div v-if="doctors.length > 0">
                       <span class="small fw-bold"
@@ -486,14 +490,17 @@
 
 <script>
 import axios from "axios";
+import PageLoader from "@/components/pageloader/PageLoader.vue";
 var moment = require("moment");
 // moment.locale("ar_SA");
 import useVuelidate from "@vuelidate/core";
 import { required, maxLength } from "@vuelidate/validators";
 export default {
   name: "DoctorsCom",
+  components: { PageLoader },
   data() {
     return {
+      loading: false,
       show: false,
       edit: false,
       editDoctorOpen: false,
@@ -516,10 +523,12 @@ export default {
   },
   /* get */
   async mounted() {
+    this.loading = true;
     let result = await axios.get(`https://lab.almona.host/api/doctors`);
     if (result.data.success == true) {
       this.doctors = result.data.doctors;
     }
+    this.loading = false;
   },
   methods: {
     closeModal() {
@@ -542,11 +551,13 @@ export default {
       this.image = this.$refs.file.files[0];
     },
     async loaddoctors() {
+      this.loading = true;
       let result = await axios.get(`https://lab.almona.host/api/doctors`);
       if (result.data.success == true) {
         console.log(result.data);
         this.doctors = result.data.doctors;
       }
+      this.loading = false;
     },
     async AddDoctor() {
       console.log(this.image);

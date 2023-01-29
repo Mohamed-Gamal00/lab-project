@@ -18,5 +18,11 @@ export default {
     SidebarCom,
     MembersCom,
   },
+  mounted() {
+    let user = localStorage.getItem("user-info");
+    if (!user) {
+      this.$router.push({ name: "register" });
+    }
+  },
 };
 </script>

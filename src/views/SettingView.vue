@@ -15,5 +15,11 @@ import SettingCom from "@/components/settings/SettingCom.vue";
 export default {
   name: "SettingView",
   components: { SidebarCom, NavbarCom, SettingCom },
+  mounted() {
+    let user = localStorage.getItem("user-info");
+    if (!user) {
+      this.$router.push({ name: "register" });
+    }
+  },
 };
 </script>

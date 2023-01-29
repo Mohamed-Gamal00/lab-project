@@ -18,5 +18,11 @@ export default {
     SidebarCom,
     OrdersCom,
   },
+  mounted() {
+    let user = localStorage.getItem("user-info");
+    if (!user) {
+      this.$router.push({ name: "register" });
+    }
+  },
 };
 </script>

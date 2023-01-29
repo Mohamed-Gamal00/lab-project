@@ -6,6 +6,9 @@
         <div class="container-fluid">
           <div class="row justify-content-center">
             <div class="col-12">
+              <div v-if="loading">
+                <div><PageLoader /></div>
+              </div>
               <div class="row align-items-center">
                 <div class="col-md-8">
                   <!-- col-8 content section -->
@@ -213,11 +216,10 @@
                         <div>
                           <h5 class="mb-0">مرحبا</h5>
                           <strong>
-                            <h2 class="mb-0" style="font-weight: 900">دياب</h2>
+                            <h2 class="mb-0 font mt-2" style="font-weight: 900">
+                              {{ username }}
+                            </h2>
                           </strong>
-                          <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing.
-                          </p>
                         </div>
                       </div>
                       <div class="col-4 mt-2">
@@ -276,12 +278,10 @@
                     <!-- All doctors -->
                     <div class="mt-4">
                       <span class="fw-bold text-black">الاطباء</span>
-                      <span class="float-start showall"
+                      <span class="float-start font showall"
                         ><strong>
                           <router-link :to="{ name: 'doctors' }">
-                            <a href="" class="fw-bold" style="font-size: 12px"
-                              >عرض الكل</a
-                            >
+                            عرض الكل
                           </router-link>
                         </strong>
                       </span>
@@ -290,7 +290,7 @@
                     <div class="mt-4">
                       <div
                         class="row d-flex justify-content-around"
-                        v-for="doctor in doctors.slice(0, 2)"
+                        v-for="doctor in doctors.slice(-2)"
                         :key="doctor"
                       >
                         <div class="col-4 p-0">
@@ -330,34 +330,46 @@
 </template>
 
 <script>
+import PageLoader from "@/components/pageloader/PageLoader.vue";
 import axios from "axios";
 export default {
   name: "HomeCom",
+  components: { PageLoader },
   data() {
     return {
-      // userId: "",
-      // successMessege: "",
-      // errorMessege: "",
+      loading: false,
+      username: "",
       orders: [],
       doctors: [],
     };
   },
   async mounted() {
+    this.loading = true;
+    let user = localStorage.getItem("user-info");
+    if (!user) {
+      this.$router.push({ name: "register" });
+    } else {
+      this.username = JSON.parse(user).name;
+    }
     let result = await axios.get(`https://lab.almona.host/api/orders`);
     if (result.status == 200) {
       console.log(result.data);
       // this.orders = result.data.orders.slice(0, 5);
       this.orders = result.data.orders;
     }
+    this.loading = false;
+
     this.getdoctors();
   },
   methods: {
     async getdoctors() {
+      this.loading = true;
       let result = await axios.get(`https://lab.almona.host/api/doctors`);
       if (result.status == 200) {
         console.log(result.data);
         this.doctors = result.data.doctors;
       }
+      this.loading = false;
     },
   },
 };
@@ -381,6 +393,7 @@ export default {
   background-color: #322a7d;
   border: none;
   border-radius: 20px;
+  width: 100%;
 }
 @media (min-width: 992px) {
   .col-lg-4 {
@@ -404,6 +417,7 @@ export default {
   border: 1px solid white;
   border-radius: 20px;
   padding: 10px;
+  /* height: 60vh; */
   height: 350px;
 }
 .table-section span a {

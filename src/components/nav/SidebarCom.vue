@@ -8,13 +8,10 @@
       >
         <nav class="vertnav navbar navbar-light">
           <!-- nav bar -->
-          <div class="w-100 mb-4 d-flex">
-            <a
-              class="navbar-brand mx-auto mt-2 flex-fill text-center"
-              href="./index.html"
-            >
+          <div class="w-100 mt-3 mb-4 d-flex">
+            <router-link :to="{ name: 'home' }">
               <img src="@/assets/logo.jpg" width="100" height="50" alt="img" />
-            </a>
+            </router-link>
           </div>
           <!-- الرئيسية -->
           <ul class="navbar-nav flex-fill w-100 mb-2">
@@ -22,8 +19,10 @@
               <li class="nav-item">
                 <a class="nav-link">
                   <span class="item-text">
-                    <i class="fe fe-home mr-3 fe-16"></i>
-                    الرئيسية
+                    <router-link :to="{ name: 'home' }">
+                      <i class="fe fe-home mr-3 fe-16"></i>
+                      الرئيسية
+                    </router-link>
                   </span>
                 </a>
               </li>
@@ -32,7 +31,7 @@
           <p class="text-muted nav-heading mt-4 mb-1">
             <span>الاقسام</span>
           </p>
-          <ul class="navbar-nav flex-fill w-100 mb-2">
+          <ul class="navbar-nav flex-fill w-100 mb-5">
             <!-- الطلبات -->
             <router-link :to="{ name: 'orders' }">
               <li class="nav-item">
@@ -114,7 +113,9 @@
           </ul>
           <div class="btn-box w-100 mt-4 mb-1">
             <a
-              class="btn mb-2 btn-transparent font-weight-bold btn-lg btn-block"
+              class="btn mb-2 btn-transparent btn-lg btn-block"
+              @click="Logout()"
+              style="font-size: initial"
             >
               <i
                 class="fe font-weight-bold text-danger fe-log-out fe-18 mr-2"
@@ -131,6 +132,12 @@
 <script>
 export default {
   name: "SidebarCom",
+  methods: {
+    Logout() {
+      localStorage.clear();
+      this.$router.push({ name: "register" });
+    },
+  },
 };
 </script>
 

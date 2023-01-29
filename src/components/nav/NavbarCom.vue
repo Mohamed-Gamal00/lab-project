@@ -2,8 +2,9 @@
   <nav
     class="navbar navbar_in_largscreen navbar-expand-lg navbar-light bg-light"
   >
-    <a class="navbar-brand" href="#"><img src="" alt="img" /></a>
-
+    <router-link :to="{ name: 'home' }">
+      <img src="@/assets/logo.jpg" width="100" height="50" alt="img" />
+    </router-link>
     <button
       style="background-color: #322a7d"
       class="navbar-toggler ms-2"
@@ -116,9 +117,10 @@
             </a>
           </li>
         </ul>
-        <div class="btn-box w-100 mt-4 mb-1">
+        <div class="btn-box mt-4 mb-1">
           <a
             href=""
+            @click="Logout()"
             class="btn mb-2 btn-transparent font-weight-bold btn-lg btn-block"
           >
             <i class="fe font-weight-bold text-danger fe-log-out fe-12 mr-2"></i
@@ -133,12 +135,32 @@
 <script>
 export default {
   name: "NavbarCom",
+  methods: {
+    Logout() {
+      localStorage.clear();
+      this.$router.push({ name: "register" });
+    },
+  },
 };
 </script>
 
 <style scoped>
+nav {
+  padding: 30px;
+}
+a {
+  font-weight: bold;
+  color: #303d4ba1;
+  text-decoration: none;
+}
+.router-link-exact-active {
+  color: #322a7d;
+  font-size: 18px !important;
+  font-weight: 900;
+}
+
 /* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 992px) {
   .navbar_in_largscreen {
     display: none;
   }

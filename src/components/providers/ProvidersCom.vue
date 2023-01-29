@@ -28,6 +28,10 @@
                       </button>
                     </span>
                   </div>
+                  <div v-if="loading">
+                    <h1>loooding.....</h1>
+                    <PageLoader />
+                  </div>
                   <!-- table -->
                   <div class="table-responsive">
                     <table class="table mt-lg-3">
@@ -293,13 +297,16 @@
 </template>
 
 <script>
+import PageLoader from "@/components/pageloader/PageLoader.vue";
 import axios from "axios";
 import useVuelidate from "@vuelidate/core";
 import { required, maxLength } from "@vuelidate/validators";
 export default {
   name: "ProvidersCom",
+  components: { PageLoader },
   data() {
     return {
+      loading: false,
       AddDoctorOpen: false,
       editDoctorOpen: false,
       providers: [],
@@ -321,18 +328,23 @@ export default {
     };
   },
   async mounted() {
+    this.loading = true;
+
     let result = await axios.get(`https://lab.almona.host/api/providers`);
     if (result.status == 200) {
       console.log(result.data);
       this.providers = result.data.providers;
     }
+    this.loading = false;
   },
   methods: {
     async loadproviders() {
+      this.loading = true;
       let result = await axios.get(`https://lab.almona.host/api/providers`);
       if (result.data.success == true) {
         this.providers = result.data.providers;
       }
+      this.loading = false;
     },
     ResetDoctors() {
       this.name = "";
@@ -361,6 +373,20 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           console.log("data true provider added success");
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم الاضافة بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
           this.AddDoctorOpen = false;
           this.loadproviders();
         } else {
@@ -371,17 +397,42 @@ export default {
       }
     },
     async DeleteProvider(id) {
-      console.log("delete doctor");
-      let result = await axios.post(
-        `https://lab.almona.host/api/del_provider/${id}`,
-        {}
-      );
-      if (result.data.success == true) {
-        console.log(" provider deleted succesfuly");
-        this.loadproviders();
-      } else {
-        console.log("faild to delete provider");
-      }
+      this.$swal
+        .fire({
+          title: "هل انت متاكد من حذف هذا العنصر",
+          text: "لن تتمكن من الرجوع مجددا!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#322a7d",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "حذف",
+          cancelButtonText: "الغاء",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            console.log("delete purchase");
+            axios.post(`https://lab.almona.host/api/del_provider/${id}`);
+
+            this.$swal.fire(
+              "حذف!",
+              "تم حذف العنصر بنجاح.",
+              "success",
+              this.loadproviders()
+            );
+            this.loadproviders();
+          }
+        });
+      // console.log("delete doctor");
+      // let result = await axios.post(
+      //   `https://lab.almona.host/api/del_provider/${id}`,
+      //   {}
+      // );
+      // if (result.data.success == true) {
+      //   console.log(" provider deleted succesfuly");
+      //   this.loadproviders();
+      // } else {
+      //   console.log("faild to delete provider");
+      // }
     },
     async EditProviders(provider) {
       this.user_id = provider.id;
@@ -412,6 +463,20 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           console.log("data updated succesfuly");
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم التعديل بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
           this.editDoctorOpen = false;
           this.loadproviders();
         } else {

@@ -26,6 +26,10 @@
                   </span>
                 </div>
               </div>
+              <div v-if="loading">
+                <h1>loooding.....</h1>
+                <PageLoader />
+              </div>
               <div class="row">
                 <!-- col-8 table contain -->
                 <div class="col-lg-8 col-md-8 col-sm-12 rounded-3">
@@ -406,7 +410,9 @@
                           <strong class="text-white">اجمالي المشتريات</strong>
                         </p>
                       </div>
-                      <h2><strong class="text-white">25,455.00</strong></h2>
+                      <h2>
+                        <strong class="text-white"> {{ totalprice }}</strong>
+                      </h2>
                     </button>
                   </div>
                 </div>
@@ -420,13 +426,17 @@
 </template>
 
 <script>
+import PageLoader from "@/components/pageloader/PageLoader.vue";
 import axios from "axios";
 import useVuelidate from "@vuelidate/core";
 import { required, maxLength } from "@vuelidate/validators";
 export default {
   name: "PurchasesCom",
+  components: { PageLoader },
+
   data() {
     return {
+      loading: false,
       v$: useVuelidate(),
       add_purchases: false,
       edit_purchases: false,
@@ -450,6 +460,7 @@ export default {
   },
   /* get purchases and purchases*/
   async mounted() {
+    this.loading = true;
     console.log("purchases");
     let result = await axios.get(`https://lab.almona.host/api/purchases`);
     if (result.status == 200) {
@@ -462,18 +473,29 @@ export default {
       console.log(allproviders.data);
       this.providers = allproviders.data.providers;
     }
+    this.loading = false;
   },
   computed: {
     result: function () {
       return this.amount * this.price;
     },
+    totalprice: function () {
+      let sum = 0;
+      for (let i = 0; i < this.purchases.length; i++) {
+        sum += parseFloat(this.purchases[i].total_price);
+      }
+
+      return sum;
+    },
   },
   methods: {
     async loadpurchase() {
+      this.loading = true;
       let result = await axios.get(`https://lab.almona.host/api/purchases`);
       if (result.data.success == true) {
         console.log(result.data);
         this.purchases = result.data.purchases;
+        this.loading = false;
       }
     },
     reset() {
@@ -503,6 +525,20 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           console.log("data true purchase added success");
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم الاضافة بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
           this.add_purchases = false;
           this.loadpurchase();
           setTimeout(() => {
@@ -523,18 +559,43 @@ export default {
       }
     },
     async deletepurchase(id) {
-      console.log("delete function run");
-      let result = await axios.post(
-        `https://lab.almona.host/api/del_purchase/${id}`,
-        {}
-      );
-      if (result.data.success == true) {
-        console.log(" purchase deleted succesfuly");
-        console.log(result.data);
-        this.loadpurchase();
-      } else {
-        console.log("end dletepurchases");
-      }
+      this.$swal
+        .fire({
+          title: "هل انت متاكد من حذف هذا العنصر",
+          text: "لن تتمكن من الرجوع مجددا!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#322a7d",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "حذف",
+          cancelButtonText: "الغاء",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            console.log("delete purchase");
+            axios.post(`https://lab.almona.host/api/del_purchase/${id}`);
+
+            this.$swal.fire(
+              "حذف!",
+              "تم حذف العنصر بنجاح.",
+              "success",
+              this.loadpurchase()
+            );
+            this.loadpurchase();
+          }
+        });
+      // console.log("delete function run");
+      // let result = await axios.post(
+      //   `https://lab.almona.host/api/del_purchase/${id}`,
+      //   {}
+      // );
+      // if (result.data.success == true) {
+      //   console.log(" purchase deleted succesfuly");
+      //   console.log(result.data);
+      //   this.loadpurchase();
+      // } else {
+      //   console.log("end dletepurchases");
+      // }
     },
     async Editpurchase(purchase) {
       this.name = purchase.name;
@@ -567,6 +628,20 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           console.log("data updated succesfuly");
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم التعديل بنجاح",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
           this.edit_purchases = false;
           this.loadpurchase();
         } else {
@@ -586,7 +661,7 @@ export default {
     width: 225px !important;
   }
   .td_width {
-    width: 157px !important;
+    width: 180px !important;
   }
 }
 @media only screen and (max-width: 600px) {

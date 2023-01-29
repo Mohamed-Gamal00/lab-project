@@ -193,7 +193,7 @@ import axios from "axios";
 import useVuelidate from "@vuelidate/core";
 import { required, maxLength } from "@vuelidate/validators";
 export default {
-  name: "AddOrderCom",
+  name: "EditOrder",
   data() {
     return {
       colors: [],

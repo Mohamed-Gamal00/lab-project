@@ -11,6 +11,10 @@
                   ><span><FontAwesome icon="gear" />الاعدادات</span>
                 </span>
               </div>
+              <div v-if="loading">
+                <h1>loooding.....</h1>
+                <PageLoader />
+              </div>
               <div class="row">
                 <!-- تغيير كلمة المرور -->
                 <div
@@ -203,13 +207,15 @@
 </template>
 
 <script>
+import PageLoader from "@/components/pageloader/PageLoader.vue";
 import TypesCom from "@/components/types/TypesCom.vue";
 import axios from "axios";
 export default {
   name: "SettingCom",
-  components: { TypesCom },
+  components: { TypesCom, PageLoader },
   data() {
     return {
+      loading: false,
       isOpen: false,
       isedit: false,
       // width: "width:10%",
@@ -221,19 +227,24 @@ export default {
     };
   },
   async mounted() {
+    this.loading = true;
+
     let result = await axios.get(`https://lab.almona.host/api/colors`);
     if (result.status == 200) {
       console.log(result.data);
       this.colors = result.data.colors;
     }
+    this.loading = false;
   },
   methods: {
     async loadecolor() {
+      this.loading = true;
       let result = await axios.get(`https://lab.almona.host/api/colors`);
       if (result.status == 200) {
         console.log(result.data);
         this.colors = result.data.colors;
       }
+      this.loading = false;
     },
     reset() {
       this.provider_id = "";

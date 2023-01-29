@@ -125,6 +125,7 @@
                         </span>
                       </div>
                       <!-- table -->
+                      <!-- 
                       <table class="table mt-lg-3">
                         <thead style="background-color: #322a7d">
                           <tr>
@@ -143,6 +144,7 @@
                           </tr>
                         </tbody>
                       </table>
+                       -->
                       <!-- اضافة -->
                     </div>
                   </div>
@@ -168,7 +170,18 @@
                           > -->
                       </div>
                     </div>
+                    <div class="col-3 col-md-3 col-sm-12">
+                      <div class="text-center">
+                        <img
+                          src="@/assets/lab_img/Teeth.png"
+                          alt="img"
+                          width="180"
+                          class="rounded"
+                        />
+                      </div>
+                    </div>
                   </div>
+                  <!-- اضف -->
                   <div>
                     <button
                       type="button"

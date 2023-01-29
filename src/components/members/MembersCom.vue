@@ -8,6 +8,10 @@
               <div class="row align-items-center mb-2">
                 <div class="col">
                   <!-- header -->
+                  <div v-if="loading">
+                    <h1>loooding.....</h1>
+                    <PageLoader />
+                  </div>
                   <div class="fw-bold fs-4 mt-lg-4">
                     <span style="color: #322a7d"
                       ><span><FontAwesome icon="user" />الاعضاء</span>
@@ -413,13 +417,17 @@
 </template>
 
 <script>
+import PageLoader from "@/components/pageloader/PageLoader.vue";
 import axios from "axios";
 import useVuelidate from "@vuelidate/core";
 import { required, maxLength } from "@vuelidate/validators";
 export default {
   name: "MembersCom",
+  components: { PageLoader },
+
   data() {
     return {
+      loading: false,
       AddUserOpen: false,
       editDoctorOpen: false,
       users: [],
@@ -445,19 +453,23 @@ export default {
     };
   },
   async mounted() {
+    this.loading = true;
     let result = await axios.get(`https://lab.almona.host/api/users`);
     if (result.status == 200) {
       console.log(result.data);
       this.users = result.data.users;
     }
+    this.loading = false;
   },
   methods: {
     async LoadUser() {
+      this.loading = true;
       let result = await axios.get(`https://lab.almona.host/api/users`);
       if (result.status == 200) {
         console.log(result.data);
         this.users = result.data.users;
       }
+      this.loading = false;
     },
     async addmember() {
       this.v$.$validate(); //active my validations
@@ -475,6 +487,20 @@ export default {
           }
         );
         if (addresult.data.success == true) {
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم الاضافة بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
           this.AddUserOpen = false;
           this.LoadUser();
           setTimeout(() => {
@@ -492,20 +518,57 @@ export default {
         this.errorMessege = "املاء حقول الادخال بطريقة صحيحة";
       }
     },
+    // this.$swal
+    //     .fire({
+    //       title: "هل انت متاكد من حذف هذا العنصر",
+    //       text: "لن تتمكن من الرجوع مجددا!",
+    //       icon: "warning",
+    //       showCancelButton: true,
+    //       confirmButtonColor: "#322a7d",
+    //       cancelButtonColor: "#d33",
+    //       confirmButtonText: "حذف",
+    //       cancelButtonText: "الغاء",
+    //     })
+    //     .then((result) => {
+    //       if (result.isConfirmed) {
+    //         console.log("delete purchase");
+    //         axios.post(`https://lab.almona.host/api/del_purchase/${id}`);
+
+    //         this.$swal.fire(
+    //           "حذف!",
+    //           "تم حذف العنصر بنجاح.",
+    //           "success",
+    //           this.loadpurchase()
+    //         );
+    //         this.loadpurchase();
+    //       }
+    //     });
     async deleteUser(id) {
-      console.log("delete fun");
-      let result = await axios.post(
-        `https://lab.almona.host/api/user/del/${id}`,
-        {}
-      );
-      if (result.data.success == true) {
-        console.log(" user deleted succesfuly");
-        this.AddUserOpen = false;
-        this.LoadUser();
-      } else {
-        this.successMessege = "";
-        this.errorMessege = "خطاء : refresh page";
-      }
+      this.$swal
+        .fire({
+          title: "هل انت متاكد من حذف هذا العنصر",
+          text: "لن تتمكن من الرجوع مجددا!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#322a7d",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "حذف",
+          cancelButtonText: "الغاء",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            console.log("delete purchase");
+            axios.post(`https://lab.almona.host/api/user/del/${id}`);
+
+            this.$swal.fire(
+              "حذف!",
+              "تم حذف العنصر بنجاح.",
+              "success",
+              this.LoadUser()
+            );
+            this.LoadUser();
+          }
+        });
     },
     async EditUser(user) {
       console.log("EditDoctor call success");
@@ -529,6 +592,20 @@ export default {
             userType: this.userType,
           }
         );
+        this.$swal.fire({
+          toast: true,
+          icon: "success",
+          title: "تم التعديل بنجاح ",
+          animation: false,
+          position: "top-right",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", this.$swal.stopTimer);
+            toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+          },
+        });
         // .then(
         //   ((this.user_id = ""),
         //   (this.name = ""),
