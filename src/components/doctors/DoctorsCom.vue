@@ -14,6 +14,7 @@
                     </span>
                     <span class="float-start">
                       <button
+                        v-if="type == '1'"
                         @click="openModal()"
                         type="button"
                         class="btn btn-primary"
@@ -89,7 +90,7 @@
                               {{ moment(doctor.created_at).format("L") }}</span
                             >
                             <span class="d-block">
-                              <div class="dropdown">
+                              <div class="dropdown" v-if="type == '1'">
                                 <button
                                   class="btn mt-2 text-white dropdown-toggle"
                                   type="button"
@@ -512,6 +513,7 @@ export default {
       number: "",
       address: "",
       user_id: "",
+      type: "",
     };
   },
   validations() {
@@ -524,7 +526,22 @@ export default {
   /* get */
   async mounted() {
     this.loading = true;
-    let result = await axios.get(`https://lab.almona.host/api/doctors`);
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
+    }
+    this.type = JSON.parse(user).type;
+
+    let token = localStorage.getItem("token");
+    let result = await axios
+      .get(`https://lab.almona.host/api/doctors`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     if (result.data.success == true) {
       this.doctors = result.data.doctors;
     }
@@ -560,6 +577,7 @@ export default {
       this.loading = false;
     },
     async AddDoctor() {
+      let token = localStorage.getItem("token");
       console.log(this.image);
       console.log("add doctor function");
       this.v$.$validate();
@@ -574,8 +592,7 @@ export default {
           },
           {
             headers: {
-              Accept: "application/json",
-              "Content-Type": "multipart/form-data",
+              Authorization: "Bearer " + token,
             },
           }
         );
@@ -620,8 +637,13 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
+            let token = localStorage.getItem("token");
             console.log("delete doctor");
-            axios.post(`https://lab.almona.host/api/del_doctor/${id}`);
+            axios.post(`https://lab.almona.host/api/del_doctor/${id}`, {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            });
 
             this.$swal.fire(
               "حذف!",
@@ -658,6 +680,7 @@ export default {
       }
     },
     async UpdateDoctor() {
+      let token = localStorage.getItem("token");
       console.log("update doctor function");
       this.v$.$validate();
       if (!this.v$.$error) {
@@ -669,6 +692,11 @@ export default {
             name: this.name,
             number: this.number,
             address: this.address,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
           }
         );
         setTimeout(() => {

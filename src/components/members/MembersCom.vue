@@ -454,7 +454,16 @@ export default {
   },
   async mounted() {
     this.loading = true;
-    let result = await axios.get(`https://lab.almona.host/api/users`);
+    // let user = localStorage.getItem("user");
+    // if (!user) {
+    //   this.$router.push({ name: "login" });
+    // }
+    let token = localStorage.getItem("token");
+    let result = await axios.get(`https://lab.almona.host/api/users`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (result.status == 200) {
       console.log(result.data);
       this.users = result.data.users;
@@ -464,6 +473,10 @@ export default {
   methods: {
     async LoadUser() {
       this.loading = true;
+      let user = localStorage.getItem("user");
+      if (!user) {
+        this.$router.push({ name: "login" });
+      }
       let result = await axios.get(`https://lab.almona.host/api/users`);
       if (result.status == 200) {
         console.log(result.data);

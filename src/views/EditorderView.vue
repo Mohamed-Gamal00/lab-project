@@ -14,11 +14,11 @@ import EditOrder from "@/components/orders/EditOrder.vue";
 export default {
   name: "AddOrderView",
   components: { SidebarCom, EditOrder, NavbarCom },
-  mounted() {
-    let user = localStorage.getItem("user-info");
-    if (!user) {
-      this.$router.push({ name: "register" });
-    }
-  },
+  // mounted() {
+  //   let user = localStorage.getItem("user-info");
+  //   if (!user) {
+  //     this.$router.push({ name: "register" });
+  //   }
+  // },
 };
 </script>

@@ -392,6 +392,10 @@ export default {
     };
   },
   mounted() {
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
+    }
     // document.onreadystatechange = () => {
     //   if (document.readyState == "complete") {
     //     document.write("loading....");
@@ -406,7 +410,12 @@ export default {
   },
   methods: {
     async getdoctors() {
-      let result = await axios.get(`https://lab.almona.host/api/doctors`);
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/doctors`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.data.success == true) {
         this.doctors = result.data.doctors;
         console.log("doctors");
@@ -414,7 +423,12 @@ export default {
       }
     },
     async getproviders() {
-      let result = await axios.get(`https://lab.almona.host/api/providers`);
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/providers`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.data.success == true) {
         this.providers = result.data.providers;
         console.log("providers");
@@ -422,7 +436,12 @@ export default {
       }
     },
     async getorders() {
-      let result = await axios.get(`https://lab.almona.host/api/orders`);
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/orders`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.status == 200) {
         console.log(result.data);
         console.log("orders");
@@ -430,7 +449,12 @@ export default {
       }
     },
     async getpurshases() {
-      let result = await axios.get(`https://lab.almona.host/api/purchases`);
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/purchases`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.status == 200) {
         console.log(result.data);
         console.log("purchases");

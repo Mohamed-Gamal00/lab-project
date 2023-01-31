@@ -14,11 +14,11 @@ import DoctorsCom from "@/components/doctors/DoctorsCom.vue";
 export default {
   name: "DoctorsView",
   components: { SidebarCom, DoctorsCom, NavbarCom },
-  mounted() {
-    let user = localStorage.getItem("user-info");
-    if (!user) {
-      this.$router.push({ name: "register" });
-    }
-  },
+  // mounted() {
+  //   let user = localStorage.getItem("user-info");
+  //   if (!user) {
+  //     this.$router.push({ name: "register" });
+  //   }
+  // },
 };
 </script>

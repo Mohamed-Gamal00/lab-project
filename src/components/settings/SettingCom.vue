@@ -25,17 +25,14 @@
                     <div class="col-8">
                       <div>
                         <h5 class="mb-0">مرحبا</h5>
-                        <h2 class="mb-0">دياب</h2>
-                        <p>
-                          Lorem ipsum dolor sit amet consectetur adipisicing.
-                        </p>
+                        <h2 class="mb-0 font mt-2">{{ username }}</h2>
                       </div>
                     </div>
-                    <div class="col-4 mt-2">
+                    <div class="col-4">
                       <div class="text-center">
                         <img
                           src="https://st2.depositphotos.com/1007566/11541/v/950/depositphotos_115416492-stock-illustration-avatar-business-man-vector-graphic.jpg"
-                          width="90"
+                          width="70"
                           class="rounded-circle"
                         />
                       </div>
@@ -61,6 +58,7 @@
                       <span>
                         <!-- اضف لون -->
                         <button
+                          v-if="type == '1'"
                           @click="isOpen = true"
                           type="button"
                           style="width: 70px; height: 38px"
@@ -94,6 +92,7 @@
 
                             <ul
                               class="dropdown-menu"
+                              v-if="type == '1'"
                               aria-labelledby="dropdownMenuLink"
                             >
                               <li>
@@ -165,7 +164,7 @@
                                     class=""
                                     v-model="hex"
                                   /><br />
-                                  {{ hex }}
+                                  <!-- {{ hex }} -->
                                   <input
                                     type="text"
                                     class="form-control"
@@ -185,7 +184,7 @@
                                     class="btn shadow"
                                     @click="(isedit = false), reset()"
                                   >
-                                    حذف
+                                    الغاء
                                   </button>
                                 </div>
                               </div>
@@ -224,12 +223,25 @@ export default {
       name: "",
       colors: [],
       color_id: "",
+      type: "",
+      username: "",
     };
   },
   async mounted() {
     this.loading = true;
-
-    let result = await axios.get(`https://lab.almona.host/api/colors`);
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
+    } else {
+      this.username = JSON.parse(user).name;
+    }
+    this.type = JSON.parse(user).type;
+    let token = localStorage.getItem("token");
+    let result = await axios.get(`https://lab.almona.host/api/colors`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (result.status == 200) {
       console.log(result.data);
       this.colors = result.data.colors;
@@ -238,8 +250,13 @@ export default {
   },
   methods: {
     async loadecolor() {
+      let token = localStorage.getItem("token");
       this.loading = true;
-      let result = await axios.get(`https://lab.almona.host/api/colors`);
+      let result = await axios.get(`https://lab.almona.host/api/colors`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.status == 200) {
         console.log(result.data);
         this.colors = result.data.colors;
@@ -247,16 +264,24 @@ export default {
       this.loading = false;
     },
     reset() {
-      this.provider_id = "";
       this.name = "";
       this.hex = "";
     },
     async addcolor() {
+      let token = localStorage.getItem("token");
       console.log("add color fun");
-      let result = await axios.post(`https://lab.almona.host/api/add_color`, {
-        name: this.name,
-        hex: this.hex,
-      });
+      let result = await axios.post(
+        `https://lab.almona.host/api/add_color`,
+        {
+          name: this.name,
+          hex: this.hex,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       if (result.data.success == true) {
         console.log("data true color added success");
         console.log(result.data.success);
@@ -271,31 +296,36 @@ export default {
       }
     },
     async deletecolor(id) {
-      this.$swal
-        .fire({
-          title: "هل انت متاكد من حذف هذا العنصر",
-          text: "لن تتمكن من الرجوع مجددا!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#322a7d",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "حذف",
-          cancelButtonText: "الغاء",
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            console.log("delete doctor");
-            axios.post(`https://lab.almona.host/api/del_color/${id}`);
-
-            this.$swal.fire(
-              "حذف!",
-              "تم حذف العنصر بنجاح.",
-              "success",
-              this.loadecolor()
-            );
-            this.loadecolor();
-          }
-        });
+      let token = localStorage.getItem("token");
+      console.log("delete doctor");
+      axios.post(`https://lab.almona.host/api/del_color/${id}`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      this.loadecolor();
+      // this.$swal
+      //   .fire({
+      //     title: "هل انت متاكد من حذف هذا العنصر",
+      //     text: "لن تتمكن من الرجوع مجددا!",
+      //     icon: "warning",
+      //     showCancelButton: true,
+      //     confirmButtonColor: "#322a7d",
+      //     cancelButtonColor: "#d33",
+      //     confirmButtonText: "حذف",
+      //     cancelButtonText: "الغاء",
+      //   })
+      //   .then((result) => {
+      //     if (result.isConfirmed) {
+      //       this.$swal.fire(
+      //         "حذف!",
+      //         "تم حذف العنصر بنجاح.",
+      //         "success",
+      //         this.loadecolor()
+      //       );
+      //       this.loadecolor();
+      //     }
+      // });
     },
     Editcolor(color) {
       console.log("editcolor");
@@ -305,12 +335,18 @@ export default {
       console.log("Editcolor call success");
     },
     async Updatecolor() {
+      let token = localStorage.getItem("token");
       let result = await axios.post(
         `https://lab.almona.host/api/edit_color/${this.color_id}`,
         {
           // image: this.image
           name: this.name,
           hex: this.hex,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
         }
       );
       if (result.data.success == true) {

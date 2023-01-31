@@ -11,6 +11,7 @@ import ProvidersView from "../views/ProvidersView.vue";
 import PurchasesView from "../views/PurchasesView.vue";
 import ReportsView from "../views/ReportsView.vue";
 import SettingView from "@/views/SettingView.vue";
+import ErrorView from "@/views/erroepage/ErrorView";
 
 const routes = [
   {
@@ -72,6 +73,11 @@ const routes = [
     path: "/setting",
     name: "setting",
     component: SettingView,
+  },
+  {
+    path: "/:catchAll(.*)*",
+    name: "errorpage",
+    component: ErrorView,
   },
 ];
 

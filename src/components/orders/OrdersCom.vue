@@ -200,6 +200,7 @@
                                 </span>
                                 <span class="m-1 p-0"
                                   ><button
+                                    v-if="type == '1'"
                                     type="button"
                                     @click="DeleteOrder(order.id)"
                                     class="btn btn-outline-danger"
@@ -431,6 +432,7 @@ export default {
   data() {
     return {
       loading: false,
+      type: "",
       edit_order: false,
       open: false,
       orders: [],
@@ -457,22 +459,43 @@ export default {
   },
   async mounted() {
     this.loading = true;
-    let result = await axios.get(`https://lab.almona.host/api/orders`);
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
+    }
+    let token = localStorage.getItem("token");
+    let result = await axios.get(`https://lab.almona.host/api/orders`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     this.orders = result.data.orders;
     console.log("colors");
-    let resultcolor = await axios.get(`https://lab.almona.host/api/colors`);
+    let resultcolor = await axios.get(`https://lab.almona.host/api/colors`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (resultcolor.status == 200) {
       console.log(resultcolor.data);
       this.colors = resultcolor.data.colors;
     }
     console.log("doctors");
-    let resultdoc = await axios.get(`https://lab.almona.host/api/doctors`);
+    let resultdoc = await axios.get(`https://lab.almona.host/api/doctors`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (result.data.success == true) {
       console.log(resultdoc.data);
       this.doctors = resultdoc.data.doctors;
     }
     console.log("types");
-    let resulttypes = await axios.get(`https://lab.almona.host/api/types`);
+    let resulttypes = await axios.get(`https://lab.almona.host/api/types`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (resulttypes.data.success == true) {
       console.log(resulttypes.data);
       this.types = resulttypes.data.types;
@@ -482,7 +505,20 @@ export default {
   methods: {
     async loadeorders() {
       this.loading = true;
-      let result = await axios.get(`https://lab.almona.host/api/orders`);
+      /* authorization */
+      let user = localStorage.getItem("user");
+      if (!user) {
+        this.$router.push({ name: "login" });
+      } else {
+        this.type = JSON.parse(user).type;
+      }
+      /* end authorization */
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/orders`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.data.success == true) {
         this.orders = result.data.orders;
       }
@@ -544,6 +580,8 @@ export default {
       // this.$router.push({ name: "editorder" });
     },
     async Updateorder() {
+      let token = localStorage.getItem("token");
+
       console.log("update purchase function");
       this.v$.$validate();
       if (!this.v$.$error) {
@@ -560,8 +598,7 @@ export default {
           },
           {
             headers: {
-              Authorization:
-                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiNzRiYzI0OTY4MWQ0ZmFkZmY1NmJmNTA0NmZiMGY5N2E1OGU0OWE1ZTcyMmI3ZTA0YmYwNGQ2MzAxZmE2YTMxZjg0OTI3MmIxNzE0Y2MwMjkiLCJpYXQiOjE2NzQzNzY5NTEuMzk3OTUyLCJuYmYiOjE2NzQzNzY5NTEuMzk3OTU4LCJleHAiOjE3MDU5MTI5NTEuMzg4OTUyLCJzdWIiOiIxNDIiLCJzY29wZXMiOltdfQ.TGbFbhql1B7x0t7i4IMd5y9Dsm9HpsIX9HCc-u6ZRRsv-4KCuXR_HfmETSwY-mzaCsrfggaPio7nFD89f2MGVDMhpaXnh3X1GWFoxwRYSAmkU-QNy7zrJYNz4o1qlcFjpV0R4Bw8lmGXwX-9AqbXPuGEhItbXve3ZVfgQjcOAWLumVe6zvBw5aPz39PZ-7zTv1ZcwZz0jmjNdVaQCy-FT83RG4WRqmSJb-rGCtvpLh4eF3PuhCGCbMVClO7ucUIPA1z8DQmQ653UkW16RiBDVWUAi6c_ee8U9sHfBLRWAQQ10ugF7TyCnKI1YtxGsWjYFPCkHsQt1PqJNn1MkRIZSpxx-80HMvKSNvtfbSMwCcT5eXI9KL3RQJliUi1t0Wdg37AodPozLJeTC6Ux_2pbNMa4mqXclg6Jd0SUNBF2MMd7UqXguC3E_ClGFn99pgFV5kz3HC78_-7Vfy03N3a7wD5Vz2td_EHD59qImBzGg0WCrdzRw0xwEdMtBlwzN0vjogrutBTSWEP2QtGbsD-GKjHjB0Bk-ijX6vvO6qBQiBMUXLm0nLcywtlWrs8o_eyEGffr2ibPx3BTulS_QTmFu1TiEgYNV56UCfhDxXOBQZ3Q8NSR8P1ra0-jrvrzaeCjwjzSxK_A4zvj_kEuNu1AKfWG2StWcxtlBnyJ_PVLBGU",
+              Authorization: "Bearer " + token,
             },
           }
         );

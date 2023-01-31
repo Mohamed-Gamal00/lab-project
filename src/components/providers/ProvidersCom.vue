@@ -14,6 +14,7 @@
                     </span>
                     <span class="float-start">
                       <button
+                        v-if="type == '1'"
                         @click="AddDoctorOpen = true"
                         type="button"
                         class="btn btn-primary"
@@ -78,7 +79,7 @@
                           <td>
                             <span class="d-block">
                               <!-- خيارات -->
-                              <div class="dropdown">
+                              <div class="dropdown" v-if="type == '1'">
                                 <a
                                   class="btn font btn-secondary dropdown-toggle"
                                   href="#"
@@ -310,6 +311,7 @@ export default {
       AddDoctorOpen: false,
       editDoctorOpen: false,
       providers: [],
+      type: "",
       v$: useVuelidate(),
       name: "",
       number: "",
@@ -329,8 +331,17 @@ export default {
   },
   async mounted() {
     this.loading = true;
-
-    let result = await axios.get(`https://lab.almona.host/api/providers`);
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
+    }
+    this.type = JSON.parse(user).type;
+    let token = localStorage.getItem("token");
+    let result = await axios.get(`https://lab.almona.host/api/providers`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (result.status == 200) {
       console.log(result.data);
       this.providers = result.data.providers;
@@ -340,7 +351,12 @@ export default {
   methods: {
     async loadproviders() {
       this.loading = true;
-      let result = await axios.get(`https://lab.almona.host/api/providers`);
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/providers`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.data.success == true) {
         this.providers = result.data.providers;
       }
@@ -353,6 +369,7 @@ export default {
       this.v$.name.$errors[0].$message = "";
     },
     async AddProvider() {
+      let token = localStorage.getItem("token");
       console.log("add doctor function");
       this.v$.$validate();
       if (!this.v$.$error) {
@@ -362,6 +379,11 @@ export default {
           {
             name: this.name,
             number: this.number,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
           }
         );
         setTimeout(() => {

@@ -73,7 +73,7 @@
             </router-link>
             <!-- الاعضاء -->
             <router-link :to="{ name: 'members' }">
-              <li class="nav-item">
+              <li class="nav-item" v-if="type == '1'">
                 <a class="nav-link">
                   <span class="item-text">
                     <router-link :to="{ name: 'members' }">
@@ -132,10 +132,22 @@
 <script>
 export default {
   name: "SidebarCom",
+  data() {
+    return {
+      type: "",
+    };
+  },
+  async mounted() {
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
+    }
+    this.type = JSON.parse(user).type;
+  },
   methods: {
     Logout() {
       localStorage.clear();
-      this.$router.push({ name: "register" });
+      this.$router.push({ name: "login" });
     },
   },
 };

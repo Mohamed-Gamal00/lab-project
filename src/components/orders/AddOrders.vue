@@ -186,9 +186,10 @@
                     <button
                       type="button"
                       @click="Addorder()"
-                      class="btn mt-lg-2 btn-success"
+                      class="btn mt-lg-2 text-white"
+                      style="background-color: #322a7d"
                     >
-                      add
+                      اضف الان
                     </button>
                   </div>
                 </div>
@@ -231,20 +232,40 @@ export default {
     };
   },
   async mounted() {
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
+    } else {
+      this.username = JSON.parse(user).name;
+    }
+    let token = localStorage.getItem("token");
+
     console.log("colors");
-    let resultcolor = await axios.get(`https://lab.almona.host/api/colors`);
+    let resultcolor = await axios.get(`https://lab.almona.host/api/colors`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (resultcolor.status == 200) {
       console.log(resultcolor.data);
       this.colors = resultcolor.data.colors;
     }
     console.log("doctors");
-    let result = await axios.get(`https://lab.almona.host/api/doctors`);
+    let result = await axios.get(`https://lab.almona.host/api/doctors`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (result.data.success == true) {
       console.log(result.data);
       this.doctors = result.data.doctors;
     }
     console.log("types");
-    let resulttypes = await axios.get(`https://lab.almona.host/api/types`);
+    let resulttypes = await axios.get(`https://lab.almona.host/api/types`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (resulttypes.data.success == true) {
       console.log(resulttypes.data);
       this.types = resulttypes.data.types;
@@ -252,6 +273,7 @@ export default {
   },
   methods: {
     async Addorder() {
+      let token = localStorage.getItem("token");
       console.log("add purchases function");
       this.v$.$validate();
       if (!this.v$.$error) {
@@ -268,8 +290,7 @@ export default {
           },
           {
             headers: {
-              Authorization:
-                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiNzRiYzI0OTY4MWQ0ZmFkZmY1NmJmNTA0NmZiMGY5N2E1OGU0OWE1ZTcyMmI3ZTA0YmYwNGQ2MzAxZmE2YTMxZjg0OTI3MmIxNzE0Y2MwMjkiLCJpYXQiOjE2NzQzNzY5NTEuMzk3OTUyLCJuYmYiOjE2NzQzNzY5NTEuMzk3OTU4LCJleHAiOjE3MDU5MTI5NTEuMzg4OTUyLCJzdWIiOiIxNDIiLCJzY29wZXMiOltdfQ.TGbFbhql1B7x0t7i4IMd5y9Dsm9HpsIX9HCc-u6ZRRsv-4KCuXR_HfmETSwY-mzaCsrfggaPio7nFD89f2MGVDMhpaXnh3X1GWFoxwRYSAmkU-QNy7zrJYNz4o1qlcFjpV0R4Bw8lmGXwX-9AqbXPuGEhItbXve3ZVfgQjcOAWLumVe6zvBw5aPz39PZ-7zTv1ZcwZz0jmjNdVaQCy-FT83RG4WRqmSJb-rGCtvpLh4eF3PuhCGCbMVClO7ucUIPA1z8DQmQ653UkW16RiBDVWUAi6c_ee8U9sHfBLRWAQQ10ugF7TyCnKI1YtxGsWjYFPCkHsQt1PqJNn1MkRIZSpxx-80HMvKSNvtfbSMwCcT5eXI9KL3RQJliUi1t0Wdg37AodPozLJeTC6Ux_2pbNMa4mqXclg6Jd0SUNBF2MMd7UqXguC3E_ClGFn99pgFV5kz3HC78_-7Vfy03N3a7wD5Vz2td_EHD59qImBzGg0WCrdzRw0xwEdMtBlwzN0vjogrutBTSWEP2QtGbsD-GKjHjB0Bk-ijX6vvO6qBQiBMUXLm0nLcywtlWrs8o_eyEGffr2ibPx3BTulS_QTmFu1TiEgYNV56UCfhDxXOBQZ3Q8NSR8P1ra0-jrvrzaeCjwjzSxK_A4zvj_kEuNu1AKfWG2StWcxtlBnyJ_PVLBGU",
+              Authorization: "Bearer " + token,
             },
           }
         );

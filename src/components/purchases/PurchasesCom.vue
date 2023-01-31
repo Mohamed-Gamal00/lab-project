@@ -114,7 +114,7 @@
                                       تعديل
                                     </button>
                                   </li>
-                                  <li>
+                                  <li v-if="type == '1'">
                                     <a
                                       @click="deletepurchase(purchase.id)"
                                       class="dropdown-item"
@@ -138,10 +138,10 @@
                                       style="color: #322a7d"
                                       id="exampleModalLabel"
                                     >
-                                      اضافة تاجر
+                                      اضافة مشتريات
                                     </h5>
                                     <p class="text-center">
-                                      اضف تاجر جديد الي قائمة التجار
+                                      اضف الي قائمة المشتريات
                                     </p>
                                   </div>
                                   <div class="modal-body">
@@ -448,6 +448,7 @@ export default {
       name: "",
       purchases: [],
       purshase_id: "",
+      type: "",
     };
   },
   validations() {
@@ -461,14 +462,31 @@ export default {
   /* get purchases and purchases*/
   async mounted() {
     this.loading = true;
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
+    }
+    this.type = JSON.parse(user).type;
+    let token = localStorage.getItem("token");
     console.log("purchases");
-    let result = await axios.get(`https://lab.almona.host/api/purchases`);
+    let result = await axios.get(`https://lab.almona.host/api/purchases`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (result.status == 200) {
       console.log(result.data);
       this.purchases = result.data.purchases;
     }
     console.log("providers");
-    let allproviders = await axios.get(`https://lab.almona.host/api/providers`);
+    let allproviders = await axios.get(
+      `https://lab.almona.host/api/providers`,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
     if (allproviders.status == 200) {
       console.log(allproviders.data);
       this.providers = allproviders.data.providers;
@@ -491,7 +509,17 @@ export default {
   methods: {
     async loadpurchase() {
       this.loading = true;
-      let result = await axios.get(`https://lab.almona.host/api/purchases`);
+      let user = localStorage.getItem("user");
+      if (!user) {
+        this.$router.push({ name: "login" });
+      }
+      this.type = JSON.parse(user).type;
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/purchases`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.data.success == true) {
         console.log(result.data);
         this.purchases = result.data.purchases;
@@ -509,6 +537,7 @@ export default {
       this.v$.price.$errors[0].$message = "";
     },
     async addpurchases() {
+      let token = localStorage.getItem("token");
       console.log("add purchases function");
       this.v$.$validate();
       if (!this.v$.$error) {
@@ -520,6 +549,11 @@ export default {
             provider_id: this.provider_id,
             amount: this.amount,
             price: this.price,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
           }
         );
         console.log(result);
@@ -606,6 +640,7 @@ export default {
       console.log("done open Editpurchase");
     },
     async Updatepurchase() {
+      let token = localStorage.getItem("token");
       console.log("update purchase function");
       this.v$.$validate();
       if (!this.v$.$error) {
@@ -617,6 +652,11 @@ export default {
             amount: this.amount,
             price: this.price,
             provider_id: this.provider_id,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
           }
         );
         // setTimeout(() => {

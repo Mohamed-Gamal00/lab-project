@@ -42,7 +42,8 @@
                           </div>
                         </div>
                         <input
-                          type="number"
+                          type="tel"
+                          pattern="[0-9]*"
                           class="form-control"
                           id="inlineFormInputGroupUsername2"
                           placeholder="رقم المستخدم"
@@ -75,11 +76,11 @@
                           class="form-control"
                           id="inlineFormInputGroupUsername2"
                           placeholder="كلمة المرور"
-                          v-model="pass"
+                          v-model="password"
                         />
                       </div>
-                      <span class="erroe-feedbak" v-if="v$.pass.$error">{{
-                        v$.pass.$errors[0].$message
+                      <span class="erroe-feedbak" v-if="v$.password.$error">{{
+                        v$.password.$errors[0].$message
                       }}</span>
                     </div>
                     <label class="sr-only" for="inlineFormInputGroupUsername2"
@@ -122,6 +123,7 @@
 </template>
 <script>
 // import NavBarCom from "@/components/header/NavBar.vue";
+import setAuthHeader from "@/utils/setAuthHeader";
 import axios from "axios";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
@@ -135,18 +137,18 @@ export default {
     return {
       v$: useVuelidate(),
       number: "",
-      pass: "",
+      password: "",
       UsernotFoundError: "",
     };
   },
   validations() {
     return {
       number: { required },
-      pass: { required },
+      password: { required },
     };
   },
   mounted() {
-    let user = localStorage.getItem("user-info");
+    let user = localStorage.getItem("token");
     if (user) {
       this.$router.push({ name: "home" });
     }
@@ -156,9 +158,23 @@ export default {
       this.$router.push({ name: "register" });
     },
     async userlogin() {
+      const credentaials = {
+        number: this.number,
+        password: this.password,
+      };
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated Succesfuly");
+        await axios
+          .post(`https://lab.almona.host/api/login`, credentaials)
+          .then((response) => {
+            localStorage.setItem("token", response.data.user.token);
+            localStorage.setItem("user", JSON.stringify(response.data.user));
+            setAuthHeader(response.data.user.token);
+            this.$router.push({ name: "home" });
+          })
+          .catch((err) => console.log(err.response));
+        /*
         let result = await axios.get(
           `http://localhost:3000/users?number=${this.number}&pass=${this.pass}`
           // {
@@ -182,8 +198,10 @@ export default {
           this.UsernotFoundError = "تسجيل دخول خاطئ";
           console.log("user not found");
         }
+         */
       } else {
         console.log("form validation Faild");
+        this.UsernotFoundError = "تسجيل دخول خاطئ";
       }
     },
   },

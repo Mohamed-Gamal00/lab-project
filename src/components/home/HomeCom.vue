@@ -28,15 +28,13 @@
                       <!-- اضافة طلب -->
                       <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         <div class="card shadow" style="border-radius: 20px">
-                          <router-link :to="{ name: 'addorder' }">
+                          <router-link :to="{ name: 'orders' }">
                             <button class="text-white buttons">
                               <div class="card-body">
                                 <div class="row align-items-center">
                                   <!-- content -->
                                   <div class="col">
-                                    <p class="text-end mb-0 fw-bold">
-                                      اضافة طلب
-                                    </p>
+                                    <p class="text-end mb-0 fw-bold">الطلبات</p>
                                     <p class="text-end mt-1 small mb-0">
                                       اضافة طلب جديد للمعالجة
                                     </p>
@@ -69,9 +67,7 @@
                                 <div class="row align-items-center">
                                   <!-- content -->
                                   <div class="col">
-                                    <p class="text-end mb-0 fw-bold">
-                                      اضافة طبيب
-                                    </p>
+                                    <p class="text-end mb-0 fw-bold">الاطباء</p>
                                     <p class="text-end mt-1 small mb-0">
                                       اضافة طبيب جديد الي قائمة الاطباء
                                     </p>
@@ -345,13 +341,18 @@ export default {
   },
   async mounted() {
     this.loading = true;
-    let user = localStorage.getItem("user-info");
+    let user = localStorage.getItem("user");
     if (!user) {
-      this.$router.push({ name: "register" });
+      this.$router.push({ name: "login" });
     } else {
       this.username = JSON.parse(user).name;
     }
-    let result = await axios.get(`https://lab.almona.host/api/orders`);
+    let token = localStorage.getItem("token");
+    let result = await axios.get(`https://lab.almona.host/api/orders`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     if (result.status == 200) {
       console.log(result.data);
       // this.orders = result.data.orders.slice(0, 5);
@@ -364,7 +365,12 @@ export default {
   methods: {
     async getdoctors() {
       this.loading = true;
-      let result = await axios.get(`https://lab.almona.host/api/doctors`);
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/doctors`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.status == 200) {
         console.log(result.data);
         this.doctors = result.data.doctors;

@@ -18,11 +18,11 @@ export default {
     SidebarCom,
     PurchasesCom,
   },
-  mounted() {
-    let user = localStorage.getItem("user-info");
-    if (!user) {
-      this.$router.push({ name: "register" });
-    }
-  },
+  // mounted() {
+  //   let user = localStorage.getItem("user-info");
+  //   if (!user) {
+  //     this.$router.push({ name: "register" });
+  //   }
+  // },
 };
 </script>

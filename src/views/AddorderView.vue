@@ -14,11 +14,5 @@ import AddOrderCom from "@/components/orders/AddOrders.vue";
 export default {
   name: "AddOrderView",
   components: { SidebarCom, AddOrderCom, NavbarCom },
-  mounted() {
-    let user = localStorage.getItem("user-info");
-    if (!user) {
-      this.$router.push({ name: "register" });
-    }
-  },
 };
 </script>
