@@ -16,7 +16,7 @@
           <span>
             <!-- اضف النوع -->
             <button
-              v-if="type == '1'"
+              v-if="typee == '1'"
               @click="isOpen = true"
               type="button"
               style="width: 70px; height: 38px"
@@ -49,7 +49,7 @@
 
                 <ul
                   class="dropdown-menu"
-                  v-if="type == '1'"
+                  v-if="typee == '1'"
                   aria-labelledby="dropdownMenuLink"
                 >
                   <li>
@@ -168,7 +168,7 @@ export default {
       name: "",
       types: [],
       type_id: "",
-      type: "",
+      typee: "",
     };
   },
   async mounted() {
@@ -176,8 +176,9 @@ export default {
     let user = localStorage.getItem("user");
     if (!user) {
       this.$router.push({ name: "login" });
+    } else {
+      this.typee = JSON.parse(user).type;
     }
-    this.type = JSON.parse(user).type;
     let token = localStorage.getItem("token");
     let result = await axios.get(`https://lab.almona.host/api/types`, {
       headers: {

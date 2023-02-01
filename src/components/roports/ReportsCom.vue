@@ -24,9 +24,16 @@
                   </button>
                 </span>
               </div>
-              <div class="row">
+              <!-- reports selectors -->
+              <div v-if="loading">
+                <h1>loooding.....</h1>
+                <PageLoader />
+              </div>
+              <div class="row align-items-center">
                 <!-- الطلبات والمشتريات -->
-                <div class="col-md-2 d-flex justify-content-center col-sm-12">
+                <div
+                  class="col-md-2 d-flex d-inline justify-content-center col-sm-12"
+                >
                   <div class="dropdown">
                     <button
                       class="btn btn-secondary dropdown-toggle border-0 font"
@@ -39,75 +46,79 @@
                     </button>
                     <ul class="dropdown-menu font">
                       <li>
-                        <a id="order" class="dropdown-item">الطلبات</a>
+                        <button
+                          type="button"
+                          @click="ordersreports()"
+                          id="order"
+                          class="dropdown-item"
+                        >
+                          الطلبات
+                        </button>
                       </li>
                       <li>
-                        <a id="purshases" class="dropdown-item">المشتريات</a>
+                        <button
+                          type="button"
+                          @click="purchasesreports()"
+                          id="purshases"
+                          class="dropdown-item"
+                        >
+                          المشتريات
+                        </button>
                       </li>
                     </ul>
                   </div>
                 </div>
                 <!-- جميع الاطباء -->
-                <div class="col-md-2 d-flex justify-content-center col-sm-12">
-                  <div class="dropdown">
-                    <button
-                      class="btn btn-secondary dropdown-toggle border-0 font"
-                      style="background-color: #e0dfeb; color: #322a7d"
-                      type="button"
-                      id="doctordropdown"
-                      aria-expanded="false"
+                <div class="col-md-3">
+                  <select class="form-select" v-model="doctor_id">
+                    <option disabled value="">جميع الاطباء</option>
+                    <option
+                      :value="doctor.id"
+                      v-for="doctor in doctors"
+                      :key="doctor.id"
                     >
-                      جميع الاطباء
-                    </button>
-                    <ul class="dropdown-menu" id="doctor-menu">
-                      <li class="mb-2" v-for="doctor in doctors" :key="doctor">
-                        <!-- <a id="order" class="dropdown-item">الطلبات</a> -->
-                        <div class="row">
-                          <div class="col-4 p-0">
-                            <div class="text-center">
-                              <img
-                                :src="doctor.image"
-                                width="25"
-                                height="25"
-                                class="rounded-circle"
-                              />
-                            </div>
-                          </div>
-                          <div
-                            class="col-8 align-self-center p-0 font align-items-center"
-                          >
-                            <div>
-                              <p class="mb-0 dropdownfont text-black fw-bold">
-                                د/ {{ doctor.name }}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
+                      {{ doctor.name }}
+                    </option>
+                  </select>
                 </div>
                 <!-- جميع التجار -->
-                <div class="col-md-2 d-flex justify-content-center col-sm-12">
-                  <div class="dropdown">
-                    <button
-                      class="btn btn-secondary dropdown-toggle border-0 font"
-                      style="background-color: #e0dfeb; color: #322a7d"
-                      type="button"
-                      id="providerdropdown"
-                      aria-expanded="false"
+                <div class="col-md-3">
+                  <select class="form-select" v-model="provider_id">
+                    <option disabled value="">جميع التجار</option>
+                    <option
+                      v-for="provider in providers"
+                      :key="provider.id"
+                      value="1"
                     >
-                      جميع التجار
-                    </button>
-                    <ul class="dropdown-menu" id="provider-menu">
-                      <li v-for="provider in providers" :key="provider">
-                        <p class="mb-0 text-center font">
-                          {{ provider.name }}
-                        </p>
-                      </li>
-                    </ul>
-                  </div>
+                      {{ provider.name }}
+                    </option>
+                  </select>
                 </div>
+                <!-- start date -->
+                <div class="col-md-2">
+                  <input
+                    type="date"
+                    class="form-control"
+                    placeholder="ميعاد الطلب"
+                    v-model="start_date"
+                  />
+                  <span class="erroe-feedbak" v-if="v$.start_date.$error">{{
+                    v$.start_date.$errors[0].$message
+                  }}</span>
+                </div>
+                <!-- end date -->
+                <div class="col-md-2">
+                  <input
+                    type="date"
+                    class="form-control"
+                    placeholder="ميعاد الطلب"
+                    v-model="end_date"
+                  />
+                  <span class="erroe-feedbak" v-if="v$.end_date.$error">{{
+                    v$.end_date.$errors[0].$message
+                  }}</span>
+                </div>
+                <p class="text-center erroe-feedbak">{{ messege }}</p>
               </div>
               <!-- buttons -->
               <div class="row mt-4 d-flex justify-content-around">
@@ -273,7 +284,7 @@
                       <div class="table-section" id="order_table">
                         <div class="mt-2 ps-2 pe-2">
                           <span class="float-end fw-bold"
-                            ><strong>أجدد الطلبات</strong></span
+                            ><strong>الطلبات</strong></span
                           >
                           <span class="float-start font">
                             <router-link :to="{ name: 'orders' }">
@@ -379,16 +390,34 @@
 </template>
 
 <script>
+import PageLoader from "@/components/pageloader/PageLoader.vue";
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 import axios from "axios";
-import $ from "jquery";
+// import $ from "jquery";
 export default {
   name: "ReportsCom",
+  components: { PageLoader },
   data() {
     return {
+      loading: false,
+      v$: useVuelidate(),
       doctors: [],
       providers: [],
       orders: [],
       purchases: [],
+      required_date: "",
+      doctor_id: "",
+      provider_id: "",
+      start_date: "",
+      end_date: "",
+      messege: "",
+    };
+  },
+  validations() {
+    return {
+      start_date: { required },
+      end_date: { required },
     };
   },
   mounted() {
@@ -396,20 +425,16 @@ export default {
     if (!user) {
       this.$router.push({ name: "login" });
     }
-    // document.onreadystatechange = () => {
-    //   if (document.readyState == "complete") {
-    //     document.write("loading....");
-    //   }
-    // };
     this.getdoctors();
     this.getproviders();
-    this.getorders();
-    this.getpurshases();
-    this.purchasesteable();
-    this.ordertable();
+    // this.getorders();
+    // this.getpurshases();
+    // this.purchasesteable();
+    // this.ordertable();
   },
   methods: {
     async getdoctors() {
+      this.loading = true;
       let token = localStorage.getItem("token");
       let result = await axios.get(`https://lab.almona.host/api/doctors`, {
         headers: {
@@ -421,8 +446,10 @@ export default {
         console.log("doctors");
         console.log(this.doctors);
       }
+      this.loading = false;
     },
     async getproviders() {
+      this.loading = true;
       let token = localStorage.getItem("token");
       let result = await axios.get(`https://lab.almona.host/api/providers`, {
         headers: {
@@ -434,60 +461,132 @@ export default {
         console.log("providers");
         console.log(this.providers);
       }
+      this.loading = false;
     },
-    async getorders() {
+    // async getorders() {
+    //   this.loading = true;
+    //   let token = localStorage.getItem("token");
+    //   let result = await axios.get(`https://lab.almona.host/api/orders`, {
+    //     headers: {
+    //       Authorization: "Bearer " + token,
+    //     },
+    //   });
+    //   if (result.status == 200) {
+    //     console.log(result.data);
+    //     console.log("orders");
+    //     this.orders = result.data.orders;
+    //   }
+    //   this.loading = false;
+    // },
+    // async getpurshases() {
+    //   this.loading = true;
+    //   let token = localStorage.getItem("token");
+    //   let result = await axios.get(`https://lab.almona.host/api/purchases`, {
+    //     headers: {
+    //       Authorization: "Bearer " + token,
+    //     },
+    //   });
+    //   if (result.status == 200) {
+    //     console.log(result.data);
+    //     console.log("purchases");
+    //     this.purchases = result.data.purchases;
+    //   }
+    //   this.loading = false;
+    // },
+
+    // ordertable() {
+    //   $(document).ready(function () {
+    //     $("#order").click(function () {
+    //       $("#order_table").slideToggle(200);
+    //     });
+    //   });
+    // },
+    // purchasesteable() {
+    //   $(document).ready(function () {
+    //     $("#purshases").click(function () {
+    //       $("#purshases_table").slideToggle(200);
+    //     });
+    //   });
+    // },
+    // print() {
+    //   window.print();
+    // },
+    async ordersreports() {
       let token = localStorage.getItem("token");
-      let result = await axios.get(`https://lab.almona.host/api/orders`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (result.status == 200) {
-        console.log(result.data);
-        console.log("orders");
-        this.orders = result.data.orders;
-      }
-    },
-    async getpurshases() {
-      let token = localStorage.getItem("token");
-      let result = await axios.get(`https://lab.almona.host/api/purchases`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (result.status == 200) {
-        console.log(result.data);
-        console.log("purchases");
-        this.purchases = result.data.purchases;
+      console.log("add purchases function");
+      this.v$.$validate();
+      if (!this.v$.$error) {
+        console.log("form validated successfuly");
+        let result = await axios.post(
+          `https://lab.almona.host/api/orderReports`,
+          {
+            start_date: this.start_date,
+            end_date: this.end_date,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        console.log(result);
+        if (result.data.success == true) {
+          this.orders = result.data.orders;
+          setTimeout(() => {
+            this.start_date = "";
+            this.end_date = "";
+            this.v$.start_date.$errors[0].$message = "";
+            this.v$.end_date.$errors[0].$message = "";
+          });
+        } else {
+          console.log("data false");
+          this.messege = result.data.message;
+          setTimeout(() => {
+            this.messege = "";
+          }, 5000);
+        }
+      } else {
+        console.log("form validated faild");
       }
     },
 
-    ordertable() {
-      $(document).ready(function () {
-        $("#order").click(function () {
-          $("#order_table").slideToggle(200);
-        });
-      });
-      $(document).ready(function () {
-        $("#doctordropdown").click(function () {
-          $("#doctor-menu").slideToggle(300);
-        });
-      });
-      $(document).ready(function () {
-        $("#providerdropdown").click(function () {
-          $("#provider-menu").slideToggle(300);
-        });
-      });
-    },
-    purchasesteable() {
-      $(document).ready(function () {
-        $("#purshases").click(function () {
-          $("#purshases_table").slideToggle(200);
-        });
-      });
-    },
-    print() {
-      window.print();
+    async purchasesreports() {
+      let token = localStorage.getItem("token");
+      console.log("add purchases function");
+      this.v$.$validate();
+      if (!this.v$.$error) {
+        console.log("form validated successfuly");
+        let result = await axios.post(
+          `https://lab.almona.host/api/purchaseReports`,
+          {
+            start_date: this.start_date,
+            end_date: this.end_date,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        console.log(result);
+        if (result.data.success == true) {
+          this.purchases = result.data.purchases;
+          setTimeout(() => {
+            this.start_date = "";
+            this.end_date = "";
+            this.v$.start_date.$errors[0].$message = "";
+            this.v$.end_date.$errors[0].$message = "";
+          });
+        } else {
+          console.log("data false");
+          this.messege = result.data.message;
+          setTimeout(() => {
+            this.messege = "";
+          }, 5000);
+        }
+      } else {
+        console.log("form validated faild");
+      }
     },
   },
 };
@@ -560,6 +659,11 @@ export default {
   font-size: 10px !important;
   font-weight: 600;
   color: #322a7d !important;
+}
+.table thead th {
+  color: #ced4da;
+  /* width: 100px; */
+  width: 125px;
 }
 .sidecontent {
   background-color: #ffffff;

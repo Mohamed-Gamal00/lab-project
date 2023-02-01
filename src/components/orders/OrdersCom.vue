@@ -462,6 +462,8 @@ export default {
     let user = localStorage.getItem("user");
     if (!user) {
       this.$router.push({ name: "login" });
+    } else {
+      this.type = JSON.parse(user).type;
     }
     let token = localStorage.getItem("token");
     let result = await axios.get(`https://lab.almona.host/api/orders`, {
