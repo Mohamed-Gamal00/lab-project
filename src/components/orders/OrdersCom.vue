@@ -35,6 +35,9 @@
                     <h1>loooding.....</h1>
                     <PageLoader />
                   </div>
+                  <span class="small fw-bold font"
+                    >العدد ({{ orders.length }})</span
+                  >
                   <div class="" v-for="order in orders" :key="order.id">
                     <!-- 1 -->
                     <div class="p-1">
@@ -466,11 +469,13 @@ export default {
       this.type = JSON.parse(user).type;
     }
     let token = localStorage.getItem("token");
-    let result = await axios.get(`https://lab.almona.host/api/orders`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
+    let result = await axios
+      .get(`https://lab.almona.host/api/orders`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .catch(() => this.$router.push({ name: "servererror" }));
     this.orders = result.data.orders;
     console.log("colors");
     let resultcolor = await axios.get(`https://lab.almona.host/api/colors`, {
@@ -541,7 +546,12 @@ export default {
         .then((result) => {
           if (result.isConfirmed) {
             console.log("delete doctor");
-            axios.post(`https://lab.almona.host/api/del_order/${id}`);
+            let token = localStorage.getItem("token");
+            axios.post(`https://lab.almona.host/api/del_order/${id}`, {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            });
 
             this.$swal.fire(
               "حذف!",

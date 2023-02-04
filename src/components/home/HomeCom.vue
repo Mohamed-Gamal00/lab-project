@@ -348,11 +348,13 @@ export default {
       this.username = JSON.parse(user).name;
     }
     let token = localStorage.getItem("token");
-    let result = await axios.get(`https://lab.almona.host/api/orders`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
+    let result = await axios
+      .get(`https://lab.almona.host/api/orders`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .catch(() => this.$router.push({ name: "servererror" }));
     if (result.status == 200) {
       console.log(result.data);
       // this.orders = result.data.orders.slice(0, 5);

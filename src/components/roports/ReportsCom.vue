@@ -77,7 +77,7 @@
                       v-for="doctor in doctors"
                       :key="doctor.id"
                     >
-                      {{ doctor.name }}
+                      د/ {{ doctor.name }}
                     </option>
                   </select>
                 </div>
@@ -98,8 +98,8 @@
                 <div class="col-md-2">
                   <input
                     type="date"
-                    class="form-control"
-                    placeholder="ميعاد الطلب"
+                    data-hover="start date"
+                    class="form-control hovertext"
                     v-model="start_date"
                   />
                   <span class="erroe-feedbak" v-if="v$.start_date.$error">{{
@@ -110,8 +110,8 @@
                 <div class="col-md-2">
                   <input
                     type="date"
-                    class="form-control"
-                    placeholder="ميعاد الطلب"
+                    data-hover="end date"
+                    class="form-control hovertext"
                     v-model="end_date"
                   />
                   <span class="erroe-feedbak" v-if="v$.end_date.$error">{{
@@ -280,7 +280,7 @@
                   <div
                     class="col-md-6 col-sm-12 col-lg-6 d-flex justify-content-center"
                   >
-                    <div class="row ps-1 mt-lg-3">
+                    <div class="row ps-1 mt-lg-3" v-if="orders.length > 0">
                       <div class="table-section" id="order_table">
                         <div class="mt-2 ps-2 pe-2">
                           <span class="float-end fw-bold"
@@ -332,7 +332,7 @@
                     class="col-md-6 col-sm-12 col-lg-6 d-flex justify-content-center"
                   >
                     <!-- tebles2 -->
-                    <div class="row ps-1 mt-lg-3">
+                    <div class="row ps-1 mt-lg-3" v-if="purchases.length > 0">
                       <div class="table-section" id="purshases_table">
                         <div class="mt-2 ps-2 pe-2">
                           <span class="float-end fw-bold"
@@ -436,11 +436,13 @@ export default {
     async getdoctors() {
       this.loading = true;
       let token = localStorage.getItem("token");
-      let result = await axios.get(`https://lab.almona.host/api/doctors`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+      let result = await axios
+        .get(`https://lab.almona.host/api/doctors`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .catch(() => this.$router.push({ name: "servererror" }));
       if (result.data.success == true) {
         this.doctors = result.data.doctors;
         console.log("doctors");
@@ -463,60 +465,17 @@ export default {
       }
       this.loading = false;
     },
-    // async getorders() {
-    //   this.loading = true;
-    //   let token = localStorage.getItem("token");
-    //   let result = await axios.get(`https://lab.almona.host/api/orders`, {
-    //     headers: {
-    //       Authorization: "Bearer " + token,
-    //     },
-    //   });
-    //   if (result.status == 200) {
-    //     console.log(result.data);
-    //     console.log("orders");
-    //     this.orders = result.data.orders;
-    //   }
-    //   this.loading = false;
-    // },
-    // async getpurshases() {
-    //   this.loading = true;
-    //   let token = localStorage.getItem("token");
-    //   let result = await axios.get(`https://lab.almona.host/api/purchases`, {
-    //     headers: {
-    //       Authorization: "Bearer " + token,
-    //     },
-    //   });
-    //   if (result.status == 200) {
-    //     console.log(result.data);
-    //     console.log("purchases");
-    //     this.purchases = result.data.purchases;
-    //   }
-    //   this.loading = false;
-    // },
 
-    // ordertable() {
-    //   $(document).ready(function () {
-    //     $("#order").click(function () {
-    //       $("#order_table").slideToggle(200);
-    //     });
-    //   });
-    // },
-    // purchasesteable() {
-    //   $(document).ready(function () {
-    //     $("#purshases").click(function () {
-    //       $("#purshases_table").slideToggle(200);
-    //     });
-    //   });
-    // },
     // print() {
     //   window.print();
     // },
     async ordersreports() {
-      let token = localStorage.getItem("token");
+      this.loading = true;
       console.log("add purchases function");
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated successfuly");
+        let token = localStorage.getItem("token");
         let result = await axios.post(
           `https://lab.almona.host/api/orderReports`,
           {
@@ -548,14 +507,16 @@ export default {
       } else {
         console.log("form validated faild");
       }
+      this.loading = false;
     },
 
     async purchasesreports() {
-      let token = localStorage.getItem("token");
+      this.loading = true;
       console.log("add purchases function");
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated successfuly");
+        let token = localStorage.getItem("token");
         let result = await axios.post(
           `https://lab.almona.host/api/purchaseReports`,
           {
@@ -587,6 +548,7 @@ export default {
       } else {
         console.log("form validated faild");
       }
+      this.loading = false;
     },
   },
 };
@@ -599,6 +561,36 @@ export default {
 #purshases_table {
   display: none;
 } */
+
+/*date hover*/
+.hovertext {
+  position: relative;
+  border-bottom: 1px solid transparent;
+}
+
+.hovertext:before {
+  content: attr(data-hover);
+  visibility: hidden;
+  opacity: 0;
+  width: 140px;
+  background-color: rgb(20, 0, 133);
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 0;
+  transition: opacity 1s ease-in-out;
+
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 110%;
+}
+
+.hovertext:hover:before {
+  opacity: 1;
+  visibility: visible;
+}
+/*date hover*/
 .fe {
   color: white !important;
 }

@@ -31,12 +31,12 @@
                     </span>
                   </div>
                   <!-- table -->
-                  <div class="table-responsive">
+                  <div class="">
                     <table class="table mt-lg-3">
-                      <div v-if="users.length > 0">
-                        <span class="small fw-bold"
+                      <div>
+                        <!-- <span class="small fw-bold"
                           >العدد ({{ users.length }})</span
-                        >
+                        > -->
                       </div>
                       <tbody>
                         <tr
@@ -459,11 +459,13 @@ export default {
     //   this.$router.push({ name: "login" });
     // }
     let token = localStorage.getItem("token");
-    let result = await axios.get(`https://lab.almona.host/api/users`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
+    let result = await axios
+      .get(`https://lab.almona.host/api/users`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .catch(() => this.$router.push({ name: "servererror" }));
     if (result.status == 200) {
       console.log(result.data);
       this.users = result.data.users;
@@ -477,7 +479,12 @@ export default {
       if (!user) {
         this.$router.push({ name: "login" });
       }
-      let result = await axios.get(`https://lab.almona.host/api/users`);
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/users`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.status == 200) {
         console.log(result.data);
         this.users = result.data.users;
@@ -489,6 +496,7 @@ export default {
       /* validations */
       if (!this.v$.$error) {
         console.log("validated");
+        let token = localStorage.getItem("token");
         let addresult = await axios.post(
           `https://lab.almona.host/api/user/add`,
           {
@@ -497,6 +505,11 @@ export default {
             password: this.password,
             confirm_password: this.confirm_password,
             userType: this.userType,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
           }
         );
         if (addresult.data.success == true) {
@@ -531,31 +544,32 @@ export default {
         this.errorMessege = "املاء حقول الادخال بطريقة صحيحة";
       }
     },
-    // this.$swal
-    //     .fire({
-    //       title: "هل انت متاكد من حذف هذا العنصر",
-    //       text: "لن تتمكن من الرجوع مجددا!",
-    //       icon: "warning",
-    //       showCancelButton: true,
-    //       confirmButtonColor: "#322a7d",
-    //       cancelButtonColor: "#d33",
-    //       confirmButtonText: "حذف",
-    //       cancelButtonText: "الغاء",
-    //     })
-    //     .then((result) => {
-    //       if (result.isConfirmed) {
-    //         console.log("delete purchase");
-    //         axios.post(`https://lab.almona.host/api/del_purchase/${id}`);
 
-    //         this.$swal.fire(
-    //           "حذف!",
-    //           "تم حذف العنصر بنجاح.",
-    //           "success",
-    //           this.loadpurchase()
-    //         );
-    //         this.loadpurchase();
-    //       }
-    //     });
+    // this.$swal
+    //   .fire({
+    //     title: "هل انت متاكد من حذف هذا العنصر",
+    //     text: "لن تتمكن من الرجوع مجددا!",
+    //     icon: "warning",
+    //     showCancelButton: true,
+    //     confirmButtonColor: "#322a7d",
+    //     cancelButtonColor: "#d33",
+    //     confirmButtonText: "حذف",
+    //     cancelButtonText: "الغاء",
+    //   })
+    //   .then((result) => {
+    //     if (result.isConfirmed) {
+    //       console.log("delete purchase");
+    //       axios.post(`https://lab.almona.host/api/user/del/${id}`);
+
+    //       this.$swal.fire(
+    //         "حذف!",
+    //         "تم حذف العنصر بنجاح.",
+    //         "success",
+    //         this.LoadUser()
+    //       );
+    //       this.LoadUser();
+    //     }
+    //   });
     async deleteUser(id) {
       this.$swal
         .fire({
@@ -570,8 +584,13 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            console.log("delete purchase");
-            axios.post(`https://lab.almona.host/api/user/del/${id}`);
+            let token = localStorage.getItem("token");
+            console.log("delete members");
+            axios.post(`https://lab.almona.host/api/user/del/${id}`, {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            });
 
             this.$swal.fire(
               "حذف!",
@@ -595,6 +614,7 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("validate");
+        let token = localStorage.getItem("token");
         let editresult = await axios.post(
           `https://lab.almona.host/api/user/edit/${this.user_id}`,
           {
@@ -603,6 +623,11 @@ export default {
             password: this.password,
             confirm_password: this.confirm_password,
             userType: this.userType,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
           }
         );
         this.$swal.fire({

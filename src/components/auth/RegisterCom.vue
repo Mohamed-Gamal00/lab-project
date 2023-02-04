@@ -99,12 +99,12 @@ export default {
       password_confirmation: { required },
     };
   },
-  mounted() {
-    let user = localStorage.getItem("user-info");
-    if (user) {
-      this.$router.push({ name: "home" });
-    }
-  },
+  // mounted() {
+  //   let user = localStorage.getItem("user-info");
+  //   if (user) {
+  //     this.$router.push({ name: "home" });
+  //   }
+  // },
   methods: {
     Loginpage() {
       this.$router.push({ name: "login" });

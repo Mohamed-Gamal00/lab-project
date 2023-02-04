@@ -239,7 +239,6 @@ export default {
       this.username = JSON.parse(user).name;
     }
     let token = localStorage.getItem("token");
-
     console.log("colors");
     let resultcolor = await axios.get(`https://lab.almona.host/api/colors`, {
       headers: {
@@ -273,8 +272,8 @@ export default {
   },
   methods: {
     async Addorder() {
-      let token = localStorage.getItem("token");
       console.log("add purchases function");
+      let token = localStorage.getItem("token");
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated successfuly");

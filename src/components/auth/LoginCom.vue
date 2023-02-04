@@ -165,7 +165,7 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated Succesfuly");
-        await axios
+        let result = await axios
           .post(`https://lab.almona.host/api/login`, credentaials)
           .then((response) => {
             localStorage.setItem("token", response.data.user.token);
@@ -174,6 +174,7 @@ export default {
             this.$router.push({ name: "home" });
           })
           .catch((err) => console.log(err.response));
+        console.log(result);
         /*
         let result = await axios.get(
           `http://localhost:3000/users?number=${this.number}&pass=${this.pass}`

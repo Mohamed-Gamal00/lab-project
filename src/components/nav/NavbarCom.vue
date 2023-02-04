@@ -138,7 +138,7 @@ export default {
   methods: {
     Logout() {
       localStorage.clear();
-      this.$router.push({ name: "register" });
+      this.$router.push({ name: "login" });
     },
   },
 };

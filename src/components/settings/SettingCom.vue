@@ -237,11 +237,13 @@ export default {
     }
     this.type = JSON.parse(user).type;
     let token = localStorage.getItem("token");
-    let result = await axios.get(`https://lab.almona.host/api/colors`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
+    let result = await axios
+      .get(`https://lab.almona.host/api/colors`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .catch(() => this.$router.push({ name: "servererror" }));
     if (result.status == 200) {
       console.log(result.data);
       this.colors = result.data.colors;
@@ -268,8 +270,8 @@ export default {
       this.hex = "";
     },
     async addcolor() {
-      let token = localStorage.getItem("token");
       console.log("add color fun");
+      let token = localStorage.getItem("token");
       let result = await axios.post(
         `https://lab.almona.host/api/add_color`,
         {
@@ -296,36 +298,63 @@ export default {
       }
     },
     async deletecolor(id) {
-      let token = localStorage.getItem("token");
-      console.log("delete doctor");
-      axios.post(`https://lab.almona.host/api/del_color/${id}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+      // let token = localStorage.getItem("token");
+      // let result = await axios.post(
+      //   `https://lab.almona.host/api/del_color/${id}`,
+      //   {
+      //     headers: {
+      //       Authorization: "Bearer " + token,
+      //     },
+      //   }
+      // );
+      // if (result.data.success == true) {
+      //   console.log("data deleted succesfuly");
+      //   this.loadecolor();
+      // } else {
+      //   console.log("data false");
+      //   this.$swal.fire(
+      //     "تنبيه",
+      //     "قم بتسجيل الدخول مجددا",
+      //     "error",
+      //     this.loadecolor()
+      //   );
+      // }
+      // console.log(result);
+      this.$swal
+        .fire({
+          title: "هل انت متاكد من حذف هذا العنصر",
+          text: "لن تتمكن من الرجوع مجددا!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#322a7d",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "حذف",
+          cancelButtonText: "الغاء",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            let token = localStorage.getItem("token");
+            let resultcolor = axios.post(
+              `https://lab.almona.host/api/del_color/${id}`,
+              {
+                headers: {
+                  Authorization: "Bearer " + token,
+                },
+              }
+            );
+            if (resultcolor.status == 200) {
+              console.log(resultcolor);
+            }
+            this.$swal.fire(
+              "حذف!",
+              "تم حذف العنصر بنجاح.",
+              "success",
+              this.loadecolor()
+            );
+            this.loadecolor();
+          }
+        });
       this.loadecolor();
-      // this.$swal
-      //   .fire({
-      //     title: "هل انت متاكد من حذف هذا العنصر",
-      //     text: "لن تتمكن من الرجوع مجددا!",
-      //     icon: "warning",
-      //     showCancelButton: true,
-      //     confirmButtonColor: "#322a7d",
-      //     cancelButtonColor: "#d33",
-      //     confirmButtonText: "حذف",
-      //     cancelButtonText: "الغاء",
-      //   })
-      //   .then((result) => {
-      //     if (result.isConfirmed) {
-      //       this.$swal.fire(
-      //         "حذف!",
-      //         "تم حذف العنصر بنجاح.",
-      //         "success",
-      //         this.loadecolor()
-      //       );
-      //       this.loadecolor();
-      //     }
-      // });
     },
     Editcolor(color) {
       console.log("editcolor");

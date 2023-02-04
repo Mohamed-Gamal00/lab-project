@@ -469,11 +469,13 @@ export default {
     this.type = JSON.parse(user).type;
     let token = localStorage.getItem("token");
     console.log("purchases");
-    let result = await axios.get(`https://lab.almona.host/api/purchases`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
+    let result = await axios
+      .get(`https://lab.almona.host/api/purchases`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .catch(() => this.$router.push({ name: "servererror" }));
     if (result.status == 200) {
       console.log(result.data);
       this.purchases = result.data.purchases;
@@ -606,8 +608,13 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
+            let token = localStorage.getItem("token");
             console.log("delete purchase");
-            axios.post(`https://lab.almona.host/api/del_purchase/${id}`);
+            axios.post(`https://lab.almona.host/api/del_purchase/${id}`, {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            });
 
             this.$swal.fire(
               "حذف!",
@@ -659,12 +666,16 @@ export default {
             },
           }
         );
-        // setTimeout(() => {
-        //   this.name = "";
-        //   this.number = "";
-        //   this.v$.number.$errors[0].$message = "";
-        //   this.v$.name.$errors[0].$message = "";
-        // }, 1000);
+        setTimeout(() => {
+          this.name = "";
+          this.amount = "";
+          this.price = "";
+          this.provider_id = "";
+          this.v$.name.$errors[0].$message = ""; // اسم المنتج
+          this.v$.provider_id.$errors[0].$message = ""; // اسم المنتج
+          this.v$.amount.$errors[0].$message = "";
+          this.v$.price.$errors[0].$message = "";
+        });
         console.log(result);
         if (result.data.success == true) {
           console.log("data updated succesfuly");

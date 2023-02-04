@@ -157,24 +157,6 @@
                         <div class="modal__dialog">
                           <div class="modal__body">
                             <slot name="body" />
-                            <!-- <div class="modal__header">
-                              <slot name="header" />
-                              <button
-                                type="button"
-                                class="modal__close"
-                                @click="closeModal()"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 352 512"
-                                >
-                                  <path
-                                    fill="currentColor"
-                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                  ></path>
-                                </svg>
-                              </button>
-                            </div> -->
                             <div class="">
                               <!-- header -->
                               <div class="d-inline">
@@ -190,7 +172,7 @@
                               </div>
                               <!-- body -->
                               <div class="">
-                                <form @submit.prevent="AddDoctor()">
+                                <form>
                                   <!-- صورة الدكتور -->
                                   <div class="row g-3 align-items-center">
                                     <div class="col-auto d-block mx-auto m-3">
@@ -255,7 +237,11 @@
                                   </div>
                                   <!-- footer -->
                                   <div class="modal__footer">
-                                    <button class="btn" type="submit">
+                                    <button
+                                      class="btn"
+                                      type="button"
+                                      @click="AddDoctor()"
+                                    >
                                       اضف الان
                                     </button>
                                     <button
@@ -569,7 +555,12 @@ export default {
     },
     async loaddoctors() {
       this.loading = true;
-      let result = await axios.get(`https://lab.almona.host/api/doctors`);
+      let token = localStorage.getItem("token");
+      let result = await axios.get(`https://lab.almona.host/api/doctors`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       if (result.data.success == true) {
         console.log(result.data);
         this.doctors = result.data.doctors;
@@ -577,11 +568,11 @@ export default {
       this.loading = false;
     },
     async AddDoctor() {
-      let token = localStorage.getItem("token");
-      console.log(this.image);
+      // console.log(this.image);
       console.log("add doctor function");
       this.v$.$validate();
       if (!this.v$.$error) {
+        let token = localStorage.getItem("token");
         let result = await axios.post(
           `https://lab.almona.host/api/add_doctor`,
           {
@@ -680,11 +671,11 @@ export default {
       }
     },
     async UpdateDoctor() {
-      let token = localStorage.getItem("token");
       console.log("update doctor function");
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated successfuly");
+        let token = localStorage.getItem("token");
         let result = await axios.post(
           `https://lab.almona.host/api/edit_doctor/${this.user_id}`,
           {

@@ -180,11 +180,13 @@ export default {
       this.typee = JSON.parse(user).type;
     }
     let token = localStorage.getItem("token");
-    let result = await axios.get(`https://lab.almona.host/api/types`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
+    let result = await axios
+      .get(`https://lab.almona.host/api/types`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .catch(() => this.$router.push({ name: "servererror" }));
     if (result.status == 200) {
       console.log(result.data);
       this.types = result.data.types;

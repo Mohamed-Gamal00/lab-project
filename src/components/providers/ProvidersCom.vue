@@ -337,11 +337,13 @@ export default {
     }
     this.type = JSON.parse(user).type;
     let token = localStorage.getItem("token");
-    let result = await axios.get(`https://lab.almona.host/api/providers`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
+    let result = await axios
+      .get(`https://lab.almona.host/api/providers`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .catch(() => this.$router.push({ name: "servererror" }));
     if (result.status == 200) {
       console.log(result.data);
       this.providers = result.data.providers;
@@ -433,7 +435,12 @@ export default {
         .then((result) => {
           if (result.isConfirmed) {
             console.log("delete purchase");
-            axios.post(`https://lab.almona.host/api/del_provider/${id}`);
+            let token = localStorage.getItem("token");
+            axios.post(`https://lab.almona.host/api/del_provider/${id}`, {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            });
 
             this.$swal.fire(
               "حذف!",
@@ -469,11 +476,17 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated successfuly");
+        let token = localStorage.getItem("token");
         let result = await axios.post(
           `https://lab.almona.host/api/edit_provider/${this.user_id}`,
           {
             name: this.name,
             number: this.number,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
           }
         );
         setTimeout(() => {
