@@ -177,6 +177,8 @@
                                   <div class="row g-3 align-items-center">
                                     <div class="col-auto d-block mx-auto m-3">
                                       <input
+                                        id="img"
+                                        name="img"
                                         type="file"
                                         ref="file"
                                         @change="selectFile()"
@@ -573,20 +575,24 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         let token = localStorage.getItem("token");
-        let result = await axios.post(
-          `https://lab.almona.host/api/add_doctor`,
-          {
-            name: this.name,
-            number: this.number,
-            address: this.address,
-            image: this.image,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + token,
+        let result = await axios
+          .post(
+            `https://lab.almona.host/api/add_doctor`,
+            {
+              name: this.name,
+              number: this.number,
+              address: this.address,
+              image: this.image,
             },
-          }
-        );
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          )
+          .catch((err) => {
+            console.log(err);
+          });
         setTimeout(() => {
           this.name = "";
           this.number = "";

@@ -210,6 +210,7 @@ export default {
   name: "AddOrderCom",
   data() {
     return {
+      loading: false,
       colors: [],
       doctors: [],
       types: [],
@@ -272,6 +273,7 @@ export default {
   },
   methods: {
     async Addorder() {
+      this.loading = true;
       console.log("add purchases function");
       let token = localStorage.getItem("token");
       this.v$.$validate();
@@ -313,6 +315,7 @@ export default {
       } else {
         console.log("form validated faild");
       }
+      this.loading = false;
     },
   },
 };

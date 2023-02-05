@@ -65,6 +65,27 @@
                           المشتريات
                         </button>
                       </li>
+                      <li>
+                        <button
+                          type="button"
+                          @click="reports()"
+                          id="purshases"
+                          class="dropdown-item"
+                        >
+                          الطلبات والمشتريات
+                        </button>
+                      </li>
+                      <!-- الاطباء -->
+                      <li>
+                        <button
+                          type="button"
+                          @click="Doctorsreports()"
+                          id="purshases"
+                          class="dropdown-item"
+                        >
+                          الاطباء
+                        </button>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -80,6 +101,9 @@
                       د/ {{ doctor.name }}
                     </option>
                   </select>
+                  <!-- <span class="erroe-feedbak" v-if="v$.doctor_id.$error">{{
+                    v$.doctor_id.$errors[0].$message
+                  }}</span> -->
                 </div>
                 <!-- جميع التجار -->
                 <div class="col-md-3">
@@ -380,6 +404,59 @@
                     </div>
                   </div>
                 </div>
+                <div class="row mt-3 font d-flex justify-content-center">
+                  <!-- الاطباء -->
+                  <div
+                    class="col-md-6 col-sm-12 col-lg-6 d-flex justify-content-center"
+                  >
+                    <div class="row ps-1 mt-lg-3" v-if="doctors.length > 0">
+                      <div class="table-section" id="order_table">
+                        <div class="mt-2 ps-2 pe-2">
+                          <span class="float-end fw-bold"
+                            ><strong>الطلبات</strong></span
+                          >
+                          <span class="float-start font">
+                            <router-link :to="{ name: 'orders' }">
+                              عرض الكل
+                            </router-link>
+                          </span>
+                        </div>
+                        <table
+                          class="table table-striped table-hover mt-5 font"
+                        >
+                          <thead>
+                            <tr>
+                              <th class="text-secondary">رقم الطلب</th>
+                              <th class="text-secondary">الدكتور</th>
+                              <th class="text-secondary">اسم الحالة</th>
+                              <th class="text-secondary">تاريخ الاضافة</th>
+                              <th class="text-secondary">السعر</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- <tr
+                              class="tablefont"
+                              v-for="doctor in doctors"
+                              :key="doctor.id"
+                            >
+                              <th style="width: 200px">
+                                {{ doctor.patient_no }}
+                              </th>
+                              <td style="width: 200px">{{ doctor.doctor }}</td>
+                              <td style="width: 200px">
+                                {{ doctor.patient_name }}
+                              </td>
+                              <td style="width: 200px">
+                                {{ doctor.required_date }}
+                              </td>
+                              <td style="width: 200px">{{ doctor.price }}</td>
+                            </tr> -->
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -418,6 +495,7 @@ export default {
     return {
       start_date: { required },
       end_date: { required },
+      // doctor_id: { required },
     };
   },
   mounted() {
@@ -427,10 +505,6 @@ export default {
     }
     this.getdoctors();
     this.getproviders();
-    // this.getorders();
-    // this.getpurshases();
-    // this.purchasesteable();
-    // this.ordertable();
   },
   methods: {
     async getdoctors() {
@@ -466,9 +540,9 @@ export default {
       this.loading = false;
     },
 
-    // print() {
-    //   window.print();
-    // },
+    print() {
+      window.print();
+    },
     async ordersreports() {
       this.loading = true;
       console.log("add purchases function");
@@ -509,7 +583,6 @@ export default {
       }
       this.loading = false;
     },
-
     async purchasesreports() {
       this.loading = true;
       console.log("add purchases function");
@@ -545,6 +618,88 @@ export default {
             this.messege = "";
           }, 5000);
         }
+      } else {
+        console.log("form validated faild");
+      }
+      this.loading = false;
+    },
+    async reports() {
+      this.loading = true;
+      console.log("add purchases function");
+      this.v$.$validate();
+      if (!this.v$.$error) {
+        console.log("form validated successfuly");
+        let token = localStorage.getItem("token");
+        let result = await axios.post(
+          `https://lab.almona.host/api/reports`,
+          {
+            start_date: this.start_date,
+            end_date: this.end_date,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        console.log(result);
+        if (result.data.success == true) {
+          this.purchases = result.data.purchases;
+          this.orders = result.data.orders;
+          setTimeout(() => {
+            this.start_date = "";
+            this.end_date = "";
+            this.v$.start_date.$errors[0].$message = "";
+            this.v$.end_date.$errors[0].$message = "";
+          });
+        } else {
+          console.log("data false");
+          this.messege = result.data.message;
+          setTimeout(() => {
+            this.messege = "";
+          }, 5000);
+        }
+      } else {
+        console.log("form validated faild");
+      }
+      this.loading = false;
+    },
+    async Doctorsreports() {
+      this.loading = true;
+      console.log("add doctors function");
+      this.v$.$validate();
+      if (!this.v$.$error) {
+        console.log("form validated successfuly");
+        let token = localStorage.getItem("token");
+        let result = await axios.post(
+          `https://lab.almona.host/api/doctorReports/${this.doctor_id}`,
+          {
+            start_date: this.start_date,
+            end_date: this.end_date,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        console.log(result);
+        // if (result.data.success == true) {
+        //   this.purchases = result.data.purchases;
+        //   this.orders = result.data.orders;
+        //   setTimeout(() => {
+        //     this.start_date = "";
+        //     this.end_date = "";
+        //     this.v$.start_date.$errors[0].$message = "";
+        //     this.v$.end_date.$errors[0].$message = "";
+        //   });
+        // } else {
+        //   console.log("data false");
+        //   this.messege = result.data.message;
+        //   setTimeout(() => {
+        //     this.messege = "";
+        //   }, 5000);
+        // }
       } else {
         console.log("form validated faild");
       }

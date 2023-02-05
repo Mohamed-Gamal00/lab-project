@@ -371,6 +371,7 @@ export default {
       this.v$.name.$errors[0].$message = "";
     },
     async AddProvider() {
+      this.loading = true;
       let token = localStorage.getItem("token");
       console.log("add doctor function");
       this.v$.$validate();
@@ -419,6 +420,7 @@ export default {
       } else {
         console.log("form validated faild");
       }
+      this.loading = false;
     },
     async DeleteProvider(id) {
       this.$swal
