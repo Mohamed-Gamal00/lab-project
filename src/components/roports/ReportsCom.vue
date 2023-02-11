@@ -225,7 +225,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-12 mb-4 text-white">
                   <div class="card shadow" style="border-radius: 20px">
                     <button class="text-white buttons">
-                      <div class="card-body">
+                      <div class="card-boy">
                         <div class="row align-items-center">
                           <!-- content -->
                           <div class="col">
@@ -297,10 +297,13 @@
                   </div>
                 </div>
               </div>
-              <!-- tebles -->
+              <!-- tebles orders and purchases-->
               <div>
                 <div class="row mt-3 font d-flex justify-content-center">
                   <!-- الطلبات -->
+                  <span v-if="orders" class="small fw-bold font"
+                    >العدد ({{ orders.length }})</span
+                  >
                   <div
                     class="col-md-6 col-sm-12 col-lg-6 d-flex justify-content-center"
                   >
@@ -398,59 +401,6 @@
                                 {{ purchase.total_price }}
                               </td>
                             </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row mt-3 font d-flex justify-content-center">
-                  <!-- الاطباء -->
-                  <div
-                    class="col-md-6 col-sm-12 col-lg-6 d-flex justify-content-center"
-                  >
-                    <div class="row ps-1 mt-lg-3" v-if="doctors.length > 0">
-                      <div class="table-section" id="order_table">
-                        <div class="mt-2 ps-2 pe-2">
-                          <span class="float-end fw-bold"
-                            ><strong>الطلبات</strong></span
-                          >
-                          <span class="float-start font">
-                            <router-link :to="{ name: 'orders' }">
-                              عرض الكل
-                            </router-link>
-                          </span>
-                        </div>
-                        <table
-                          class="table table-striped table-hover mt-5 font"
-                        >
-                          <thead>
-                            <tr>
-                              <th class="text-secondary">رقم الطلب</th>
-                              <th class="text-secondary">الدكتور</th>
-                              <th class="text-secondary">اسم الحالة</th>
-                              <th class="text-secondary">تاريخ الاضافة</th>
-                              <th class="text-secondary">السعر</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <!-- <tr
-                              class="tablefont"
-                              v-for="doctor in doctors"
-                              :key="doctor.id"
-                            >
-                              <th style="width: 200px">
-                                {{ doctor.patient_no }}
-                              </th>
-                              <td style="width: 200px">{{ doctor.doctor }}</td>
-                              <td style="width: 200px">
-                                {{ doctor.patient_name }}
-                              </td>
-                              <td style="width: 200px">
-                                {{ doctor.required_date }}
-                              </td>
-                              <td style="width: 200px">{{ doctor.price }}</td>
-                            </tr> -->
                           </tbody>
                         </table>
                       </div>
@@ -684,22 +634,21 @@ export default {
           }
         );
         console.log(result);
-        // if (result.data.success == true) {
-        //   this.purchases = result.data.purchases;
-        //   this.orders = result.data.orders;
-        //   setTimeout(() => {
-        //     this.start_date = "";
-        //     this.end_date = "";
-        //     this.v$.start_date.$errors[0].$message = "";
-        //     this.v$.end_date.$errors[0].$message = "";
-        //   });
-        // } else {
-        //   console.log("data false");
-        //   this.messege = result.data.message;
-        //   setTimeout(() => {
-        //     this.messege = "";
-        //   }, 5000);
-        // }
+        if (result.data.success == true) {
+          this.orders = result.data.orders;
+          setTimeout(() => {
+            this.start_date = "";
+            this.end_date = "";
+            this.v$.start_date.$errors[0].$message = "";
+            this.v$.end_date.$errors[0].$message = "";
+          });
+        } else {
+          console.log("data false");
+          this.messege = result.data.message;
+          setTimeout(() => {
+            this.messege = "";
+          }, 5000);
+        }
       } else {
         console.log("form validated faild");
       }
