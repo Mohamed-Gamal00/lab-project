@@ -474,6 +474,7 @@ export default {
       this.provider.number = provider.number;
     },
     async UpdateProvider() {
+      this.loading = true;
       console.log("update provider function");
       this.v$.$validate();
       if (!this.v$.$error) {
@@ -522,6 +523,7 @@ export default {
       } else {
         console.log("form validated faild");
       }
+      this.loading = false;
     },
   },
 };

@@ -1,6 +1,9 @@
 <template>
   <!-- <NavBarCom /> -->
-
+  <div v-if="loading">
+    <h1>loooding.....</h1>
+    <PageLoader />
+  </div>
   <div class="login">
     <div class="container-fluid w-auto p-3 vh-100 bg-light">
       <div class="row vh-700">
@@ -102,8 +105,9 @@
                       >
                         SignUp
                       </button> -->
-                      <span class="text-dark text-center">
+                      <span class="mt-1 text-center erroe-feedbak">
                         {{ UsernotFoundError }}
+                        {{ message }}
                       </span>
                     </div>
                   </form>
@@ -122,23 +126,22 @@
   </div>
 </template>
 <script>
-// import NavBarCom from "@/components/header/NavBar.vue";
+import PageLoader from "@/components/pageloader/PageLoader.vue";
 import setAuthHeader from "@/utils/setAuthHeader";
 import axios from "axios";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-// import { reactive, computed } from "vue";
 export default {
   name: "LoginCom",
-  components: {
-    // NavBarCom,
-  },
+  components: { PageLoader },
   data() {
     return {
+      loading: false,
       v$: useVuelidate(),
       number: "",
       password: "",
       UsernotFoundError: "",
+      message: "",
     };
   },
   validations() {
@@ -154,10 +157,8 @@ export default {
     }
   },
   methods: {
-    signup() {
-      this.$router.push({ name: "register" });
-    },
     async userlogin() {
+      this.loading = true;
       const credentaials = {
         number: this.number,
         password: this.password,
@@ -165,7 +166,7 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated Succesfuly");
-        let result = await axios
+        await axios
           .post(`https://lab.almona.host/api/login`, credentaials)
           .then((response) => {
             localStorage.setItem("token", response.data.user.token);
@@ -173,37 +174,21 @@ export default {
             setAuthHeader(response.data.user.token);
             this.$router.push({ name: "home" });
           })
-          .catch((err) => console.log(err.response));
-        console.log(result);
-        /*
-        let result = await axios.get(
-          `http://localhost:3000/users?number=${this.number}&pass=${this.pass}`
-          // {
-          //   email: this.email,
-          //   pass: this.pass,
-          // }
-        );
-        localStorage.setItem("user-info", JSON.stringify(result.data[0]));
-        console.log(result);
-        if (result.status == 200 && result.data.length > 0) {
-          localStorage.setItem("user-info", JSON.stringify(result.data[0]));
-          console.log(JSON.stringify(result.data));
-          console.log("loged in");
-          this.$router.push({ name: "home" });
-          // console.log(result.data.user.token);
-          // localStorage.setItem(
-          //   "user-token",
-          //   JSON.stringify(result.data.user.token)
-          // );
-        } else {
-          this.UsernotFoundError = "تسجيل دخول خاطئ";
-          console.log("user not found");
-        }
-         */
+          .catch((err) => {
+            if (err) {
+              this.message = "هذا المستخدم غير موجود";
+              setTimeout(() => {
+                this.message = "";
+              }, 2000);
+            } else {
+              this.message = "true";
+            }
+          });
       } else {
         console.log("form validation Faild");
         this.UsernotFoundError = "تسجيل دخول خاطئ";
       }
+      this.loading = false;
     },
   },
 };

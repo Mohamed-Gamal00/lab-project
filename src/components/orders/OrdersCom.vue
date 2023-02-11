@@ -285,11 +285,10 @@
                               style="color: #322a7d"
                               id="exampleModalLabel"
                             >
-                              تعديل
+                              تعديل الطلب
                             </h5>
                           </div>
                           <div class="modal-body">
-                            test
                             <form>
                               <div class="row">
                                 <div class="col-md-6">
@@ -592,12 +591,11 @@ export default {
       // this.$router.push({ name: "editorder" });
     },
     async Updateorder() {
-      let token = localStorage.getItem("token");
-
       console.log("update purchase function");
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated successfuly");
+        let token = localStorage.getItem("token");
         let result = await axios.post(
           `https://lab.almona.host/api/edit_order/${this.order_id}`,
           {

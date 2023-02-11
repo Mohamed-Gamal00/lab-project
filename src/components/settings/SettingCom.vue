@@ -252,8 +252,8 @@ export default {
   },
   methods: {
     async loadecolor() {
-      let token = localStorage.getItem("token");
       this.loading = true;
+      let token = localStorage.getItem("token");
       let result = await axios.get(`https://lab.almona.host/api/colors`, {
         headers: {
           Authorization: "Bearer " + token,
@@ -270,6 +270,7 @@ export default {
       this.hex = "";
     },
     async addcolor() {
+      this.loading = true;
       console.log("add color fun");
       let token = localStorage.getItem("token");
       let result = await axios.post(
@@ -296,6 +297,7 @@ export default {
       } else {
         console.log("data false");
       }
+      this.loading = false;
     },
     async deletecolor(id) {
       // let token = localStorage.getItem("token");
@@ -364,6 +366,7 @@ export default {
       console.log("Editcolor call success");
     },
     async Updatecolor() {
+      this.loading = true;
       let token = localStorage.getItem("token");
       let result = await axios.post(
         `https://lab.almona.host/api/edit_color/${this.color_id}`,
@@ -390,6 +393,7 @@ export default {
         console.log("data false");
       }
       console.log(result);
+      this.loading = false;
     },
   },
 };

@@ -42,9 +42,11 @@
   </div>
 </template>
 <script>
+// import axios from "axios";
 export default {
   name: "Error500Com",
   components: {},
+  async mounted() {},
 };
 </script>
 <style scoped>

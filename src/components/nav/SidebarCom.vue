@@ -58,6 +58,22 @@
                 </a>
               </li>
             </router-link>
+            <!-- التقارير -->
+            <router-link :to="{ name: 'reports' }">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span class="item-text">
+                    <router-link :to="{ name: 'reports' }">
+                      <FontAwesome
+                        class="mr-3 fe-16"
+                        :icon="['far', 'bookmark']"
+                      />
+                      التقارير
+                    </router-link>
+                  </span>
+                </a>
+              </li>
+            </router-link>
             <!-- الاطباء -->
             <router-link :to="{ name: 'doctors' }">
               <li class="nav-item">

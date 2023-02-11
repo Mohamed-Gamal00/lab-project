@@ -12,7 +12,7 @@
                 </span>
                 <span class="float-start">
                   <button
-                    @click="print()"
+                    @click="printData()"
                     type="button"
                     class="btn btn-primary text-white"
                     style="background-color: #322a7d; border: none"
@@ -83,7 +83,7 @@
                           id="purshases"
                           class="dropdown-item"
                         >
-                          الاطباء
+                          تقرير الطبيب
                         </button>
                       </li>
                     </ul>
@@ -101,6 +101,12 @@
                       د/ {{ doctor.name }}
                     </option>
                   </select>
+                  <div
+                    v-if="doctormessege"
+                    class="text-danger d-flex align-items-center"
+                  >
+                    {{ doctormessege }}
+                  </div>
                   <!-- <span class="erroe-feedbak" v-if="v$.doctor_id.$error">{{
                     v$.doctor_id.$errors[0].$message
                   }}</span> -->
@@ -151,7 +157,10 @@
                   <div class="card shadow" style="border-radius: 20px">
                     <button class="text-white buttons">
                       <div class="card-body">
-                        <div class="row align-items-center">
+                        <div
+                          class="row align-items-center"
+                          v-if="orders.length > 0"
+                        >
                           <!-- content -->
                           <div class="col">
                             <p class="text-end mb-0 fw-bold small">
@@ -161,7 +170,7 @@
                               class="text-end text-white mt-1 mb-0"
                               style="font-weight: 900"
                             >
-                              120
+                              {{ orders.length }}
                             </h1>
                           </div>
                           <!-- section -->
@@ -182,12 +191,15 @@
                     </button>
                   </div>
                 </div>
-                <!--جمالي الدخل -->
+                <!-- اجمالي الطلبات -->
                 <div class="col-lg-3 col-md-6 col-sm-12 mb-4 text-white">
                   <div class="card shadow" style="border-radius: 20px">
                     <button class="text-white buttons">
                       <div class="card-body">
-                        <div class="row align-items-center">
+                        <div
+                          class="row align-items-center"
+                          v-if="orders.length > 0"
+                        >
                           <!-- content -->
                           <div class="col">
                             <p class="text-end mb-0 fw-bold small">
@@ -197,7 +209,7 @@
                               class="text-end mt-1 mb-0"
                               style="font-weight: 900; color: #68cc56"
                             >
-                              35الف <span class="small">جنيه</span>
+                              {{ ordersPrice }} <span class="small">جنيه</span>
                             </h1>
                           </div>
                           <!-- section -->
@@ -221,22 +233,25 @@
                     </button>
                   </div>
                 </div>
-                <!-- اضافة مشتريات -->
+                <!-- عدد المشتريات -->
                 <div class="col-lg-3 col-md-6 col-sm-12 mb-4 text-white">
                   <div class="card shadow" style="border-radius: 20px">
                     <button class="text-white buttons">
-                      <div class="card-boy">
-                        <div class="row align-items-center">
+                      <div class="card-body">
+                        <div
+                          class="row align-items-center"
+                          v-if="purchases.length > 0"
+                        >
                           <!-- content -->
                           <div class="col">
                             <p class="text-end mb-0 fw-bold small">
                               عدد المشتريات
                             </p>
                             <h1
-                              class="text-end text-white mt-1 mb-0"
-                              style="font-weight: 900"
+                              class="text-end mt-1 mb-0"
+                              style="font-weight: 900; color: #ffffff"
                             >
-                              80
+                              {{ purchases.length }}<span class="small"></span>
                             </h1>
                           </div>
                           <!-- section -->
@@ -262,7 +277,10 @@
                   <div class="card shadow" style="border-radius: 20px">
                     <button class="text-white buttons">
                       <div class="card-body">
-                        <div class="row align-items-center">
+                        <div
+                          class="row align-items-center"
+                          v-if="purchases.length > 0"
+                        >
                           <!-- content -->
                           <div class="col">
                             <p class="text-end mb-0 fw-bold small">
@@ -272,7 +290,8 @@
                               class="text-end text-danger mt-1 mb-0"
                               style="font-weight: 900"
                             >
-                              35الف <span class="small">جنيه</span>
+                              {{ purchasesPrice }}
+                              <span class="small">جنيه</span>
                             </h1>
                           </div>
                           <!-- section -->
@@ -301,7 +320,7 @@
               <div>
                 <div class="row mt-3 font d-flex justify-content-center">
                   <!-- الطلبات -->
-                  <span v-if="orders" class="small fw-bold font"
+                  <span v-if="orders.length > 0" class="small fw-bold font"
                     >العدد ({{ orders.length }})</span
                   >
                   <div
@@ -320,6 +339,7 @@
                           </span>
                         </div>
                         <table
+                          id="printTable"
                           class="table table-striped table-hover mt-5 font"
                         >
                           <thead>
@@ -373,6 +393,7 @@
                         </div>
                         <table
                           class="table table-striped table-hover mt-5 font"
+                          id="printTable"
                         >
                           <thead>
                             <tr>
@@ -432,13 +453,16 @@ export default {
       doctors: [],
       providers: [],
       orders: [],
+      ordersPrice: "",
       purchases: [],
+      purchasesPrice: "",
       required_date: "",
       doctor_id: "",
       provider_id: "",
       start_date: "",
       end_date: "",
       messege: "",
+      doctormessege: "",
     };
   },
   validations() {
@@ -490,8 +514,15 @@ export default {
       this.loading = false;
     },
 
-    print() {
-      window.print();
+    // print() {
+    //   window.print();
+    // },
+    printData() {
+      var divToPrint = document.getElementById("printTable");
+      const newWin = window.open("");
+      newWin.document.write(divToPrint.outerHTML);
+      newWin.print();
+      newWin.close();
     },
     async ordersreports() {
       this.loading = true;
@@ -515,6 +546,7 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           this.orders = result.data.orders;
+          this.ordersPrice = result.data.ordersPrice;
           setTimeout(() => {
             this.start_date = "";
             this.end_date = "";
@@ -555,6 +587,7 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           this.purchases = result.data.purchases;
+          this.purchasesPrice = result.data.purchasesPrice;
           setTimeout(() => {
             this.start_date = "";
             this.end_date = "";
@@ -601,13 +634,14 @@ export default {
             this.end_date = "";
             this.v$.start_date.$errors[0].$message = "";
             this.v$.end_date.$errors[0].$message = "";
+            // this.v$.doctor_id.$errors[0].$message = "";
           });
         } else {
           console.log("data false");
           this.messege = result.data.message;
           setTimeout(() => {
             this.messege = "";
-          }, 5000);
+          }, 3000);
         }
       } else {
         console.log("form validated faild");
@@ -621,24 +655,35 @@ export default {
       if (!this.v$.$error) {
         console.log("form validated successfuly");
         let token = localStorage.getItem("token");
-        let result = await axios.post(
-          `https://lab.almona.host/api/doctorReports/${this.doctor_id}`,
-          {
-            start_date: this.start_date,
-            end_date: this.end_date,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + token,
+        let result = await axios
+          .post(
+            `https://lab.almona.host/api/doctorReports/${this.doctor_id}`,
+            {
+              start_date: this.start_date,
+              end_date: this.end_date,
             },
-          }
-        );
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          )
+          .catch((err) => {
+            if (err) {
+              this.doctormessege = "هل قمت باختيار الطبيب؟!!";
+              setTimeout(() => {
+                this.doctormessege = "";
+              }, 2000);
+            }
+          });
+        this.loading = false;
         console.log(result);
         if (result.data.success == true) {
           this.orders = result.data.orders;
           setTimeout(() => {
             this.start_date = "";
             this.end_date = "";
+            this.doctor_id = "";
             this.v$.start_date.$errors[0].$message = "";
             this.v$.end_date.$errors[0].$message = "";
           });
@@ -677,12 +722,12 @@ export default {
   visibility: hidden;
   opacity: 0;
   width: 140px;
-  background-color: rgb(20, 0, 133);
+  background-color: #322a7d;
   color: #fff;
   text-align: center;
   border-radius: 5px;
   padding: 5px 0;
-  transition: opacity 1s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 
   position: absolute;
   z-index: 1;
@@ -732,7 +777,6 @@ export default {
     height: fit-content;
   }
 } */
-
 .table-section {
   background-color: #ffffff;
   border: 1px solid white;

@@ -15,12 +15,12 @@
               <div>
                 <h1>اضافة طلب</h1>
                 <div class="row">
-                  <div class="col-md-3">
+                  <div class="col-md-4">
                     <div class="modal-body">
                       <form>
                         <!-- اختيار الدكتور -->
-                        <div class="row g-3 align-items-center">
-                          <div class="col-auto d-block mx-auto m-3">
+                        <div class="row d-flex justify-content-center">
+                          <div class="col-md-6">
                             <select class="form-select" v-model="doctor_id">
                               <option disabled value="">اسم الدكتور</option>
                               <option
@@ -37,10 +37,8 @@
                               >{{ v$.doctor_id.$errors[0].$message }}</span
                             >
                           </div>
-                        </div>
-                        <!-- اسم الحالة -->
-                        <div class="row g-3 align-items-center">
-                          <div class="col-auto d-block mx-auto m-3">
+                          <!-- اسم الحالة -->
+                          <div class="col-md-6">
                             <input
                               type="text"
                               class="form-control"
@@ -53,10 +51,8 @@
                               >{{ v$.patient_name.$errors[0].$message }}</span
                             >
                           </div>
-                        </div>
-                        <!-- تاريخ الاضافة -->
-                        <div class="row g-3 align-items-center">
-                          <div class="col-auto d-block mx-auto m-3">
+                          <!-- تاريخ الاضافة -->
+                          <div class="col-md-12 m-3">
                             <input
                               type="date"
                               class="form-control"
@@ -69,10 +65,8 @@
                               >{{ v$.required_date.$errors[0].$message }}</span
                             >
                           </div>
-                        </div>
-                        <!-- ملاحظات -->
-                        <div class="row g-3 align-items-center">
-                          <div class="col-auto d-block mx-auto m-3">
+                          <!-- ملاحظات -->
+                          <div class="col-md-12 m-3">
                             <div class="form-outline">
                               <textarea
                                 class="form-control"
@@ -88,11 +82,11 @@
                     </div>
                   </div>
                   <!-- col-6 اختيار الوان الضروس  -->
-                  <div class="col-md-6">
-                    <div>
-                      <!-- اختيار الوان الضروس -->
-                      <div class="row g-3 align-items-center">
-                        <div class="col-auto d-block mx-auto m-3">
+                  <div class="col-md-5">
+                    <div class="row d-flex justify-content-center">
+                      <div>
+                        <!-- اختيار الوان الضروس -->
+                        <div class="col-md-12">
                           <select class="form-select" v-model="color_id">
                             <option disabled value="">اللون</option>
                             <option
@@ -104,63 +98,46 @@
                             </option>
                           </select>
                           <!-- <span
-                            class="erroe-feedbak"
-                            v-if="v$.doctor_id.$error"
-                            >{{ v$.doctor_id.$errors[0].$message }}</span
-                          > -->
+                              class="erroe-feedbak"
+                              v-if="v$.doctor_id.$error"
+                              >{{ v$.doctor_id.$errors[0].$message }}</span
+                            > -->
                         </div>
+                        <div class="mt-2 color_section p-3 rounded-2">
+                          <span
+                            v-for="color in colors"
+                            :key="color.id"
+                            :style="[color.hex]"
+                            class="m-1 btn fw-bold p-1 text-center rounded-2"
+                          >
+                            <div class="dropdown bg-transparent">
+                              <a>
+                                <strong class="d-inline">{{
+                                  color.name
+                                }}</strong>
+                              </a>
+                            </div>
+                          </span>
+                        </div>
+                        <!-- اضافة -->
                       </div>
-                      <div class="mt-2 bg-white color_section p-3 rounded-2">
-                        <span
-                          v-for="color in colors"
-                          :key="color.id"
-                          :style="[color.hex]"
-                          class="m-1 btn fw-bold p-1 text-center rounded-2"
-                        >
-                          <div class="dropdown bg-transparent">
-                            <a>
-                              <strong class="d-inline">{{ color.name }}</strong>
-                            </a>
-                          </div>
-                        </span>
-                      </div>
-                      <!-- table -->
-                      <!-- 
-                      <table class="table mt-lg-3">
-                        <thead style="background-color: #322a7d">
-                          <tr>
-                            <th scope="col">الضرس</th>
-                            <th scope="col">اللون</th>
-                            <th scope="col">السعر</th>
-                            <th scope="col">مسح</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <th>اسم الضرس {{ type_id }}</th>
-                            <td>اللون{{ color_id }}</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                       -->
-                      <!-- اضافة -->
                     </div>
                   </div>
                   <!-- col-3 -->
                   <div class="col-md-3">
                     <!-- اختيار انواع الضروس -->
-                    <div class="row g-3 align-items-center">
-                      <div class="col-auto d-block mx-auto m-3">
+                    <div
+                      class="row g-3 align-items-center justify-content-center"
+                    >
+                      <div class="col-md-12 mb-2">
                         <select class="form-select" v-model="type_id">
                           <option disabled value="">النوع</option>
                           <option
-                            v-for="type in types"
-                            :key="type.id"
-                            :value="type.id"
+                            v-for="typee in types"
+                            :key="typee.id"
+                            :value="typee.id"
                           >
-                            {{ type.name }}
+                            {{ typee.name }}
                           </option>
                         </select>
                         <!-- <span
@@ -176,7 +153,6 @@
                           src="@/assets/lab_img/Teeth.png"
                           alt="img"
                           width="180"
-                          class="rounded"
                         />
                       </div>
                     </div>
@@ -236,8 +212,6 @@ export default {
     let user = localStorage.getItem("user");
     if (!user) {
       this.$router.push({ name: "login" });
-    } else {
-      this.username = JSON.parse(user).name;
     }
     let token = localStorage.getItem("token");
     console.log("colors");
@@ -275,10 +249,10 @@ export default {
     async Addorder() {
       this.loading = true;
       console.log("add purchases function");
-      let token = localStorage.getItem("token");
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated successfuly");
+        let token = localStorage.getItem("token");
         let result = await axios.post(
           `https://lab.almona.host/api/add_order`,
           {
@@ -354,7 +328,7 @@ table td {
   input,
   textarea,
   select {
-    width: 200px;
+    /* width: 200px; */
   }
 }
 @media only screen and (max-width: 600px) {

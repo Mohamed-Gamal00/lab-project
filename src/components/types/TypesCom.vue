@@ -93,7 +93,7 @@
                       <button
                         type="button"
                         class="btn shadow"
-                        @click="(isOpen = false), addcolor()"
+                        @click="(isOpen = false), addtype()"
                       >
                         اضف
                       </button>
@@ -213,7 +213,8 @@ export default {
       this.name = "";
       this.price = "";
     },
-    async addcolor() {
+    async addtype() {
+      this.loading = true;
       let token = localStorage.getItem("token");
       console.log("add color fun");
       let result = await axios.post(
@@ -240,6 +241,7 @@ export default {
       } else {
         console.log("data false");
       }
+      this.loading = false;
     },
     async deletetype(id) {
       this.$swal
@@ -290,6 +292,7 @@ export default {
       console.log("Editcolor call success");
     },
     async UpdateType() {
+      this.loading = true;
       let token = localStorage.getItem("token");
       let result = await axios.post(
         `https://lab.almona.host/api/edit_type/${this.type_id}`,
@@ -315,6 +318,7 @@ export default {
         console.log("data false");
       }
       console.log(result);
+      this.loading = false;
     },
   },
 };

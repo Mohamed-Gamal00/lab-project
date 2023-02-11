@@ -354,7 +354,14 @@ export default {
           Authorization: "Bearer " + token,
         },
       })
-      .catch(() => this.$router.push({ name: "servererror" }));
+      // .catch(() => this.$router.push({ name: "servererror" }));
+      .catch((err) => {
+        if (err) {
+          this.$router.push({ name: "servererror" });
+        } else {
+          this.$router.push({ name: "home" });
+        }
+      });
     if (result.status == 200) {
       console.log(result.data);
       // this.orders = result.data.orders.slice(0, 5);

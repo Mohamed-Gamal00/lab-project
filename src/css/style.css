@@ -36,3 +36,23 @@ a {
 .erroe-feedbak {
   color: red;
 }
+::-webkit-scrollbar {
+  width: 7px;
+  height: 1px;
+  border-radius: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.568);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
