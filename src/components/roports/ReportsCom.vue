@@ -360,14 +360,14 @@
                               <th style="width: 200px">
                                 {{ order.patient_no }}
                               </th>
-                              <td style="width: 200px">{{ order.doctor }}</td>
-                              <td style="width: 200px">
+                              <th style="width: 200px">{{ order.doctor }}</th>
+                              <th style="width: 200px">
                                 {{ order.patient_name }}
-                              </td>
-                              <td style="width: 200px">
+                              </th>
+                              <th style="width: 200px">
                                 {{ order.required_date }}
-                              </td>
-                              <td style="width: 200px">{{ order.price }}</td>
+                              </th>
+                              <th style="width: 200px">{{ order.price }}</th>
                             </tr>
                           </tbody>
                         </table>
@@ -412,15 +412,15 @@
                               <th style="width: 200px">
                                 {{ purchase.name }}
                               </th>
-                              <td style="width: 200px">
+                              <th style="width: 200px">
                                 {{ purchase.provider }}
-                              </td>
-                              <td style="width: 200px">
+                              </th>
+                              <th style="width: 200px">
                                 {{ purchase.amount }}
-                              </td>
-                              <td style="width: 200px">
+                              </th>
+                              <th style="width: 200px">
                                 {{ purchase.total_price }}
-                              </td>
+                              </th>
                             </tr>
                           </tbody>
                         </table>
@@ -628,7 +628,9 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           this.purchases = result.data.purchases;
+          this.purchasesPrice = result.data.purchasesPrice;
           this.orders = result.data.orders;
+          this.ordersPrice = result.data.ordersPrice;
           setTimeout(() => {
             this.start_date = "";
             this.end_date = "";

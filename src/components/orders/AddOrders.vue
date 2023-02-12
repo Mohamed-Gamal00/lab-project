@@ -272,6 +272,20 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           console.log("data true purchase added success");
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم الاضافة بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
           setTimeout(() => {
             this.doctor_id = "";
             this.patient_name = "";

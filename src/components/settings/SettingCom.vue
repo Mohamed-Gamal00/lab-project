@@ -305,6 +305,7 @@ export default {
       //   `https://lab.almona.host/api/del_color/${id}`,
       //   {
       //     headers: {
+      //       accept: "application/json",
       //       Authorization: "Bearer " + token,
       //     },
       //   }

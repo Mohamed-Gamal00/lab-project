@@ -570,7 +570,7 @@ export default {
       this.loading = false;
     },
     async AddDoctor() {
-      // console.log(this.image);
+      this.loading = true;
       console.log("add doctor function");
       this.v$.$validate();
       if (!this.v$.$error) {
@@ -587,6 +587,7 @@ export default {
             {
               headers: {
                 Authorization: "Bearer " + token,
+                "Content-Type": "multipart/form-data",
               },
             }
           )
@@ -604,6 +605,20 @@ export default {
         }, 1000);
         console.log(result);
         if (result.data.success == true) {
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم الاضافة بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
           console.log("data true");
           this.closeModal();
           this.loaddoctors();
@@ -613,6 +628,7 @@ export default {
       } else {
         console.log("form validated faild");
       }
+      this.loading = false;
     },
     ResetDoctors() {
       this.name = "";
@@ -677,6 +693,7 @@ export default {
       }
     },
     async UpdateDoctor() {
+      this.loading = true;
       console.log("update doctor function");
       this.v$.$validate();
       if (!this.v$.$error) {
@@ -707,6 +724,20 @@ export default {
         console.log(result);
         if (result.data.success == true) {
           console.log("data updated succesfuly");
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم التعديل بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
           this.closeEditModal();
           this.loaddoctors();
         } else {
@@ -715,6 +746,7 @@ export default {
       } else {
         console.log("form validated faild");
       }
+      this.loading = false;
     },
   },
 };

@@ -614,6 +614,20 @@ export default {
         );
         if (result.data.success == true) {
           console.log("data updated succesfuly");
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم التعديل بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
           this.edit_order = false;
           this.loadeorders();
         } else {
