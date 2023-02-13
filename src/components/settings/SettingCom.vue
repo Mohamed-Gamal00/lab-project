@@ -18,7 +18,7 @@
               <div class="row">
                 <!-- تغيير كلمة المرور -->
                 <div
-                  class="col-lg-4 col-md-4 col-sm-12 bg-white m-2 rounded-3 changePassword"
+                  class="col-lg-4 col-md-4 col-sm-12 bg-white m-2 rounded-3 changePasswordbtn"
                 >
                   <!-- wellcom message &&&&&&  تغيير كلمة المرور -->
                   <div class="row d-flex justify-content-center mt-4 mb-lg-1">
@@ -38,6 +38,7 @@
                       </div>
                     </div>
                     <button
+                      @click="changepasswor = true"
                       type="button"
                       style="background: #322a92"
                       class="btn text-white fw-bold"
@@ -45,6 +46,87 @@
                       تغيير كلمة المرور
                     </button>
                   </div>
+                  <!-- change password -->
+                  <teleport to="body">
+                    <div class="modalpopup" v-if="changepasswor">
+                      <div class="text-center">
+                        <h2>تغيير كلمة المرور</h2>
+                        <!-- password -->
+                        <div class="input-group mt-5 mb-2 mr-sm-2">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">
+                              <FontAwesome icon="lock" />
+                            </div>
+                          </div>
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="inlineFormInputGroupUsername2"
+                            placeholder="كلمة المرور الحالية"
+                            v-model="password"
+                          />
+                        </div>
+                        <span class="text-danger" v-if="errors.password">
+                          {{ errors.password[0] }}
+                        </span>
+                        <!-- confirm_password -->
+                        <div class="input-group mb-2 mr-sm-2">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">
+                              <FontAwesome icon="lock" />
+                            </div>
+                          </div>
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="inlineFormInputGroupUsername2"
+                            placeholder="كلمة المرور الجديدة"
+                            v-model="new_password"
+                          />
+                        </div>
+                        <span class="text-danger" v-if="errors.new_password">
+                          {{ errors.new_password[0] }}
+                        </span>
+                        <!-- confirm_password -->
+                        <div class="input-group mb-2 mr-sm-2">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">
+                              <FontAwesome icon="lock" />
+                            </div>
+                          </div>
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="inlineFormInputGroupUsername2"
+                            placeholder="تاكيد كلمة المرور"
+                            v-model="confirm_password"
+                          />
+                        </div>
+                        <span
+                          class="text-danger"
+                          v-if="errors.confirm_password"
+                        >
+                          {{ errors.confirm_password[0] }}
+                        </span>
+                        <div class="mt-lg-4">
+                          <button
+                            type="button"
+                            class="btn shadow"
+                            @click="changePassword()"
+                          >
+                            تغيير
+                          </button>
+                          <button
+                            type="button"
+                            class="btn shadow"
+                            @click="(changepasswor = false), reset()"
+                          >
+                            close
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </teleport>
                 </div>
                 <!-- اضافة الالوان -->
                 <div class="col-md-7 col-sm-12">
@@ -215,6 +297,7 @@ export default {
   data() {
     return {
       loading: false,
+      changepasswor: false,
       isOpen: false,
       isedit: false,
       // width: "width:10%",
@@ -225,6 +308,10 @@ export default {
       color_id: "",
       type: "",
       username: "",
+      password: "",
+      new_password: "",
+      confirm_password: "",
+      errors: [],
     };
   },
   async mounted() {
@@ -268,6 +355,10 @@ export default {
     reset() {
       this.name = "";
       this.hex = "";
+      this.password = "";
+      this.new_password = "";
+      this.confirm_password = "";
+      this.errors = [];
     },
     async addcolor() {
       this.loading = true;
@@ -396,6 +487,48 @@ export default {
       console.log(result);
       this.loading = false;
     },
+    async changePassword() {
+      let token = localStorage.getItem("token");
+      await axios
+        .post(
+          `https://lab.almona.host/api/ChangePassword`,
+          {
+            password: this.password,
+            new_password: this.new_password,
+            confirm_password: this.confirm_password,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        )
+        .then(() => {
+          (this.password = ""),
+            (this.new_password = ""),
+            (this.confirm_password = ""),
+            (this.errors = []);
+          this.changepasswor = false;
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم التعديل بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
+        })
+        .catch((err) => {
+          console.log(err.response);
+          this.errors = err.response.data.error;
+        });
+    },
   },
 };
 </script>
@@ -403,11 +536,11 @@ export default {
 <style scoped>
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
-  .changePassword {
+  .changePasswordbtn {
     /* height: 212px; */
     height: fit-content;
   }
-  .changePassword button {
+  .changePasswordbtn button {
     width: 70%;
   }
 }

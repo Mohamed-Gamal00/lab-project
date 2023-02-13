@@ -341,6 +341,9 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <span class="text-danger" v-if="errors">
+                                      {{ errors }}
+                                    </span>
                                     <br />
                                     <br />
                                     <!-- check box -->
@@ -406,6 +409,26 @@
                       </tbody>
                     </table>
                   </div>
+                  <!-- pagination -->
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                      <li
+                        class="page-item"
+                        v-for="link in pagination.links"
+                        :key="link"
+                        v-bind:class="[
+                          { disabled: !link.url },
+                          { active: link.active },
+                        ]"
+                      >
+                        <a
+                          class="page-link"
+                          v-html="link.label"
+                          @click="fetchusers(link.url)"
+                        ></a>
+                      </li>
+                    </ul>
+                  </nav>
                 </div>
               </div>
             </div>
@@ -432,15 +455,15 @@ export default {
       editDoctorOpen: false,
       users: [],
       v$: useVuelidate(),
-
+      pagination: {},
       id: "",
       name: "",
       number: "",
       password: "",
       confirm_password: "",
       userType: "",
-
       user_id: "",
+      errors: "",
     };
   },
   validations() {
@@ -453,26 +476,40 @@ export default {
     };
   },
   async mounted() {
-    this.loading = true;
-    // let user = localStorage.getItem("user");
-    // if (!user) {
-    //   this.$router.push({ name: "login" });
-    // }
-    let token = localStorage.getItem("token");
-    let result = await axios
-      .get(`https://lab.almona.host/api/users`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
-      .catch(() => this.$router.push({ name: "servererror" }));
-    if (result.status == 200) {
-      console.log(result.data);
-      this.users = result.data.users;
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
     }
-    this.loading = false;
+    this.type = JSON.parse(user).type;
+    this.fetchusers();
   },
   methods: {
+    makePagination(meta) {
+      let pagination = {
+        links: meta.links,
+      };
+      this.pagination = pagination;
+    },
+    async fetchusers(page_url) {
+      page_url = page_url || `https://lab.almona.host/api/users`;
+      this.loading = true;
+      let token = localStorage.getItem("token");
+      await axios
+        .get(page_url, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          this.users = response.data.data;
+          this.makePagination(response.data.meta);
+        })
+        .catch((err) => {
+          console.log(err.response);
+          this.$router.push({ name: "servererror" });
+        });
+      this.loading = false;
+    },
     async LoadUser() {
       this.loading = true;
       let user = localStorage.getItem("user");
@@ -487,7 +524,7 @@ export default {
       });
       if (result.status == 200) {
         console.log(result.data);
-        this.users = result.data.users;
+        this.users = result.data.data;
       }
       this.loading = false;
     },
@@ -545,31 +582,6 @@ export default {
       }
     },
 
-    // this.$swal
-    //   .fire({
-    //     title: "هل انت متاكد من حذف هذا العنصر",
-    //     text: "لن تتمكن من الرجوع مجددا!",
-    //     icon: "warning",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#322a7d",
-    //     cancelButtonColor: "#d33",
-    //     confirmButtonText: "حذف",
-    //     cancelButtonText: "الغاء",
-    //   })
-    //   .then((result) => {
-    //     if (result.isConfirmed) {
-    //       console.log("delete purchase");
-    //       axios.post(`https://lab.almona.host/api/user/del/${id}`);
-
-    //       this.$swal.fire(
-    //         "حذف!",
-    //         "تم حذف العنصر بنجاح.",
-    //         "success",
-    //         this.LoadUser()
-    //       );
-    //       this.LoadUser();
-    //     }
-    //   });
     async deleteUser(id) {
       this.$swal
         .fire({
@@ -615,58 +627,54 @@ export default {
       if (!this.v$.$error) {
         console.log("validate");
         let token = localStorage.getItem("token");
-        let editresult = await axios.post(
-          `https://lab.almona.host/api/user/edit/${this.user_id}`,
-          {
-            name: this.name,
-            number: this.number,
-            password: this.password,
-            confirm_password: this.confirm_password,
-            userType: this.userType,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + token,
+        await axios
+          .post(
+            `https://lab.almona.host/api/user/edit/${this.user_id}`,
+            {
+              name: this.name,
+              number: this.number,
+              password: this.password,
+              confirm_password: this.confirm_password,
+              userType: this.userType,
             },
-          }
-        );
-        this.$swal.fire({
-          toast: true,
-          icon: "success",
-          title: "تم التعديل بنجاح ",
-          animation: false,
-          position: "top-right",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", this.$swal.stopTimer);
-            toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-          },
-        });
-        // .then(
-        //   ((this.user_id = ""),
-        //   (this.name = ""),
-        //   (this.number = ""),
-        //   (this.password = ""),
-        //   (this.confirm_password = ""),
-        //   (this.userType = ""))
-        // );
-        setTimeout(() => {
-          this.name = "";
-          this.number = "";
-          this.address = "";
-          this.password = "";
-          this.userType = "";
-          this.confirm_password = "";
-          this.v$.number.$errors[0].$message = "";
-          this.v$.name.$errors[0].$message = "";
-        }, 1000);
-        if (editresult.status == 200 && editresult.data.success == true) {
-          console.log("wellcome");
-          this.editDoctorOpen = false;
-          this.LoadUser();
-        }
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          )
+          .then(() => {
+            this.$swal.fire({
+              toast: true,
+              icon: "success",
+              title: "تم التعديل بنجاح ",
+              animation: false,
+              position: "top-right",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", this.$swal.stopTimer);
+                toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+              },
+            });
+            this.editDoctorOpen = false;
+            this.LoadUser();
+            setTimeout(() => {
+              this.name = "";
+              this.number = "";
+              this.address = "";
+              this.password = "";
+              this.userType = "";
+              this.confirm_password = "";
+              this.v$.number.$errors[0].$message = "";
+              this.v$.name.$errors[0].$message = "";
+            }, 1000);
+          })
+          .catch((err) => {
+            console.log(err);
+            this.errors = err.response.data.error;
+          });
       } else {
         console.log("not validate");
       }

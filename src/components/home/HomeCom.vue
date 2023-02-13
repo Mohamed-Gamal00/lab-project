@@ -152,7 +152,7 @@
                           </thead>
                           <tbody>
                             <tr
-                              v-for="order in orders.slice(0, 6)"
+                              v-for="order in orders.slice(-6)"
                               :key="order.id"
                             >
                               <th style="width: 200px">
@@ -244,14 +244,11 @@
                         class="col-5 col5box text-light d-flex justify-content-center"
                       >
                         <div class="box1 text-center">
-                          <p class="mb-0">الطلبات الجديدة</p>
+                          <p class="mb-0">الطلبات</p>
                           <p class="mb-0">
-                            <span class="fs-2 fw-bold mt-0"
-                              >46%<img
-                                class="m-1"
-                                src="@/assets/HOME/decrease.svg"
-                                alt=""
-                            /></span>
+                            <span class="fs-2 fw-bold mt-0">{{
+                              orderslength
+                            }}</span>
                           </p>
                         </div>
                       </div>
@@ -259,14 +256,11 @@
                         class="col-5 col5box text-light d-flex justify-content-center"
                       >
                         <div class="box1 text-center">
-                          <p class="mb-0">الاطباء الجدد</p>
+                          <p class="mb-0">الاطباء</p>
                           <p class="mb-0">
-                            <span class="fs-2 fw-bold mt-0"
-                              >89%<img
-                                class="m-1"
-                                src="@/assets/HOME/increase.svg"
-                                alt=""
-                            /></span>
+                            <span class="fs-2 fw-bold mt-0">{{
+                              doctorslength
+                            }}</span>
                           </p>
                         </div>
                       </div>
@@ -336,7 +330,9 @@ export default {
       loading: false,
       username: "",
       orders: [],
+      orderslength: "",
       doctors: [],
+      // doctorslength: "",
     };
   },
   async mounted() {
@@ -358,14 +354,12 @@ export default {
       .catch((err) => {
         if (err) {
           this.$router.push({ name: "servererror" });
-        } else {
-          this.$router.push({ name: "home" });
         }
       });
-    if (result.status == 200) {
+    if (result.data.success == true) {
       console.log(result.data);
-      // this.orders = result.data.orders.slice(0, 5);
       this.orders = result.data.orders;
+      this.orderslength = result.data.orders.length;
     }
     this.loading = false;
 
@@ -383,6 +377,7 @@ export default {
       if (result.status == 200) {
         console.log(result.data);
         this.doctors = result.data.doctors;
+        this.doctorslength = result.data.doctors.length;
       }
       this.loading = false;
     },

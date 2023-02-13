@@ -468,44 +468,61 @@ export default {
       this.type = JSON.parse(user).type;
     }
     let token = localStorage.getItem("token");
-    let result = await axios
+    await axios
       .get(`https://lab.almona.host/api/orders`, {
         headers: {
           Authorization: "Bearer " + token,
         },
       })
-      .catch(() => this.$router.push({ name: "servererror" }));
-    this.orders = result.data.orders;
+      .then((response) => {
+        this.orders = response.data.orders;
+      })
+      .catch((err) => {
+        console.log(err.response);
+        this.$router.push({ name: "servererror" });
+      });
     console.log("colors");
-    let resultcolor = await axios.get(`https://lab.almona.host/api/colors`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    if (resultcolor.status == 200) {
-      console.log(resultcolor.data);
-      this.colors = resultcolor.data.colors;
-    }
+    await axios
+      .get(`https://lab.almona.host/api/colors`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        this.colors = response.data.colors;
+      })
+      .catch((err) => {
+        console.log(err.response);
+        this.$router.push({ name: "servererror" });
+      });
     console.log("doctors");
-    let resultdoc = await axios.get(`https://lab.almona.host/api/doctors`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    if (result.data.success == true) {
-      console.log(resultdoc.data);
-      this.doctors = resultdoc.data.doctors;
-    }
+    await axios
+      .get(`https://lab.almona.host/api/doctors`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        this.doctors = response.data.doctors;
+      })
+      .catch((err) => {
+        console.log(err.response);
+        this.$router.push({ name: "servererror" });
+      });
     console.log("types");
-    let resulttypes = await axios.get(`https://lab.almona.host/api/types`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    if (resulttypes.data.success == true) {
-      console.log(resulttypes.data);
-      this.types = resulttypes.data.types;
-    }
+    await axios
+      .get(`https://lab.almona.host/api/types`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        this.types = response.data.types;
+      })
+      .catch((err) => {
+        console.log(err.response);
+        this.$router.push({ name: "servererror" });
+      });
     this.loading = false;
   },
   methods: {

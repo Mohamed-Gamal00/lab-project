@@ -56,3 +56,15 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+.active > .page-link,
+.page-link.active {
+  color: #ffffff !important;
+  background-color: #322a7d !important;
+  border: none !important;
+}
+.page-link {
+  color: #322a7d !important;
+}
+.Page.navigation {
+  cursor: default !important;
+}

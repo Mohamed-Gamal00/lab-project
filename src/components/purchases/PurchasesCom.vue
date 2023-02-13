@@ -469,30 +469,35 @@ export default {
     this.type = JSON.parse(user).type;
     let token = localStorage.getItem("token");
     console.log("purchases");
-    let result = await axios
+    await axios
       .get(`https://lab.almona.host/api/purchases`, {
         headers: {
           Authorization: "Bearer " + token,
         },
       })
-      .catch(() => this.$router.push({ name: "servererror" }));
-    if (result.status == 200) {
-      console.log(result.data);
-      this.purchases = result.data.purchases;
-    }
+      .then((response) => {
+        this.purchases = response.data.purchases;
+      })
+      .catch((err) => {
+        console.log(err.response);
+        this.$router.push({ name: "servererror" });
+      });
+
     console.log("providers");
-    let allproviders = await axios.get(
-      `https://lab.almona.host/api/providers`,
-      {
+    await axios
+      .get(`https://lab.almona.host/api/providers`, {
         headers: {
           Authorization: "Bearer " + token,
         },
-      }
-    );
-    if (allproviders.status == 200) {
-      console.log(allproviders.data);
-      this.providers = allproviders.data.providers;
-    }
+      })
+      .then((response) => {
+        this.providers = response.data.providers;
+      })
+      .catch((err) => {
+        console.log(err.response);
+        this.$router.push({ name: "servererror" });
+      });
+
     this.loading = false;
   },
   computed: {
@@ -544,52 +549,53 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated successfuly");
-        let result = await axios.post(
-          `https://lab.almona.host/api/add_purchase`,
-          {
-            name: this.name,
-            provider_id: this.provider_id,
-            amount: this.amount,
-            price: this.price,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + token,
+        await axios
+          .post(
+            `https://lab.almona.host/api/add_purchase`,
+            {
+              name: this.name,
+              provider_id: this.provider_id,
+              amount: this.amount,
+              price: this.price,
             },
-          }
-        );
-        console.log(result);
-        if (result.data.success == true) {
-          console.log("data true purchase added success");
-          this.$swal.fire({
-            toast: true,
-            icon: "success",
-            title: "تم الاضافة بنجاح ",
-            animation: false,
-            position: "top-right",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", this.$swal.stopTimer);
-              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-            },
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          )
+          .then(() => {
+            console.log("data true purchase added success");
+            this.$swal.fire({
+              toast: true,
+              icon: "success",
+              title: "تم الاضافة بنجاح ",
+              animation: false,
+              position: "top-right",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", this.$swal.stopTimer);
+                toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+              },
+            });
+            this.add_purchases = false;
+            this.loadpurchase();
+            setTimeout(() => {
+              this.provider_id = "";
+              this.name = "";
+              this.amount = "";
+              this.price = "";
+              this.v$.name.$errors[0].$message = ""; // اسم المنتج
+              this.v$.provider_id.$errors[0].$message = ""; // اسم المنتج
+              this.v$.amount.$errors[0].$message = "";
+              this.v$.price.$errors[0].$message = "";
+            });
+          })
+          .catch((err) => {
+            console.log(err.response);
           });
-          this.add_purchases = false;
-          this.loadpurchase();
-          setTimeout(() => {
-            this.provider_id = "";
-            this.name = "";
-            this.amount = "";
-            this.price = "";
-            this.v$.name.$errors[0].$message = ""; // اسم المنتج
-            this.v$.provider_id.$errors[0].$message = ""; // اسم المنتج
-            this.v$.amount.$errors[0].$message = "";
-            this.v$.price.$errors[0].$message = "";
-          });
-        } else {
-          console.log("data false");
-        }
       } else {
         console.log("form validated faild");
       }
@@ -652,20 +658,43 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated successfuly");
-        let result = await axios.post(
-          `https://lab.almona.host/api/edit_purchase/${this.purshase_id}`,
-          {
-            name: this.name,
-            amount: this.amount,
-            price: this.price,
-            provider_id: this.provider_id,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + token,
+        await axios
+          .post(
+            `https://lab.almona.host/api/edit_purchase/${this.purshase_id}`,
+            {
+              name: this.name,
+              amount: this.amount,
+              price: this.price,
+              provider_id: this.provider_id,
             },
-          }
-        );
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          )
+          .then(() => {
+            console.log("data updated succesfuly");
+            this.$swal.fire({
+              toast: true,
+              icon: "success",
+              title: "تم التعديل بنجاح",
+              animation: false,
+              position: "top-right",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", this.$swal.stopTimer);
+                toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+              },
+            });
+            this.edit_purchases = false;
+            this.loadpurchase();
+          })
+          .catch((err) => {
+            console.log(err.response);
+          });
         setTimeout(() => {
           this.name = "";
           this.amount = "";
@@ -676,28 +705,6 @@ export default {
           this.v$.amount.$errors[0].$message = "";
           this.v$.price.$errors[0].$message = "";
         });
-        console.log(result);
-        if (result.data.success == true) {
-          console.log("data updated succesfuly");
-          this.$swal.fire({
-            toast: true,
-            icon: "success",
-            title: "تم التعديل بنجاح",
-            animation: false,
-            position: "top-right",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", this.$swal.stopTimer);
-              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-            },
-          });
-          this.edit_purchases = false;
-          this.loadpurchase();
-        } else {
-          console.log("data false");
-        }
       } else {
         console.log("form validated faild");
       }

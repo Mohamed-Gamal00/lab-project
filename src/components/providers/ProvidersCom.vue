@@ -287,6 +287,25 @@
                       </tbody>
                     </table>
                   </div>
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                      <li
+                        class="page-item"
+                        v-for="link in pagination.links"
+                        :key="link"
+                        v-bind:class="[
+                          { disabled: !link.url },
+                          { active: link.active },
+                        ]"
+                      >
+                        <a
+                          class="page-link"
+                          v-html="link.label"
+                          @click="fetchproviders(link.url)"
+                        ></a>
+                      </li>
+                    </ul>
+                  </nav>
                 </div>
               </div>
             </div>
@@ -315,6 +334,7 @@ export default {
       v$: useVuelidate(),
       name: "",
       number: "",
+      pagination: {},
       provider: {
         id: "",
         name: "",
@@ -330,29 +350,48 @@ export default {
     };
   },
   async mounted() {
-    this.loading = true;
     let user = localStorage.getItem("user");
     if (!user) {
       this.$router.push({ name: "login" });
     }
     this.type = JSON.parse(user).type;
-    let token = localStorage.getItem("token");
-    let result = await axios
-      .get(`https://lab.almona.host/api/providers`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
-      .catch(() => this.$router.push({ name: "servererror" }));
-    if (result.status == 200) {
-      console.log(result.data);
-      this.providers = result.data.providers;
-    }
-    this.loading = false;
+    this.fetchproviders();
   },
   methods: {
+    makePagination(meta) {
+      let pagination = {
+        links: meta.links,
+      };
+      this.pagination = pagination;
+    },
+    async fetchproviders(page_url) {
+      page_url = page_url || `https://lab.almona.host/api/providers`;
+      this.loading = true;
+      let token = localStorage.getItem("token");
+      await axios
+        .get(page_url, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          // this.providers = response.data.data;
+          this.providers = response.data.data;
+          this.makePagination(response.data.meta);
+        })
+        .catch((err) => {
+          console.log(err.response);
+          this.$router.push({ name: "servererror" });
+        });
+      this.loading = false;
+    },
     async loadproviders() {
       this.loading = true;
+      let user = localStorage.getItem("user");
+      if (!user) {
+        this.$router.push({ name: "login" });
+      }
+      this.type = JSON.parse(user).type;
       let token = localStorage.getItem("token");
       let result = await axios.get(`https://lab.almona.host/api/providers`, {
         headers: {
@@ -360,7 +399,7 @@ export default {
         },
       });
       if (result.data.success == true) {
-        this.providers = result.data.providers;
+        this.providers = result.data.data;
       }
       this.loading = false;
     },
@@ -480,18 +519,23 @@ export default {
       if (!this.v$.$error) {
         console.log("form validated successfuly");
         let token = localStorage.getItem("token");
-        let result = await axios.post(
-          `https://lab.almona.host/api/edit_provider/${this.user_id}`,
-          {
-            name: this.name,
-            number: this.number,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + token,
+        let result = await axios
+          .post(
+            `https://lab.almona.host/api/edit_provider/${this.user_id}`,
+            {
+              name: this.name,
+              number: this.number,
             },
-          }
-        );
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          )
+          .then()
+          .catch((err) => {
+            console.log(err.response);
+          });
         setTimeout(() => {
           this.name = "";
           this.number = "";

@@ -149,6 +149,26 @@
                       </tr>
                     </tbody>
                   </table>
+                  <!-- pagination -->
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                      <li
+                        class="page-item"
+                        v-for="link in pagination.links"
+                        :key="link"
+                        v-bind:class="[
+                          { disabled: !link.url },
+                          { active: link.active },
+                        ]"
+                      >
+                        <a
+                          class="page-link"
+                          v-html="link.label"
+                          @click="fetchdoctors(link.url)"
+                        ></a>
+                      </li>
+                    </ul>
+                  </nav>
                   <!-- modal popup add doctor -->
                   <transition name="fade">
                     <div class="modall" v-if="show">
@@ -389,84 +409,6 @@
                       </div>
                     </div>
                   </transition>
-
-                  <!-- modal popup edit doctor -->
-                  <!-- <div class="root">
-                    <teleport to="body">
-                      <div class="modalpopup" v-if="edit">
-                        <div class="text-center">
-                          <div class="modal-header d-inline">
-                            <h5
-                              class="modal-title fw-bold text-center"
-                              style="color: #322a7d"
-                              id="exampleModalLabel"
-                            >
-                              تعديل
-                            </h5>
-                          </div>
-                          <div class="modal-body">
-                            <form>
-                              <div class="row g-3 align-items-center">
-                                <div class="col-auto d-block mx-auto m-3">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="اسم لطبيب"
-                                    v-model="name"
-                                  />
-                                  <span
-                                    class="erroe-feedbak"
-                                    v-if="v$.name.$error"
-                                    >{{ v$.name.$errors[0].$message }}</span
-                                  >
-                                </div>
-                              </div>
-                              <div class="row g-3 align-items-center">
-                                <div class="col-auto d-block mx-auto m-3">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="رقم الهاتف"
-                                    v-model="number"
-                                  />
-                                  <span
-                                    class="erroe-feedbak"
-                                    v-if="v$.number.$error"
-                                    >{{ v$.number.$errors[0].$message }}</span
-                                  >
-                                </div>
-                              </div>
-                              <div class="row g-3 align-items-center">
-                                <div class="col-auto d-block mx-auto m-3">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="عنوان لطبيب"
-                                    v-model="address"
-                                  />
-                                  <span
-                                    class="erroe-feedbak"
-                                    v-if="v$.address.$error"
-                                    >{{ v$.address.$errors[0].$message }}</span
-                                  >
-                                </div>
-                              </div>
-                              <br />
-                            </form>
-                          </div>
-                          <button class="btn" @click="UpdateDoctor()">
-                            تعديل
-                          </button>
-                          <button
-                            class="btn"
-                            @click="(editDoctorOpen = false), ResetDoctors()"
-                          >
-                            اغلاق
-                          </button>
-                        </div>
-                      </div>
-                    </teleport>
-                  </div> -->
                 </div>
               </div>
             </div>
@@ -496,6 +438,7 @@ export default {
       moment: moment,
       doctors: [],
       v$: useVuelidate(),
+      pagination: {},
       image: "",
       name: "",
       number: "",
@@ -519,21 +462,7 @@ export default {
       this.$router.push({ name: "login" });
     }
     this.type = JSON.parse(user).type;
-
-    let token = localStorage.getItem("token");
-    let result = await axios
-      .get(`https://lab.almona.host/api/doctors`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    if (result.data.success == true) {
-      this.doctors = result.data.doctors;
-    }
-    this.loading = false;
+    this.fetchdoctors();
   },
   methods: {
     closeModal() {
@@ -555,6 +484,31 @@ export default {
     selectFile() {
       this.image = this.$refs.file.files[0];
     },
+    makePagination(meta) {
+      let pagination = {
+        links: meta.links,
+      };
+      this.pagination = pagination;
+    },
+    async fetchdoctors(page_url) {
+      page_url = page_url || `https://lab.almona.host/api/doctors`;
+      let token = localStorage.getItem("token");
+      await axios
+        .get(page_url, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          this.doctors = response.data.data;
+          this.makePagination(response.data.meta);
+        })
+        .catch((err) => {
+          console.log(err.response);
+          this.$router.push({ name: "servererror" });
+        });
+      this.loading = false;
+    },
     async loaddoctors() {
       this.loading = true;
       let token = localStorage.getItem("token");
@@ -565,7 +519,7 @@ export default {
       });
       if (result.data.success == true) {
         console.log(result.data);
-        this.doctors = result.data.doctors;
+        this.doctors = result.data.data;
       }
       this.loading = false;
     },

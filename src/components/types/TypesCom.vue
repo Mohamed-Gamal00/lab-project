@@ -7,7 +7,7 @@
     </div>
     <div class="col-md-12 col-sm-12">
       <div class="row">
-        <div class="mt-4 mb-5">
+        <div class="mt-4">
           <span
             ><h4 class="fw-bold text-black">
               <strong>انواع الضروس </strong>
@@ -25,7 +25,7 @@
               اضف+
             </button>
           </span>
-          <div class="mt-2 bg-white p-3 rounded-2">
+          <div class="bg-white p-3 rounded-2">
             <span
               v-for="type in types"
               :key="type.id"
