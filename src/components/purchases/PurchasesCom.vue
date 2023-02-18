@@ -36,11 +36,11 @@
                   <!-- table -->
                   <div class="table-responsive">
                     <table class="table mt-lg-3">
-                      <div v-if="purchases.length > 0">
+                      <!-- <div v-if="purchases.length > 0">
                         <span class="small fw-bold"
                           >العدد ({{ purchases.length }})</span
                         >
-                      </div>
+                      </div> -->
                       <tbody>
                         <tr
                           v-for="purchase in purchases"
@@ -391,7 +391,28 @@
                       </tbody>
                     </table>
                   </div>
+                  <!-- pagination -->
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                      <li
+                        class="page-item"
+                        v-for="link in pagination.links"
+                        :key="link"
+                        v-bind:class="[
+                          { disabled: !link.url },
+                          { active: link.active },
+                        ]"
+                      >
+                        <a
+                          class="page-link"
+                          v-html="link.label"
+                          @click="fetchpurchases(link.url)"
+                        ></a>
+                      </li>
+                    </ul>
+                  </nav>
                 </div>
+
                 <!--col-4 الاحصائيات -->
                 <div class="col-lg-4 col-sm-12 col-md-3 rounded-3">
                   <!-- ملخص الاحصائيات -->
@@ -447,6 +468,7 @@ export default {
       provider_id: "",
       name: "",
       purchases: [],
+      pagination: {},
       purshase_id: "",
       type: "",
     };
@@ -458,47 +480,6 @@ export default {
       amount: { required },
       price: { required },
     };
-  },
-  /* get purchases and purchases*/
-  async mounted() {
-    this.loading = true;
-    let user = localStorage.getItem("user");
-    if (!user) {
-      this.$router.push({ name: "login" });
-    }
-    this.type = JSON.parse(user).type;
-    let token = localStorage.getItem("token");
-    console.log("purchases");
-    await axios
-      .get(`https://lab.almona.host/api/purchases`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
-      .then((response) => {
-        this.purchases = response.data.purchases;
-      })
-      .catch((err) => {
-        console.log(err.response);
-        this.$router.push({ name: "servererror" });
-      });
-
-    console.log("providers");
-    await axios
-      .get(`https://lab.almona.host/api/providers`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
-      .then((response) => {
-        this.providers = response.data.providers;
-      })
-      .catch((err) => {
-        console.log(err.response);
-        this.$router.push({ name: "servererror" });
-      });
-
-    this.loading = false;
   },
   computed: {
     result: function () {
@@ -513,25 +494,74 @@ export default {
       return sum;
     },
   },
-  methods: {
-    async loadpurchase() {
-      this.loading = true;
-      let user = localStorage.getItem("user");
-      if (!user) {
-        this.$router.push({ name: "login" });
-      }
-      this.type = JSON.parse(user).type;
-      let token = localStorage.getItem("token");
-      let result = await axios.get(`https://lab.almona.host/api/purchases`, {
+  /* get purchases and purchases*/
+  async mounted() {
+    this.loading = true;
+    let user = localStorage.getItem("user");
+    if (!user) {
+      this.$router.push({ name: "login" });
+    }
+    this.type = JSON.parse(user).type;
+
+    this.fetchpurchases();
+    /* allProviders */
+    let token = localStorage.getItem("token");
+    await axios
+      .get(`https://lab.almona.host/api/allProviders`, {
         headers: {
           Authorization: "Bearer " + token,
         },
+      })
+      .then((response) => {
+        // console.log(response);
+        this.providers = response.data.data;
+      })
+      .catch((err) => {
+        console.log("catch error", err.response);
+        this.$router.push({ name: "servererror" });
       });
-      if (result.data.success == true) {
-        console.log(result.data);
-        this.purchases = result.data.purchases;
-        this.loading = false;
-      }
+
+    this.loading = false;
+  },
+
+  methods: {
+    makePagination(meta) {
+      let pagination = {
+        links: meta.links,
+      };
+      this.pagination = pagination;
+    },
+    async fetchpurchases(page_url) {
+      page_url = page_url || `https://lab.almona.host/api/purchases`;
+      let token = localStorage.getItem("token");
+      await axios
+        .get(page_url, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          this.purchases = response.data.data;
+          this.makePagination(response.data.meta);
+        })
+        .catch((err) => {
+          console.log(err.response);
+          this.$router.push({ name: "servererror" });
+        });
+    },
+    async loadpurchase() {
+      this.loading = true;
+      let token = localStorage.getItem("token");
+      await axios
+        .get(`https://lab.almona.host/api/purchases`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          this.purchases = response.data.data;
+        });
+      this.loading = false;
     },
     reset() {
       this.provider_id = "";
@@ -616,19 +646,26 @@ export default {
           if (result.isConfirmed) {
             let token = localStorage.getItem("token");
             console.log("delete purchase");
-            axios.post(`https://lab.almona.host/api/del_purchase/${id}`, {
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-            });
-
-            this.$swal.fire(
-              "حذف!",
-              "تم حذف العنصر بنجاح.",
-              "success",
-              this.loadpurchase()
-            );
-            this.loadpurchase();
+            axios
+              .post(`https://lab.almona.host/api/del_purchase/${id}`, {
+                headers: {
+                  Authorization: "Bearer " + token,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+                if (response.data.success == true) {
+                  console.log(response);
+                  this.$swal.fire("حذف!", "تم حذف العنصر بنجاح.", "success");
+                  this.loadpurchase();
+                } else {
+                  this.$swal.fire("فشل الحذف", "فشل حذف هذا العنصر", "error");
+                  console.log(response);
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           }
         });
       // console.log("delete function run");

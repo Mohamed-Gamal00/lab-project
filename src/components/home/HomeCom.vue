@@ -280,7 +280,7 @@
                     <div class="mt-4">
                       <div
                         class="row d-flex justify-content-around"
-                        v-for="doctor in doctors.slice(-2)"
+                        v-for="doctor in doctors.slice(0, 2)"
                         :key="doctor"
                       >
                         <div class="col-4 p-0">
@@ -332,7 +332,7 @@ export default {
       orders: [],
       orderslength: "",
       doctors: [],
-      // doctorslength: "",
+      doctorslength: "",
     };
   },
   async mounted() {
@@ -344,23 +344,24 @@ export default {
       this.username = JSON.parse(user).name;
     }
     let token = localStorage.getItem("token");
-    let result = await axios
+    await axios
       .get(`https://lab.almona.host/api/orders`, {
         headers: {
           Authorization: "Bearer " + token,
         },
       })
-      // .catch(() => this.$router.push({ name: "servererror" }));
+      .then((response) => {
+        console.log(response.data);
+        this.orders = response.data.data;
+        this.orderslength = response.data.data.length;
+      })
       .catch((err) => {
         if (err) {
+          console.log(err);
           this.$router.push({ name: "servererror" });
         }
       });
-    if (result.data.success == true) {
-      console.log(result.data);
-      this.orders = result.data.orders;
-      this.orderslength = result.data.orders.length;
-    }
+
     this.loading = false;
 
     this.getdoctors();
@@ -369,16 +370,35 @@ export default {
     async getdoctors() {
       this.loading = true;
       let token = localStorage.getItem("token");
-      let result = await axios.get(`https://lab.almona.host/api/doctors`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (result.status == 200) {
-        console.log(result.data);
-        this.doctors = result.data.doctors;
-        this.doctorslength = result.data.doctors.length;
-      }
+      await axios
+        .get(`https://lab.almona.host/api/allDoctors`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          this.doctors = response.data.data;
+          this.doctorslength = response.data.data.length;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$router.push({ name: "servererror" });
+        });
+      await axios
+        .get(`https://lab.almona.host/api/doctors`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          this.doctors = response.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$router.push({ name: "servererror" });
+        });
       this.loading = false;
     },
   },

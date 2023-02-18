@@ -268,6 +268,27 @@
                       </div>
                     </div>
                   </div>
+
+                  <!-- pagination -->
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                      <li
+                        class="page-item"
+                        v-for="link in pagination.links"
+                        :key="link"
+                        v-bind:class="[
+                          { disabled: !link.url },
+                          { active: link.active },
+                        ]"
+                      >
+                        <a
+                          class="page-link"
+                          v-html="link.label"
+                          @click="fetchorders(link.url)"
+                        ></a>
+                      </li>
+                    </ul>
+                  </nav>
                   <!-- <button
                     @click="(edit_order = true), Editorder(order)"
                     type="button "
@@ -438,6 +459,7 @@ export default {
       edit_order: false,
       open: false,
       orders: [],
+      pagination: {},
       colors: [],
       doctors: [],
       types: [],
@@ -467,21 +489,9 @@ export default {
     } else {
       this.type = JSON.parse(user).type;
     }
-    let token = localStorage.getItem("token");
-    await axios
-      .get(`https://lab.almona.host/api/orders`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
-      .then((response) => {
-        this.orders = response.data.orders;
-      })
-      .catch((err) => {
-        console.log(err.response);
-        this.$router.push({ name: "servererror" });
-      });
+    this.fetchorders();
     console.log("colors");
+    let token = localStorage.getItem("token");
     await axios
       .get(`https://lab.almona.host/api/colors`, {
         headers: {
@@ -497,13 +507,13 @@ export default {
       });
     console.log("doctors");
     await axios
-      .get(`https://lab.almona.host/api/doctors`, {
+      .get(`https://lab.almona.host/api/allDoctors`, {
         headers: {
           Authorization: "Bearer " + token,
         },
       })
       .then((response) => {
-        this.doctors = response.data.doctors;
+        this.doctors = response.data.data;
       })
       .catch((err) => {
         console.log(err.response);
@@ -526,25 +536,42 @@ export default {
     this.loading = false;
   },
   methods: {
+    makePagination(meta) {
+      let pagination = {
+        links: meta.links,
+      };
+      this.pagination = pagination;
+    },
+    async fetchorders(page_url) {
+      page_url = page_url || `https://lab.almona.host/api/orders`;
+      let token = localStorage.getItem("token");
+      await axios
+        .get(page_url, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          this.orders = response.data.data;
+          this.makePagination(response.data.meta);
+        })
+        .catch((err) => {
+          console.log(err.response);
+          this.$router.push({ name: "servererror" });
+        });
+    },
     async loadeorders() {
       this.loading = true;
-      /* authorization */
-      let user = localStorage.getItem("user");
-      if (!user) {
-        this.$router.push({ name: "login" });
-      } else {
-        this.type = JSON.parse(user).type;
-      }
-      /* end authorization */
       let token = localStorage.getItem("token");
-      let result = await axios.get(`https://lab.almona.host/api/orders`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (result.data.success == true) {
-        this.orders = result.data.orders;
-      }
+      await axios
+        .get(`https://lab.almona.host/api/orders`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          this.orders = response.data.data;
+        });
       this.loading = false;
     },
     async DeleteOrder(id) {
@@ -563,19 +590,26 @@ export default {
           if (result.isConfirmed) {
             console.log("delete doctor");
             let token = localStorage.getItem("token");
-            axios.post(`https://lab.almona.host/api/del_order/${id}`, {
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-            });
-
-            this.$swal.fire(
-              "حذف!",
-              "تم حذف العنصر بنجاح.",
-              "success",
-              this.loadeorders()
-            );
-            this.loadeorders();
+            axios
+              .post(`https://lab.almona.host/api/del_order/${id}`, {
+                headers: {
+                  Authorization: "Bearer " + token,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+                if (response.data.success == true) {
+                  console.log(response);
+                  this.$swal.fire("حذف!", "تم حذف العنصر بنجاح.", "success");
+                  this.loadeorders();
+                } else {
+                  this.$swal.fire("فشل الحذف", "فشل حذف هذا العنصر", "error");
+                  console.log(response);
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           }
         });
       // let result = await axios.post(

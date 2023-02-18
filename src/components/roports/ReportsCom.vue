@@ -484,18 +484,17 @@ export default {
     async getdoctors() {
       this.loading = true;
       let token = localStorage.getItem("token");
-      let result = await axios
-        .get(`https://lab.almona.host/api/doctors`, {
+      await axios
+        .get(`https://lab.almona.host/api/allDoctors`, {
           headers: {
             Authorization: "Bearer " + token,
           },
         })
+        .then((response) => {
+          this.doctors = response.data.data;
+          console.log("doctors");
+        })
         .catch(() => this.$router.push({ name: "servererror" }));
-      if (result.data.success == true) {
-        this.doctors = result.data.doctors;
-        console.log("doctors");
-        console.log(this.doctors);
-      }
       this.loading = false;
     },
     async getproviders() {

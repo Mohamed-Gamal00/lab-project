@@ -36,11 +36,11 @@
                   <!-- table -->
                   <div class="table-responsive">
                     <table class="table mt-lg-3">
-                      <div v-if="providers.length > 0">
+                      <!-- <div v-if="providers.length > 0">
                         <span class="small fw-bold"
                           >العدد ({{ providers.length }})</span
                         >
-                      </div>
+                      </div> -->
                       <tbody>
                         <tr
                           v-for="provider in providers"
@@ -387,20 +387,21 @@ export default {
     },
     async loadproviders() {
       this.loading = true;
-      let user = localStorage.getItem("user");
-      if (!user) {
-        this.$router.push({ name: "login" });
-      }
-      this.type = JSON.parse(user).type;
+      // let user = localStorage.getItem("user");
+      // if (!user) {
+      //   this.$router.push({ name: "login" });
+      // }
+      // this.type = JSON.parse(user).type;
       let token = localStorage.getItem("token");
-      let result = await axios.get(`https://lab.almona.host/api/providers`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (result.data.success == true) {
-        this.providers = result.data.data;
-      }
+      await axios
+        .get(`https://lab.almona.host/api/providers`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          this.providers = response.data.data;
+        });
       this.loading = false;
     },
     ResetDoctors() {
@@ -477,19 +478,24 @@ export default {
           if (result.isConfirmed) {
             console.log("delete purchase");
             let token = localStorage.getItem("token");
-            axios.post(`https://lab.almona.host/api/del_provider/${id}`, {
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-            });
-
-            this.$swal.fire(
-              "حذف!",
-              "تم حذف العنصر بنجاح.",
-              "success",
-              this.loadproviders()
-            );
-            this.loadproviders();
+            axios
+              .post(`https://lab.almona.host/api/del_provider/${id}`, {
+                headers: {
+                  Authorization: "Bearer " + token,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+                if (response.data.success == true) {
+                  this.$swal.fire("حذف!", "تم حذف العنصر بنجاح.", "success");
+                  this.loadproviders();
+                } else {
+                  this.$swal.fire("فشل الحذف!", "فشل حذف العنصر", "error");
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           }
         });
       // console.log("delete doctor");

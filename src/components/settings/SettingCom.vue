@@ -428,24 +428,27 @@ export default {
         .then((result) => {
           if (result.isConfirmed) {
             let token = localStorage.getItem("token");
-            let resultcolor = axios.post(
-              `https://lab.almona.host/api/del_color/${id}`,
-              {
+            axios
+              .post(`https://lab.almona.host/api/del_color/${id}`, {
                 headers: {
                   Authorization: "Bearer " + token,
                 },
-              }
-            );
-            if (resultcolor.status == 200) {
-              console.log(resultcolor);
-            }
-            this.$swal.fire(
-              "حذف!",
-              "تم حذف العنصر بنجاح.",
-              "success",
-              this.loadecolor()
-            );
-            this.loadecolor();
+              })
+              .then((response) => {
+                console.log(response);
+                if (response.data.success == true) {
+                  this.$swal.fire("حذف!", "تم حذف العنصر بنجاح.", "success");
+                  this.loadecolor();
+                } else {
+                  // this.$swal.fire("فشل الحذف", "انتهت مهلة التسجيل.", "error");
+                  // localStorage.clear();
+                  // this.$router.push({ name: "login" });
+                  console.log(response);
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           }
         });
       this.loadecolor();

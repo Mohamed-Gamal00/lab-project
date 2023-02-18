@@ -65,6 +65,6 @@ a {
 .page-link {
   color: #322a7d !important;
 }
-.Page.navigation {
+.pagination  {
   cursor: default !important;
 }

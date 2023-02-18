@@ -197,6 +197,7 @@
                                   <div class="row g-3 align-items-center">
                                     <div class="col-auto d-block mx-auto m-3">
                                       <input
+                                        class="form-control"
                                         id="img"
                                         name="img"
                                         type="file"
@@ -425,7 +426,7 @@ import PageLoader from "@/components/pageloader/PageLoader.vue";
 var moment = require("moment");
 // moment.locale("ar_SA");
 import useVuelidate from "@vuelidate/core";
-import { required, maxLength } from "@vuelidate/validators";
+import { required, maxLength, minLength } from "@vuelidate/validators";
 export default {
   name: "DoctorsCom",
   components: { PageLoader },
@@ -449,9 +450,9 @@ export default {
   },
   validations() {
     return {
-      name: { required, minLength: maxLength(15) },
-      number: { required, minLength: maxLength(11) },
-      address: { required, minLength: maxLength(15) },
+      name: { required, maxLength: maxLength(15) },
+      number: { required, maxLength: maxLength(11), minLength: minLength(11) },
+      address: { required, maxLength: maxLength(15) },
     };
   },
   /* get */
@@ -512,15 +513,15 @@ export default {
     async loaddoctors() {
       this.loading = true;
       let token = localStorage.getItem("token");
-      let result = await axios.get(`https://lab.almona.host/api/doctors`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (result.data.success == true) {
-        console.log(result.data);
-        this.doctors = result.data.data;
-      }
+      await axios
+        .get(`https://lab.almona.host/api/doctors`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          this.doctors = response.data.data;
+        });
       this.loading = false;
     },
     async AddDoctor() {
@@ -529,7 +530,7 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         let token = localStorage.getItem("token");
-        let result = await axios
+        await axios
           .post(
             `https://lab.almona.host/api/add_doctor`,
             {
@@ -545,40 +546,42 @@ export default {
               },
             }
           )
+          .then((response) => {
+            setTimeout(() => {
+              this.name = "";
+              this.number = "";
+              this.address = "";
+              this.image = "";
+              this.v$.number.$errors[0].$message = "";
+              this.v$.name.$errors[0].$message = "";
+              this.v$.address.$errors[0].$message = "";
+            }, 1000);
+            this.$swal.fire({
+              toast: true,
+              icon: "success",
+              title: "تم الاضافة بنجاح ",
+              animation: false,
+              position: "top-right",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", this.$swal.stopTimer);
+                toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+              },
+            });
+            console.log("data true");
+            console.log(response);
+            // console.log(response.data.error);
+            this.closeModal();
+            this.loaddoctors();
+            if (response.data.status == 400) {
+              console.log(response.data.error);
+            }
+          })
           .catch((err) => {
             console.log(err);
           });
-        setTimeout(() => {
-          this.name = "";
-          this.number = "";
-          this.address = "";
-          this.image = "";
-          this.v$.number.$errors[0].$message = "";
-          this.v$.name.$errors[0].$message = "";
-          this.v$.address.$errors[0].$message = "";
-        }, 1000);
-        console.log(result);
-        if (result.data.success == true) {
-          this.$swal.fire({
-            toast: true,
-            icon: "success",
-            title: "تم الاضافة بنجاح ",
-            animation: false,
-            position: "top-right",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", this.$swal.stopTimer);
-              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-            },
-          });
-          console.log("data true");
-          this.closeModal();
-          this.loaddoctors();
-        } else {
-          console.log("data false");
-        }
       } else {
         console.log("form validated faild");
       }
@@ -606,19 +609,26 @@ export default {
           if (result.isConfirmed) {
             let token = localStorage.getItem("token");
             console.log("delete doctor");
-            axios.post(`https://lab.almona.host/api/del_doctor/${id}`, {
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-            });
-
-            this.$swal.fire(
-              "حذف!",
-              "تم حذف العنصر بنجاح.",
-              "success",
-              this.loaddoctors()
-            );
-            this.loaddoctors();
+            axios
+              .post(`https://lab.almona.host/api/del_doctor/${id}`, {
+                headers: {
+                  Authorization: "Bearer " + token,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+                if (response.data.success == true) {
+                  console.log("success");
+                  this.$swal.fire("حذف!", "تم حذف العنصر بنجاح.", "success");
+                } else {
+                  console.log("delete faild");
+                  this.$swal.fire("فشل الحذف!", "فشل حذف العنصر.", "error");
+                }
+                this.loaddoctors();
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           }
         });
     },

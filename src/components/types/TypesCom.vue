@@ -180,32 +180,38 @@ export default {
       this.typee = JSON.parse(user).type;
     }
     let token = localStorage.getItem("token");
-    let result = await axios
+    await axios
       .get(`https://lab.almona.host/api/types`, {
         headers: {
           Authorization: "Bearer " + token,
         },
       })
+      .then((response) => {
+        if (response.status == 200) {
+          console.log(response.data);
+          this.types = response.data.types;
+        }
+      })
       .catch(() => this.$router.push({ name: "servererror" }));
-    if (result.status == 200) {
-      console.log(result.data);
-      this.types = result.data.types;
-    }
     this.loading = false;
   },
   methods: {
     async loadetypes() {
       this.loading = true;
       let token = localStorage.getItem("token");
-      let result = await axios.get(`https://lab.almona.host/api/types`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (result.status == 200) {
-        console.log(result.data);
-        this.types = result.data.types;
-      }
+      await axios
+        .get(`https://lab.almona.host/api/types`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            console.log(response.data);
+            this.types = response.data.types;
+          }
+        })
+        .catch(() => this.$router.push({ name: "servererror" }));
       this.loading = false;
     },
     reset() {
@@ -217,30 +223,51 @@ export default {
       this.loading = true;
       let token = localStorage.getItem("token");
       console.log("add color fun");
-      let result = await axios.post(
-        `https://lab.almona.host/api/add_type`,
-        {
-          name: this.name,
-          price: this.price,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + token,
+      await axios
+        .post(
+          `https://lab.almona.host/api/add_type`,
+          {
+            name: this.name,
+            price: this.price,
           },
-        }
-      );
-      if (result.data.success == true) {
-        console.log("data true color added success");
-        console.log(result.data.success);
-        this.isOpen = false;
-        this.loadetypes();
-        setTimeout(() => {
-          this.price = "";
-          this.name = "";
-        }, 1000);
-      } else {
-        console.log("data false");
-      }
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        )
+        .then((response) => {
+          this.$swal.fire({
+            toast: true,
+            icon: "success",
+            title: "تم الاضافة بنجاح ",
+            animation: false,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", this.$swal.stopTimer);
+              toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+            },
+          });
+          if (response.data.success == true) {
+            console.log("data true color added success");
+            console.log(response.data.success);
+            this.isOpen = false;
+            this.loadetypes();
+            setTimeout(() => {
+              this.price = "";
+              this.name = "";
+            }, 1000);
+          } else {
+            console.log("data false");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$router.push({ name: "servererror" });
+        });
       this.loading = false;
     },
     async deletetype(id) {
@@ -259,30 +286,28 @@ export default {
           if (result.isConfirmed) {
             let token = localStorage.getItem("token");
             console.log("delete doctor");
-            axios.post(`https://lab.almona.host/api/del_type/${id}`, {
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-            });
-
-            this.$swal.fire(
-              "حذف!",
-              "تم حذف العنصر بنجاح.",
-              "success",
-              this.loadetypes()
-            );
-            this.loadetypes();
+            axios
+              .post(`https://lab.almona.host/api/del_type/${id}`, {
+                headers: {
+                  Authorization: "Bearer " + token,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+                if (response.data.success == true) {
+                  this.$swal.fire("حذف!", "تم حذف العنصر بنجاح.", "success");
+                  this.loadetypes();
+                } else {
+                  this.$swal.fire("فشل الحذف", "انتهت مهلة التسجيل.", "error");
+                  console.log(response);
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+                this.$router.push({ name: "servererror" });
+              });
           }
         });
-      // let result = await axios.post(
-      //   `https://lab.almona.host/api/del_type/${id}`
-      // );
-      // if (result.data.success == true) {
-      //   console.log(" provider deleted succesfuly");
-      //   this.loadetypes();
-      // } else {
-      //   console.log("faild to delete type");
-      // }
     },
     Editype(type) {
       console.log("type");
@@ -294,30 +319,51 @@ export default {
     async UpdateType() {
       this.loading = true;
       let token = localStorage.getItem("token");
-      let result = await axios.post(
-        `https://lab.almona.host/api/edit_type/${this.type_id}`,
-        {
-          name: this.name,
-          price: this.price,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + token,
+      await axios
+        .post(
+          `https://lab.almona.host/api/edit_type/${this.type_id}`,
+          {
+            name: this.name,
+            price: this.price,
           },
-        }
-      );
-      if (result.data.success == true) {
-        console.log("data updated succesfuly");
-        setTimeout(() => {
-          this.name = "";
-          this.price = "";
-        }, 1000);
-        this.isedit = false;
-        this.loadetypes();
-      } else {
-        console.log("data false");
-      }
-      console.log(result);
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        )
+        .then((response) => {
+          if (response.data.success == true) {
+            this.$swal.fire({
+              toast: true,
+              icon: "success",
+              title: "تم التعديل بنجاح ",
+              animation: false,
+              position: "top-right",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", this.$swal.stopTimer);
+                toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+              },
+            });
+            console.log("data updated succesfuly");
+            setTimeout(() => {
+              this.name = "";
+              this.price = "";
+            }, 1000);
+            this.isedit = false;
+            this.loadetypes();
+          } else {
+            console.log("data false");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$router.push({ name: "servererror" });
+        });
+
       this.loading = false;
     },
   },

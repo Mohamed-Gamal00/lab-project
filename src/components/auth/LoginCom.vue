@@ -130,7 +130,7 @@ import PageLoader from "@/components/pageloader/PageLoader.vue";
 import setAuthHeader from "@/utils/setAuthHeader";
 import axios from "axios";
 import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, maxLength, minLength } from "@vuelidate/validators";
 export default {
   name: "LoginCom",
   components: { PageLoader },
@@ -146,7 +146,7 @@ export default {
   },
   validations() {
     return {
-      number: { required },
+      number: { required, maxLength: maxLength(11), minLength: minLength(11) },
       password: { required },
     };
   },
@@ -169,24 +169,25 @@ export default {
         await axios
           .post(`https://lab.almona.host/api/login`, credentaials)
           .then((response) => {
-            localStorage.setItem("token", response.data.user.token);
-            localStorage.setItem("user", JSON.stringify(response.data.user));
-            setAuthHeader(response.data.user.token);
-            this.$router.push({ name: "home" });
-          })
-          .catch((err) => {
-            if (err) {
+            console.log(response);
+            if (response.data.success == true) {
+              localStorage.setItem("token", response.data.user.token);
+              localStorage.setItem("user", JSON.stringify(response.data.user));
+              setAuthHeader(response.data.user.token);
+              this.$router.push({ name: "home" });
+            } else {
               this.message = "هذا المستخدم غير موجود";
               setTimeout(() => {
                 this.message = "";
               }, 2000);
-            } else {
-              this.message = "true";
             }
+          })
+          .catch(() => {
+            this.$router.push({ name: "servererror" });
           });
       } else {
         console.log("form validation Faild");
-        this.UsernotFoundError = "تسجيل دخول خاطئ";
+        this.UsernotFoundError = "form validation Faild";
       }
       this.loading = false;
     },

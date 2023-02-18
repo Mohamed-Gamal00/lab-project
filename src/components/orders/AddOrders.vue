@@ -230,13 +230,13 @@ export default {
       });
     console.log("doctors");
     await axios
-      .get(`https://lab.almona.host/api/doctors`, {
+      .get(`https://lab.almona.host/api/allDoctors`, {
         headers: {
           Authorization: "Bearer " + token,
         },
       })
       .then((response) => {
-        this.doctors = response.data.doctors;
+        this.doctors = response.data.data;
       })
       .catch((err) => {
         console.log(err.response);
