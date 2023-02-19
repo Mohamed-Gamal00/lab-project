@@ -490,7 +490,6 @@ export default {
       this.type = JSON.parse(user).type;
     }
     this.fetchorders();
-    console.log("colors");
     let token = localStorage.getItem("token");
     await axios
       .get(`https://lab.almona.host/api/colors`, {
@@ -499,13 +498,13 @@ export default {
         },
       })
       .then((response) => {
+        console.log(response);
         this.colors = response.data.colors;
       })
       .catch((err) => {
         console.log(err.response);
         this.$router.push({ name: "servererror" });
       });
-    console.log("doctors");
     await axios
       .get(`https://lab.almona.host/api/allDoctors`, {
         headers: {
@@ -519,7 +518,6 @@ export default {
         console.log(err.response);
         this.$router.push({ name: "servererror" });
       });
-    console.log("types");
     await axios
       .get(`https://lab.almona.host/api/types`, {
         headers: {

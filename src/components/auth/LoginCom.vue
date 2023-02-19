@@ -107,7 +107,8 @@
                       </button> -->
                       <span class="mt-1 text-center erroe-feedbak">
                         {{ UsernotFoundError }}
-                        {{ message }}
+                        {{ message[0] }}<br />
+                        {{ message[1] }}
                       </span>
                     </div>
                   </form>
@@ -141,7 +142,7 @@ export default {
       number: "",
       password: "",
       UsernotFoundError: "",
-      message: "",
+      message: [],
     };
   },
   validations() {
@@ -154,6 +155,8 @@ export default {
     let user = localStorage.getItem("token");
     if (user) {
       this.$router.push({ name: "home" });
+    } else {
+      this.$router.push({ name: "login" });
     }
   },
   methods: {
@@ -166,8 +169,13 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         console.log("form validated Succesfuly");
+        let token = localStorage.getItem("token");
         await axios
-          .post(`https://lab.almona.host/api/login`, credentaials)
+          .post(`https://lab.almona.host/api/login`, credentaials, {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          })
           .then((response) => {
             console.log(response);
             if (response.data.success == true) {
@@ -176,10 +184,16 @@ export default {
               setAuthHeader(response.data.user.token);
               this.$router.push({ name: "home" });
             } else {
-              this.message = "هذا المستخدم غير موجود";
+              this.message = [
+                "هذا المستخدم غير موجود",
+                "تحقق من كلمة المرور و رقم الهاتف",
+              ];
               setTimeout(() => {
-                this.message = "";
+                this.message[0] = "";
               }, 2000);
+              setTimeout(() => {
+                this.message[1] = "";
+              }, 4000);
             }
           })
           .catch(() => {
